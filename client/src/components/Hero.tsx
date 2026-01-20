@@ -82,7 +82,7 @@ const Hero: React.FC = () => {
           {/* Main Heading */}
           <motion.h1
             variants={itemVariants}
-            className="text-5xl sm:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-white via-cyan-300 to-blue-400 bg-clip-text text-transparent leading-tight mb-6"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-cyan-300 to-blue-400 bg-clip-text text-transparent leading-tight mb-6"
           >
             Arpan P. Nayak
           </motion.h1>
@@ -90,7 +90,7 @@ const Hero: React.FC = () => {
           {/* Subheading */}
           <motion.h2
             variants={itemVariants}
-            className="text-2xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-6"
+            className="text-xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-6"
           >
             AI Engineer & Business Strategist
           </motion.h2>

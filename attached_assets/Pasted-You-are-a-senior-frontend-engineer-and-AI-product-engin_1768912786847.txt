@@ -1,0 +1,128 @@
+You are a senior frontend engineer and AI product engineer.
+
+I am working on my portfolio website and AI assistant "Nami". I need you to fix two things:
+
+1) Fix a font layout issue on the home page.
+2) Train and configure Nami using my portfolio data so she behaves like a real portfolio manager.
+
+-------------------------------------
+TASK 1 — HOME PAGE FONT FIX
+-------------------------------------
+
+Problem:
+The main hero font on the home page is too large. The top portion of the text is getting cut off and users must zoom out to see it properly.
+
+Your task:
+- Identify the home page hero text component
+- Reduce the font size slightly so the full text is always visible
+- Fix any line-height or overflow issues
+- Ensure no text gets hidden or clipped
+
+STRICT RULES:
+- Do NOT change layout
+- Do NOT change spacing structure
+- Do NOT change colors
+- Do NOT change animations
+- Do NOT change content or wording
+- Only fix font sizing and overflow issues
+
+Goal:
+The homepage text should be fully visible on all screen sizes without zooming.
+
+-------------------------------------
+TASK 2 — TRAIN NAMI USING PORTFOLIO DATA
+-------------------------------------
+
+I want Nami to behave like my professional portfolio manager.
+
+Your task:
+1. Extract all portfolio information from my website including:
+   - Projects
+   - Blogs
+   - Experience
+   - Journey
+   - Skills
+   - About section
+
+2. Convert this information into a structured knowledge base for Nami.
+
+3. Inject this data directly into Nami’s system prompt so she can answer instantly without searching.
+
+-------------------------------------
+NAMI BEHAVIOR RULES
+-------------------------------------
+
+Nami must behave like a portfolio manager, not a chatbot.
+
+She must:
+- Explain my projects clearly
+- Describe technologies used
+- Talk about my journey and experience
+- Guide visitors through the portfolio
+
+She must NOT:
+- Spam users
+- Repeatedly ask for name/email
+- Push for contact info
+- Ask unnecessary questions
+
+She should:
+- Be friendly
+- Be professional
+- Use light humor when appropriate
+- Keep conversation natural
+
+Only ask for contact details IF user says:
+- They want to hire
+- They want to collaborate
+- They want to connect
+- They want to talk to Arpan
+
+Then follow:
+1) Ask if they want to leave a message
+2) If yes, ask name + email or phone
+
+-------------------------------------
+PERFORMANCE RULES
+-------------------------------------
+
+- Do NOT use chat memory
+- Do NOT store conversation history
+- Do NOT use vector DB
+- Do NOT use embeddings
+- Use stateless inference
+- Only last user message should be processed
+
+This is to keep Nami fast and responsive.
+
+-------------------------------------
+STRICT RULES
+-------------------------------------
+
+- Do NOT redesign the website
+- Do NOT refactor unrelated code
+- Do NOT change animations
+- Do NOT change page layout
+- Do NOT change UI structure
+- Only modify font sizing logic and AI logic
+
+-------------------------------------
+OUTPUT REQUIREMENTS
+-------------------------------------
+
+1. Show which files were modified for font fix
+2. Show the updated font styles
+3. Show extracted portfolio data
+4. Show Nami's new system prompt with embedded portfolio data
+5. Confirm Nami responds using portfolio knowledge only
+6. Confirm performance improvement
+
+-------------------------------------
+FINAL GOAL
+-------------------------------------
+
+- Homepage text must be fully visible without zoom
+- Nami must answer instantly using portfolio data
+- Nami must behave like a real portfolio manager
+- No spam behavior
+- No memory lag
