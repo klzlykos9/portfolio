@@ -158,9 +158,9 @@ const AIAgent: React.FC = () => {
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="w-16 h-16 rounded-full bg-slate-900/80 backdrop-blur-md border border-cyan-500/50 flex items-center justify-center relative shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-          <Sparkles className="w-8 h-8 text-cyan-400" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-950"></div>
+        <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900/80 backdrop-blur-md border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+          <div className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></div>
+          <span className="text-white font-bold tracking-wider">Nami</span>
         </div>
       </motion.div>
 

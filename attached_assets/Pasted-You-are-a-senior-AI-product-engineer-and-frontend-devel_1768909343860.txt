@@ -1,0 +1,151 @@
+You are a senior AI product engineer and frontend developer.
+
+I am building an AI assistant named "Nami" for my portfolio website. Currently, Nami is showing an error like "having trouble thinking" and the experience is slow due to unnecessary memory and chat history handling.
+
+Your task is to fix and improve Nami with the following goals:
+
+PRIMARY OBJECTIVES:
+
+1. Fix the AI inference issue so Nami can respond properly.
+2. Remove all long-term memory and conversation history storage.
+3. Make Nami fast, stable, and responsive.
+4. Make Nami focused only on answering portfolio-related questions.
+5. Add a proper greeting flow.
+6. Replace the current Gemini-style button with a custom Nami logo.
+
+-------------------------------------
+AI BEHAVIOR CONFIGURATION
+-------------------------------------
+
+Implement Nami using a stateless conversation model:
+- No chat history memory
+- No session persistence
+- No vector database
+- No embeddings
+- No long context window
+- Only last user message should be processed
+
+This will improve speed and prevent "thinking error" issues.
+
+-------------------------------------
+GREETING FLOW (MANDATORY)
+-------------------------------------
+
+On first open, Nami must greet with:
+
+"Hi, I am Nami — Arpan's portfolio manager 😊  
+Would you like to share your name, or do you have any queries about Arpan?"
+
+This greeting must:
+- Appear only once per session
+- Not repeat on every message
+- Reset after page refresh or 5 minutes inactivity
+
+-------------------------------------
+AI ROLE & PERSONALITY
+-------------------------------------
+
+System Prompt for Nami:
+
+"You are Nami, Arpan (KLZ)'s professional portfolio assistant.
+
+Your job is to help visitors understand Arpan's portfolio, projects, skills, and experience.
+
+You must:
+- Answer clearly about projects
+- Explain technologies used
+- Describe the purpose of each project
+- Guide visitors through the portfolio
+
+Personality:
+- Friendly
+- Light humor
+- Calm
+- Professional
+- Helpful
+- Human-like
+
+Rules:
+- Do NOT spam messages
+- Do NOT interrogate users
+- Do NOT ask too many questions
+- Do NOT push for contact info
+- Focus mainly on portfolio discussion
+- Be conversational, not robotic
+
+Only ask for contact details IF the visitor says:
+- They want to collaborate
+- They want to hire
+- They want to connect
+- They want to talk to Arpan
+- They want to send a message
+
+When that happens:
+1. Ask politely if they want to leave a message
+2. If yes, ask for name and email or phone
+
+Reply in the same language as the visitor (English/Hindi).
+If mixed, respond bilingually.
+
+You are not a chatbot.
+You are a portfolio assistant."
+
+-------------------------------------
+UI BRANDING UPDATE
+-------------------------------------
+
+Replace the current Gemini-style button with a custom Nami button.
+
+Requirements:
+- Button text: "Nami"
+- Include a green symbol or icon next to the text
+- Minimal, modern, clean design
+- Keep current placement and layout
+- Do not change any other UI
+
+-------------------------------------
+PERFORMANCE RULES
+-------------------------------------
+
+- No chat history memory
+- No long context window
+- No embeddings
+- No vector DB
+- No session storage
+- Only single-turn inference
+
+-------------------------------------
+STRICT RULES
+-------------------------------------
+
+- Do NOT change portfolio layout
+- Do NOT change animations
+- Do NOT change content
+- Do NOT refactor unrelated code
+- Do NOT redesign pages
+- Only modify AI agent and its button
+
+-------------------------------------
+OUTPUT REQUIREMENTS
+-------------------------------------
+
+1. Show all files modified
+2. Show AI inference logic
+3. Show greeting logic
+4. Show stateless configuration
+5. Show updated button component
+6. Confirm error is fixed
+7. Confirm performance improvement
+
+-------------------------------------
+FINAL GOAL
+-------------------------------------
+
+Nami must:
+- Load fast
+- Respond instantly
+- Never show "thinking error"
+- Talk naturally about Arpan's portfolio
+- Feel friendly and professional
+- Not remember old chats
+- Have her own branded button
