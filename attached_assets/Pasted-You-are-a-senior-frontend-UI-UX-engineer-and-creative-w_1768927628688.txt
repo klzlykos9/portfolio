@@ -1,0 +1,122 @@
+You are a senior frontend UI/UX engineer and creative web designer.
+
+I want to significantly redesign the homepage of my portfolio to be **bigger, more dynamic, more visually engaging, and modern** — blending AI/finance aesthetic with artistic anime elements.
+
+Follow these detailed instructions:
+
+----------------------------------------
+1) HOMEPAGE STRUCTURE & INTERACTIVITY
+----------------------------------------
+
+Create a **longer, scrollable homepage** with visible section shortcuts that scroll down into the content — not just a single square page.
+
+Below the hero section, add a **vertically scrollable navigation panel** (or carousel) with **bigger section previews**.
+
+Each preview card must include:
+• A large image or graphic representing the section (not just icons)
+• Section title
+• Short caption
+• Clickable area that smoothly scrolls to that section
+
+Sections to preview:
+• About
+• Skills
+• Certifications
+• Internships
+• Experience
+• Projects
+• Blog
+• Contact
+
+The preview area must be large, retina-friendly, and animated.
+
+----------------------------------------
+2) THEMING, COLORS & STYLE
+----------------------------------------
+
+Replace the current blue color scheme. Design a **light, colorful, artistic theme** with:
+• Soft gradients
+• Subtle neon accents (AI / futuristic vibe)
+• Warm pastel tones and modern light palettes
+• Background geometric shapes or pattern overlays
+
+Make the visual style **2025+ appropriate**:
+• Bold typography
+• Expressive color combinations
+• Subtle 3D effects
+• Motion and hover states for engagement
+
+Incorporate **anime touches** (tasteful, not overdone) such as:
+• Small character illustrations or lightweight silhouettes (e.g., stylized references to One Piece characters like Luffy, Shanks, or Naruto theme colors) on section cards or background elements — balanced so it enhances UX not distracts. :contentReference[oaicite:1]{index=1}
+
+----------------------------------------
+3) ANIMATION EFFECTS
+----------------------------------------
+
+Add modern animations and motion UI elements:
+• Slide-in cards from left/right as they enter the viewport
+• Fade-in text
+• Swipe effects for horizontal scroll areas
+• Parallax background sections
+• Micro-interactions (hover animations, button ripples)
+• Smooth scroll between sections
+
+Use best practices from current animation design inspiration (such as micro-animations, parallax, kinetic typography effects). :contentReference[oaicite:2]{index=2}
+
+----------------------------------------
+4) RESPONSIVE & TYPOGRAPHY TUNING
+----------------------------------------
+
+Improve typography so the page never crops content:
+• Responsive fluid font sizes (mobile, tablet, desktop)
+• Better line height and letter spacing
+• Avoid text clipping at all viewports
+
+Make sure the design is mobile-first and responsive:
+• Preview carousel becomes horizontal scroll on mobile
+• Animations degrade gracefully on low-power devices
+
+----------------------------------------
+5) SECTION CONTENT & NAVIGATION
+----------------------------------------
+
+Each section must be:
+• Anchored with IDs (#about, #skills, etc.)
+• Visually distinct (color bands, graphics, animated shapes)
+• Easy to scroll to with smooth scroll
+
+Add a “Back to Top” floating button that appears after scroll.
+
+----------------------------------------
+6) AI AGENT (Nami) UI REFRESH
+----------------------------------------
+
+Keep Nami hologram at a fixed bottom corner, but:
+• Update the button/animation to cooperate with the new homepage theme
+• Add subtle hover glow and parallax shadow
+• Use a soft animated “breathing” animation when idle
+
+Ensure Nami is integrated without blocking content.
+
+----------------------------------------
+OUTPUT REQUIREMENTS
+----------------------------------------
+
+Provide:
+1) Updated homepage layout code
+2) CSS/JS animations
+3) New preview section cards with images
+4) Smooth scroll logic
+5) Responsive breakpoints
+6) Confirmation that all navigation links scroll to correct sections
+7) Screenshots or staged previews of what was added
+
+----------------------------------------
+FINAL GOAL
+----------------------------------------
+
+• A bigger, scrollable interactive homepage  
+• Visually rich section previews  
+• Light, modern, colorful anime-friendly AI theme  
+• Modern animation and micro-interactions  
+• Fully responsive and mobile-friendly
