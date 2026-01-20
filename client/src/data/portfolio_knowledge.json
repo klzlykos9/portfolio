@@ -1,0 +1,22 @@
+{
+  "About": "AI Engineer and Business Strategist dedicated to architecting production-grade Generative AI systems that deliver tangible business value. Bridging the gap between complex AI research and practical, scalable industry solutions. Specializing in LangChain, LangGraph, and Neural Architectures.",
+  "Projects": [
+    { "title": "Attendance Face Recognition System", "description": "Intelligent attendance management using computer vision.", "technologies": ["Python", "OpenCV", "Face Recognition", "SQLite", "Tkinter"] },
+    { "title": "AI Research Tool", "description": "Intelligent research assistant using AI to analyze papers.", "technologies": ["Python", "LangChain", "OpenAI API", "Streamlit", "Vector Database"] },
+    { "title": "Laptop Price Predictor", "description": "Machine learning model predicting prices based on specs.", "technologies": ["Python", "Scikit-learn", "Pandas", "Flask", "Random Forest"] },
+    { "title": "AI Conversational Agent", "description": "Intelligent chatbot with advanced NLP capabilities.", "technologies": ["Python", "LangChain", "OpenAI", "Streamlit", "Vector Store"] }
+  ],
+  "Blogs": [
+    { "title": "A STUDY ON CONSUMER INTENTION TO ADOPT ONLINE PHARMACIES", "summary": "Investigates factors influencing consumer decisions to switch to digital pharmaceutical platforms." },
+    { "title": "THE STUDY AND EFFECT OF ONLINE MARKETING", "summary": "Analysis of how digital marketing strategies transformed the modern business landscape." },
+    { "title": "Mastering LangGraph: Building Complex AI Workflows", "summary": "Learn to create sophisticated AI applications using graph-based approaches." }
+  ],
+  "Experience": [
+    { "role": "AI Engineer & Strategist", "company": "Self/Freelance", "duration": "Current", "details": "Focusing on Generative AI and business strategy." }
+  ],
+  "Skills": [
+    "Generative AI", "LLM Applications", "LangChain & LangGraph", "Machine Learning", "Deep Learning", "NLP", "Computer Vision", "Python", "React", "TypeScript", "FastAPI", "Six Sigma"
+  ],
+  "Journey": "Started with an MBA in International Business, transitioned to AI/ML by becoming a Certified Python Business Analyst. Combines business acumen with deep technical AI expertise.",
+  "Contact": "arpanpnayak@gmail.com, https://github.com/arpanpnayak, https://www.linkedin.com/in/arpanpnayak"
+}

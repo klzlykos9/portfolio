@@ -27,71 +27,61 @@ const AIAgent: React.FC = () => {
   const [leadData, setLeadData] = useState({ name: '', contact: '', query: '' });
 
   useEffect(() => {
-    // No greeting lead collection, purely stateless
+    // Hologram Nami Greeting
     if (messages.length === 0) {
       setTimeout(() => {
         addMessage({
           id: '1',
-          text: "Hi, I am Nami — Arpan's portfolio manager 😊 How can I help you explore Arpan's projects or journey?",
+          text: "Hi, I am Nami — Arpan’s portfolio manager 😊\nWould you like to share your name, or do you have any queries about Arpan?",
           sender: 'ai',
         });
       }, 1500);
     }
   }, []);
 
-  const addMessage = (msg: Message) => setMessages(prev => [msg]); // Keep only last message for stateless feel
+  const addMessage = (msg: Message) => setMessages(prev => [msg]);
 
-  const [isModelLoading, setIsModelLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [portfolioData, setPortfolioData] = useState<string>('');
+  const [qaData, setQaData] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch data for system prompt
-    const loadPortfolioData = async () => {
+    const loadQA = async () => {
       try {
-        const { projects } = await import('../data/projects');
-        const { blogs } = await import('../data/blogs');
-        
-        const dataStr = `
-          ARPAN P. NAYAK PORTFOLIO DATA:
-          
-          PROJECTS:
-          ${projects.map(p => `- ${p.title}: ${p.description}. Tech: ${p.tech.join(', ')}`).join('\n')}
-          
-          BLOGS:
-          ${blogs.map(b => `- ${b.title}: ${b.excerpt}`).join('\n')}
-          
-          EXPERIENCE/JOURNEY:
-          Arpan is an AI Engineer & Strategist specializing in production-grade Generative AI, LangChain, and intelligent automation.
-          
-          SKILLS:
-          Generative AI, LLMs, LangChain, Python, Computer Vision, Machine Learning, React, TypeScript.
-        `;
-        setPortfolioData(dataStr);
+        const data = await import('../data/nami_qa.json');
+        setQaData(data.default);
       } catch (err) {
-        console.error("Failed to load portfolio data", err);
+        console.error("Failed to load QA data", err);
       }
     };
-    loadPortfolioData();
+    loadQA();
   }, []);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-    const userText = inputValue.trim();
+    const userText = inputValue.trim().toLowerCase();
     setInputValue('');
     setMessages([{ id: Date.now().toString(), text: userText, sender: 'user' }]);
     setIsTyping(true);
 
-    // Send to Worker with portfolio data as system prompt
-    if (workerRef.current) {
-        workerRef.current.postMessage({ 
-            type: 'generate', 
-            text: `System: You are Nami, Arpan P. Nayak's portfolio manager. Use this data to answer: ${portfolioData}\n\nUser: ${userText}`,
-            userName: null
-        });
-    }
-  };
+    setTimeout(() => {
+      setIsTyping(false);
+      
+      // Instant replies using extracted dataset
+      const match = qaData.find(qa => 
+        userText.includes(qa.question.toLowerCase()) || 
+        qa.question.toLowerCase().split(' ').some(word => word.length > 3 && userText.includes(word))
+      );
 
+      let reply = match ? match.answer : "I specialize in explaining Arpan's AI projects and strategy. Feel free to ask about his work or experience!";
+
+      // Lead analysis
+      const leadKeywords = ['hire', 'collaborate', 'connect', 'contact', 'message', 'work with'];
+      if (leadKeywords.some(k => userText.includes(k))) {
+        reply = "I'd love to help you connect with Arpan! Would you like to leave your name and email so he can get back to you?";
+      }
+
+      addMessage({ id: Date.now().toString(), text: reply, sender: 'ai' });
+    }, 600);
+  };
 
   return (
     <>
@@ -102,11 +92,31 @@ const AIAgent: React.FC = () => {
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900/80 backdrop-blur-md border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-          <div className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></div>
-          <span className="text-white font-bold tracking-wider">Nami</span>
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-cyan-500 rounded-full opacity-25 group-hover:opacity-50 blur transition duration-1000 group-hover:duration-200"></div>
+          <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-slate-900 border border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.3)] overflow-hidden">
+            <motion.div
+              animate={{ opacity: [0.4, 0.7, 0.4] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent"
+            />
+            {/* Hologram Girl Face */}
+            <div className="relative z-10 flex flex-col items-center">
+               <div className="w-8 h-8 rounded-full border-2 border-cyan-400/80 flex items-center justify-center">
+                 <div className="w-1 h-1 bg-cyan-400 rounded-full mx-1 shadow-[0_0_5px_#22d3ee]" />
+                 <div className="w-1 h-1 bg-cyan-400 rounded-full mx-1 shadow-[0_0_5px_#22d3ee]" />
+               </div>
+               <div className="w-4 h-1 border-b-2 border-cyan-400/80 rounded-full mt-1" />
+            </div>
+            <motion.div 
+              className="absolute bottom-0 w-full h-1 bg-cyan-400/60 shadow-[0_0_10px_#22d3ee]"
+              animate={{ y: [-16, 16] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            />
+          </div>
         </div>
       </motion.div>
+
 
       <AnimatePresence>
         {isOpen && (
