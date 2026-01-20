@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   Code2, 
@@ -36,6 +37,7 @@ const sections = [
 
 export const SectionPreview: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const scroll = (direction: 'left' | 'right') => {
     if (containerRef.current) {
@@ -48,9 +50,19 @@ export const SectionPreview: React.FC = () => {
   };
 
   const scrollToSection = (id: string) => {
+    if (id === 'projects') {
+      navigate('/projects');
+      return;
+    }
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/#' + id);
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 

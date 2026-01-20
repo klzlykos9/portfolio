@@ -1,11 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Github, Linkedin, Mail, MousePointer2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
 import { SectionPreview } from '../components/SectionPreview';
+import About from '../components/About';
+import Skills from '../components/Skills';
+import Certifications from '../components/Certifications';
+import InternshipTraining from '../components/InternshipTraining';
+import Experience from '../components/Experience';
+import Blogs from '../components/Blogs';
+import Contact from '../components/Contact';
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-screen bg-[#0f172a] artistic-mesh overflow-x-hidden">
       <ParticleBackground />
@@ -57,25 +66,66 @@ const Home: React.FC = () => {
             className="flex flex-wrap gap-6 justify-center items-center pt-8"
           >
             <button
-              onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => {
+                const aboutSection = document.getElementById('about');
+                if (aboutSection) {
+                  aboutSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="group px-10 py-5 bg-primary text-white rounded-full font-black text-lg transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.4)] flex items-center gap-3 active:scale-95"
             >
               Initialize Exploration
               <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
             </button>
 
-            <Link
-              to="/projects"
+            <button
+              onClick={() => navigate('/projects')}
               className="group px-10 py-5 border-2 border-white/10 text-white rounded-full font-black text-lg transition-all hover:bg-white/5 hover:border-primary/50 flex items-center gap-3"
             >
               System Protocols
-            </Link>
+            </button>
+          </motion.div>
+
+          {/* AI-Themed Social Buttons */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+            className="flex justify-center gap-8 pt-12"
+          >
+            {[
+              { icon: Github, href: "https://github.com/arpanpnayak", label: "GitHub", color: "hover:text-white" },
+              { icon: Linkedin, href: "https://www.linkedin.com/in/arpanpnayak", label: "LinkedIn", color: "hover:text-blue-400" },
+              { icon: Mail, href: "mailto:arpanpnayak@gmail.com", label: "Email", color: "hover:text-primary" }
+            ].map((social, i) => (
+              <a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noreferrer"
+                className={`group relative p-5 bg-slate-900/50 rounded-2xl border border-white/5 transition-all duration-500 hover:border-primary/50 hover:-translate-y-2 ${social.color}`}
+              >
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 rounded-2xl blur-xl transition-opacity" />
+                <social.icon size={28} className="relative z-10" />
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  {social.label}
+                </span>
+              </a>
+            ))}
           </motion.div>
         </motion.div>
       </div>
 
       {/* Preview Section */}
       <SectionPreview />
+
+      <About />
+      <Skills />
+      <Certifications />
+      <InternshipTraining />
+      <Experience />
+      <Blogs />
+      <Contact />
     </div>
   );
 };
