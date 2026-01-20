@@ -118,34 +118,34 @@ const AIAgent: React.FC = () => {
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
-            className="fixed bottom-28 right-8 w-[350px] h-[500px] z-50 flex flex-col bg-white/90 backdrop-blur-xl border border-primary/20 rounded-[2rem] shadow-2xl overflow-hidden"
+            className="fixed bottom-28 right-8 w-[350px] h-[500px] z-50 flex flex-col bg-[#0f172a]/90 backdrop-blur-xl border border-primary/30 rounded-[2rem] shadow-[0_0_50px_rgba(6,182,212,0.2)] overflow-hidden"
           >
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-white/50">
+            <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.3)]">
                   <Cpu className="text-primary" size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-sm">Nami</h3>
-                  <p className="text-[10px] text-primary uppercase tracking-widest font-bold">AI Assistant</p>
+                  <h3 className="font-bold text-white text-sm">Nami</h3>
+                  <p className="text-[10px] text-primary uppercase tracking-widest font-black">Neural Link Active</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-900 transition-colors">
+              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white transition-colors">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.sender === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white text-slate-600 border border-slate-100 rounded-tl-none'}`}>
+                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg ${msg.sender === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-slate-800/80 text-slate-200 border border-white/5 rounded-tl-none'}`}>
                     {msg.text}
                   </div>
                 </div>
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none flex gap-1 shadow-sm">
+                  <div className="bg-slate-800/80 border border-white/5 p-4 rounded-2xl rounded-tl-none flex gap-1 shadow-lg">
                     <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
                     <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
                     <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -155,15 +155,15 @@ const AIAgent: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 bg-white border-t border-slate-100">
+            <div className="p-4 bg-[#0f172a] border-t border-white/5">
               <div className="relative">
                 <input
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask Nami..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-full py-3 px-5 pr-12 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                  placeholder="Transmit message..."
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 />
                 <button onClick={handleSend} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:scale-110 transition-transform">
                   <Send size={18} />

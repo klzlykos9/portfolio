@@ -37,7 +37,7 @@ const Home: React.FC = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
             </span>
-            AI Engineer & Strategist
+            AI ENGINEER & BUSINESS ANALYST
           </motion.div>
 
           <motion.h1
@@ -118,14 +118,6 @@ const Home: React.FC = () => {
 
       {/* Preview Section */}
       <SectionPreview />
-
-      <About />
-      <Skills />
-      <Certifications />
-      <InternshipTraining />
-      <Experience />
-      <Blogs />
-      <Contact />
     </div>
   );
 };

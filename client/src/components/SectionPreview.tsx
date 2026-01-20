@@ -54,15 +54,27 @@ export const SectionPreview: React.FC = () => {
       navigate('/projects');
       return;
     }
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    
+    // Check if the route exists, otherwise assume it's a section on its own page
+    const routes: Record<string, string> = {
+      'about': '/about',
+      'skills': '/skills',
+      'certifications': '/certifications',
+      'internships': '/internships',
+      'experience': '/experience',
+      'blogs': '/blog',
+      'contact': '/contact'
+    };
+
+    if (routes[id]) {
+      navigate(routes[id]);
     } else {
-      navigate('/#' + id);
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/#' + id);
+      }
     }
   };
 

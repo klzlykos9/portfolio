@@ -27,7 +27,7 @@ const Header: React.FC = () => {
             <Cpu className="text-primary" size={20} />
           </div>
           <span className="text-xl font-black tracking-tighter text-white">
-            ARPAN<span className="text-primary">.SYS</span>
+            ARPAN'S <span className="text-primary">PORTFOLIO</span>
           </span>
         </div>
 
