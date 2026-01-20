@@ -27,7 +27,7 @@ import connectImg from '@assets/generated_images/ai_contact_and_connection_visua
 const sections = [
   { id: 'about', title: 'About', icon: User, color: 'from-blue-500 to-cyan-500', desc: 'My Story & Vision', image: aboutImg },
   { id: 'skills', title: 'Skills', icon: Code2, color: 'from-amber-400 to-orange-600', desc: 'Tech & Expertise', image: skillsImg },
-  { id: 'certifications', title: 'Certs', icon: Award, color: 'from-purple-500 to-fuchsia-600', desc: 'Degrees & Honors', image: certsImg },
+  { id: 'certifications', title: 'Certifications', icon: Award, color: 'from-purple-500 to-fuchsia-600', desc: 'Degrees & Honors', image: certsImg },
   { id: 'internships', title: 'Training', icon: BookOpen, color: 'from-emerald-500 to-teal-600', desc: 'Growth & Learning', image: trainingImg },
   { id: 'experience', title: 'Career', icon: Briefcase, color: 'from-rose-500 to-red-600', desc: 'Roles & Results', image: careerImg },
   { id: 'projects', title: 'Work', icon: Layers, color: 'from-blue-600 to-indigo-700', desc: 'AI & Code Projects', image: workImg },
