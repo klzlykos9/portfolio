@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Cpu } from 'lucide-react';
+import { Cpu, Menu } from 'lucide-react';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -9,7 +9,14 @@ const Header: React.FC = () => {
 
   const navItems = [
     { name: 'HOME', path: '/' },
+    { name: 'ABOUT', path: '/about' },
+    { name: 'SKILLS', path: '/skills' },
+    { name: 'CERTS', path: '/certifications' },
+    { name: 'TRAINING', path: '/internships' },
+    { name: 'CAREER', path: '/experience' },
     { name: 'PROJECTS', path: '/projects' },
+    { name: 'BLOG', path: '/blog' },
+    { name: 'CONTACT', path: '/contact' },
   ];
 
   return (
@@ -31,12 +38,12 @@ const Header: React.FC = () => {
           </span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden xl:flex items-center gap-6">
           {navItems.map((item) => (
             <button
               key={item.name}
               onClick={() => navigate(item.path)}
-              className={`text-xs font-black tracking-[0.3em] transition-all hover:text-primary ${
+              className={`text-[10px] font-black tracking-[0.2em] transition-all hover:text-primary ${
                 location.pathname === item.path ? 'text-primary' : 'text-slate-400'
               }`}
             >
@@ -44,6 +51,11 @@ const Header: React.FC = () => {
             </button>
           ))}
         </nav>
+
+        {/* Mobile Menu Trigger */}
+        <button className="xl:hidden text-slate-400 hover:text-white transition-colors">
+          <Menu size={24} />
+        </button>
       </div>
     </motion.header>
   );

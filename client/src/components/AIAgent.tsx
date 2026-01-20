@@ -125,7 +125,7 @@ const AIAgent: React.FC = () => {
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
-            className="fixed bottom-28 right-8 w-[350px] h-[500px] z-50 flex flex-col bg-[#0f172a]/95 backdrop-blur-2xl border border-cyan-500/30 rounded-[2rem] shadow-[0_0_50px_rgba(34,211,238,0.25)] overflow-hidden"
+            className="fixed bottom-28 right-8 w-[300px] h-[450px] z-50 flex flex-col bg-[#0f172a]/95 backdrop-blur-2xl border border-cyan-500/30 rounded-[1.5rem] shadow-[0_0_50px_rgba(34,211,238,0.25)] overflow-hidden"
           >
             <div className="p-4 border-b border-cyan-500/20 flex items-center justify-between bg-cyan-500/5">
               <div className="flex items-center gap-3">
