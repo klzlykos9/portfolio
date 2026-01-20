@@ -32,7 +32,7 @@ const AIAgent: React.FC = () => {
       setTimeout(() => {
         addMessage({
           id: '1',
-          text: "I’m Nami — Arpan’s portfolio manager. I help visitors explore his work and connect with him. What's your name?",
+          text: "Hi, I am Nami — Arpan's portfolio manager 😊\nWould you like to share your name, or do you have any queries about Arpan?",
           sender: 'ai',
         });
         setLeadStep('name');
