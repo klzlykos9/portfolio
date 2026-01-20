@@ -66,7 +66,7 @@ const AIAgent: React.FC = () => {
 
       const match = qaData.find(qa => 
         userText.includes(qa.question.toLowerCase()) || 
-        qa.question.toLowerCase().split(' ').some(word => word.length > 3 && userText.includes(word))
+        qa.question.toLowerCase().split(' ').some((word: string) => word.length > 3 && userText.includes(word))
       );
 
       let reply = match ? match.answer : "I specialize in explaining Arpan's AI projects and strategy. Feel free to ask about his work or experience!";
