@@ -1,0 +1,97 @@
+You are a senior frontend UI/UX engineer and interaction designer.
+
+I want a modern, interactive preview panel below the hero section of my homepage that contains a **large preview image or card for each main section**. This is not just icon buttons — but visually rich preview cards with images or representative visuals of that section.
+
+----------------------------------------
+TASK — ADD PREVIEW NAV PANEL BELOW HERO
+----------------------------------------
+
+1. Create a **preview navigation panel** below the hero banner.
+2. Each item must be a **larger visual card** with:
+   • A preview image (e.g., screenshot or representative graphic)
+   • Section title
+   • Short caption (optional)
+   • Clickable area to scroll to section
+
+3. Include preview cards for:
+   • About
+   • Skills
+   • Certifications
+   • Internships
+   • Experience
+   • Projects
+   • Blog
+   • Contact
+
+----------------------------------------
+PREVIEW CARD DESIGN
+----------------------------------------
+
+4. Each card should:
+   • Be visually large and appealing
+   • Include an image or graphic preview
+   • Have a subtle shadow or border for depth
+   • Show title and short text overlay
+
+5. Visual effects:
+   • Fade-in on scroll
+   • Slide-in cascade layout (left→right or right→left)
+   • Slight hover scale + glow on desktop
+   • Horizontal swipe scroll on mobile
+
+----------------------------------------
+ANIMATIONS & EFFECTS
+----------------------------------------
+
+6. Use modern animation carefully:
+   • Slide-in on load
+   • Staggered fade effect
+   • Subtle motion without distraction
+
+7. Scroll behavior:
+   • Clicking a card scrolls smoothly to that section
+   • Use intersection observer or CSS scroll-behavior
+
+----------------------------------------
+RESPONSIVENESS & TYPOGRAPHY
+----------------------------------------
+
+8. Ensure fonts:
+   • Are readable across devices
+   • Avoid clipping or cropping of text
+   • Use responsive scale logic
+
+9. Images should:
+   • Resize responsively
+   • Maintain aspect ratio
+   • Not overflow container
+
+----------------------------------------
+LAYOUT & STRUCTURE
+----------------------------------------
+
+10. Ensure panel is:
+   • Centered on larger screens
+   • Scrollable horizontally on mobile
+   • Accessible with keyboard navigation
+
+----------------------------------------
+OUTPUT REQUIREMENTS
+----------------------------------------
+
+Provide:
+1. Updated homepage code with preview card panel
+2. CSS/JS animations
+3. Smooth scroll logic
+4. Responsiveness adjustments
+5. Confirmation that preview cards link to correct sections
+
+----------------------------------------
+FINAL GOAL
+----------------------------------------
+
+• A visually rich preview panel below hero
+• Each card shows an image & title
+• Smooth navigation to sections
+• Modern animated motion and swipe behavior
+• Clean, scalable fonts
