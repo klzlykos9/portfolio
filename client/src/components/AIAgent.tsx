@@ -39,7 +39,7 @@ const AIAgent: React.FC = () => {
     }
   }, []);
 
-  const addMessage = (msg: Message) => setMessages(prev => [msg]);
+  const addMessage = (msg: Message) => setMessages(prev => [...prev, msg]);
 
   const [qaData, setQaData] = useState<any[]>([]);
 
@@ -59,12 +59,19 @@ const AIAgent: React.FC = () => {
     if (!inputValue.trim()) return;
     const userText = inputValue.trim().toLowerCase();
     setInputValue('');
-    setMessages([{ id: Date.now().toString(), text: userText, sender: 'user' }]);
+    
+    // Add user message to history (only current session)
+    const userMsg: Message = { id: Date.now().toString(), text: userText, sender: 'user' };
+    setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
     setTimeout(() => {
       setIsTyping(false);
       
+      // Lead analysis
+      const leadKeywords = ['hire', 'collaborate', 'connect', 'contact', 'message', 'work with'];
+      const isLeadIntent = leadKeywords.some(k => userText.includes(k));
+
       // Instant replies using extracted dataset
       const match = qaData.find(qa => 
         userText.includes(qa.question.toLowerCase()) || 
@@ -73,13 +80,11 @@ const AIAgent: React.FC = () => {
 
       let reply = match ? match.answer : "I specialize in explaining Arpan's AI projects and strategy. Feel free to ask about his work or experience!";
 
-      // Lead analysis
-      const leadKeywords = ['hire', 'collaborate', 'connect', 'contact', 'message', 'work with'];
-      if (leadKeywords.some(k => userText.includes(k))) {
-        reply = "I'd love to help you connect with Arpan! Would you like to leave your name and email so he can get back to you?";
+      if (isLeadIntent) {
+        reply = "I'd love to help you connect with Arpan! Would you like to share your name and contact details so he can get back to you?";
       }
 
-      addMessage({ id: Date.now().toString(), text: reply, sender: 'ai' });
+      addMessage({ id: (Date.now() + 1).toString(), text: reply, sender: 'ai' });
     }, 600);
   };
 

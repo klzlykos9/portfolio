@@ -1,6 +1,10 @@
 {
-  "About": "AI Engineer and Business Strategist dedicated to architecting production-grade Generative AI systems that deliver tangible business value. Bridging the gap between complex AI research and practical, scalable industry solutions. Specializing in LangChain, LangGraph, and Neural Architectures.",
-  "Projects": [
+  "About": "I am an AI Engineer and Business Strategist dedicated to building real-world, production-grade Generative AI systems that deliver measurable business value. My work sits at the intersection of AI engineering, data science, decision intelligence, and strategic business design.",
+  "Philosophy": "I don’t just build models. I engineer intelligent systems with purpose. I think in systems, build with intent, and engineer for impact.",
+  "Vision": "Dedicated to building production-grade Generative AI systems that deliver tangible business value. Bridging the gap between complex AI research and practical, scalable industry solutions.",
+  "Core_Specialties": [
+    "LangChain", "LangGraph", "LangSmith", "MCP", "Neural Architectures", "n8n", "Argo Workflows", "FastAPI"
+  ],
     { "title": "Attendance Face Recognition System", "description": "Intelligent attendance management using computer vision.", "technologies": ["Python", "OpenCV", "Face Recognition", "SQLite", "Tkinter"] },
     { "title": "AI Research Tool", "description": "Intelligent research assistant using AI to analyze papers.", "technologies": ["Python", "LangChain", "OpenAI API", "Streamlit", "Vector Database"] },
     { "title": "Laptop Price Predictor", "description": "Machine learning model predicting prices based on specs.", "technologies": ["Python", "Scikit-learn", "Pandas", "Flask", "Random Forest"] },

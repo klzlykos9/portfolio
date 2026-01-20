@@ -1,12 +1,34 @@
 [
-  { "question": "Who is Arpan P. Nayak?", "answer": "Arpan is an AI Engineer and Business Strategist who bridges the gap between AI technology and business value." },
-  { "question": "What are your core skills?", "answer": "My core skills include Generative AI, LLMs, LangChain, Python, Computer Vision, and Business Strategy." },
-  { "question": "Tell me about your projects.", "answer": "I've built systems like Face Recognition Attendance, AI Research Tools, and Laptop Price Predictors." },
-  { "question": "What is Nami?", "answer": "I am Nami, Arpan's personal AI portfolio manager! I can help you learn about his work." },
-  { "question": "Do you have experience with LLMs?", "answer": "Yes, I specialize in LangChain and LangGraph for building production-grade LLM applications." },
-  { "question": "What did you study?", "answer": "I have an MBA in International Business and a B.Sc in Math Hons with Physics and Chemistry." },
-  { "question": "How can I contact Arpan?", "answer": "You can reach him at arpanpnayak@gmail.com or via LinkedIn at in/arpanpnayak." },
-  { "question": "Can you collaborate on a project?", "answer": "Arpan is always open to interesting collaborations! Would you like to leave your contact info?" },
-  { "question": "What is your philosophy on AI?", "answer": "I believe in building AI that is robust, scalable, and inherently aligned with strategic business goals." },
-  { "question": "Tell me about your blogs.", "answer": "Arpan writes about online marketing, online pharmacies, and technical AI workflows like LangGraph." }
+  {
+    "question": "Who is Arpan?",
+    "answer": "Arpan P. Nayak is an AI Engineer and Business Strategist focused on building production-grade Generative AI systems. He holds an MBA in International Business and specializes in frameworks like LangChain, LangGraph, and FastAPI."
+  },
+  {
+    "question": "What is his professional vision?",
+    "answer": "Arpan is dedicated to building real-world, production-grade Generative AI systems that deliver measurable business value. He works at the intersection of AI engineering, data science, and strategic business design."
+  },
+  {
+    "question": "What is his philosophy?",
+    "answer": "Arpan's philosophy is: 'I don’t just build models. I engineer intelligent systems with purpose. I think in systems, build with intent, and engineer for impact.'"
+  },
+  {
+    "question": "What are his core specialties?",
+    "answer": "He specializes in architecting intelligent systems using LangChain, LangGraph, LangSmith, MCP, neural architectures, n8n, Argo Workflows, and FastAPI."
+  },
+  {
+    "question": "What is his educational background?",
+    "answer": "Arpan holds an MBA in International Business (specialized as a Certified Python Business Analyst) and a Bachelor's degree in Science (Math Hons) with a Major in Physics and Minor in Chemistry."
+  },
+  {
+    "question": "What certifications does he have?",
+    "answer": "He is certified in Lean Six Sigma (Green and Black Belt), a Workshop on Export Import Procedures, and holds a PGDCA (Post Graduate Diploma in Computer Applications) from 2014, covering C#, Tally ERP, and Microsoft Office."
+  },
+  {
+    "question": "How can I contact him?",
+    "answer": "You can reach Arpan at arpanpnayak@gmail.com or connect with him on LinkedIn at linkedin.com/in/arpanpnayak."
+  },
+  {
+    "question": "Can I hire Arpan?",
+    "answer": "I'd love to help you connect with Arpan! Would you like to share your name and contact details so he can get back to you about potential collaboration?"
+  }
 ]

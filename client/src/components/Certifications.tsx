@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, ExternalLink, X, ShieldCheck, Cpu } from 'lucide-react';
+import { Award, ExternalLink, X, ShieldCheck, GraduationCap, BookOpen, Briefcase } from 'lucide-react';
 import lssgbImg from '@assets/Lean_six_sigma_green_belt_1768872542109.jpg';
 import lssbbImg from '@assets/Lean_six_sigma_black_belt_1768872548115.jpg';
 import cpbaImg from '@assets/certified_python_business_analyst_1768872554502.jpg';
@@ -16,6 +16,34 @@ interface Certification {
 
 const Certifications: React.FC = () => {
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
+
+  const degrees = [
+    {
+      title: "MBA in International Business",
+      institution: "Certified Python Business Analyst Path",
+      details: "Specialized in data-driven business strategy and predictive analytics. Successfully pivoted into AI/ML through rigorous technical coursework.",
+      icon: <GraduationCap className="text-cyan-400" />
+    },
+    {
+      title: "Bachelor's Degree in Science",
+      institution: "Math Honors",
+      details: "First Class Honors with a Major in Physics and Minor in Chemistry. Developed strong analytical and quantitative foundations.",
+      icon: <BookOpen className="text-cyan-400" />
+    }
+  ];
+
+  const extraCerts = [
+    {
+      title: "Export Import Procedures & Documentation",
+      institution: "Certified during MBA",
+      details: "Comprehensive workshop covering international trade logistics and documentation."
+    },
+    {
+      title: "PGDCA (Post Graduate Diploma in Computer Applications)",
+      institution: "2014",
+      details: "Professional diploma covering C#, Tally ERP, and Microsoft Office productivity suite."
+    }
+  ];
 
   const certs: Certification[] = [
     {
@@ -45,7 +73,7 @@ const Certifications: React.FC = () => {
   ];
 
   return (
-    <section id="certifications" className="w-full py-20 bg-slate-950 relative">
+    <section id="certifications" className="w-full py-20 bg-slate-950 relative overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-8">
         <div className="mb-16">
           <motion.h2 
@@ -59,49 +87,98 @@ const Certifications: React.FC = () => {
           <div className="w-20 h-1 bg-cyan-500 rounded-full" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {certs.map((cert, index) => (
+        {/* Degrees Section */}
+        <div className="mb-20 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {degrees.map((degree, index) => (
             <motion.div
-              key={cert.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              key={index}
+              initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -10 }}
-              onClick={() => setSelectedCert(cert)}
-              className="bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all cursor-pointer group"
+              className="bg-slate-900/40 p-8 rounded-3xl border border-white/5 hover:border-cyan-500/20 transition-all"
             >
-              <div className="aspect-video relative overflow-hidden">
-                <img 
-                  src={cert.image} 
-                  alt={cert.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <ExternalLink className="text-white" size={32} />
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-cyan-500/10 rounded-2xl">
+                  {degree.icon}
                 </div>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-2">
-                  <ShieldCheck size={14} /> {cert.year}
-                </div>
-                <h3 className="text-xl font-bold text-white mb-1">{cert.title}</h3>
-                <p className="text-gray-400 text-sm mb-4">{cert.authority}</p>
-                <div className="flex flex-wrap gap-2">
-                  {cert.skills.slice(0, 2).map((skill, i) => (
-                    <span key={i} className="px-2 py-1 bg-slate-800 rounded text-[10px] text-gray-400 uppercase tracking-wider">
-                      {skill}
-                    </span>
-                  ))}
-                  {cert.skills.length > 2 && (
-                    <span className="px-2 py-1 bg-slate-800 rounded text-[10px] text-gray-400">
-                      +{cert.skills.length - 2} more
-                    </span>
-                  )}
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1">{degree.title}</h3>
+                  <p className="text-cyan-400 font-medium text-sm mb-4">{degree.institution}</p>
+                  <p className="text-gray-400 leading-relaxed">{degree.details}</p>
                 </div>
               </div>
             </motion.div>
           ))}
+        </div>
+
+        {/* Certifications Grid */}
+        <div className="mb-20">
+          <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+            <ShieldCheck className="text-cyan-400" />
+            Professional Certifications
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {certs.map((cert, index) => (
+              <motion.div
+                key={cert.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -10 }}
+                onClick={() => setSelectedCert(cert)}
+                className="bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all cursor-pointer group"
+              >
+                <div className="aspect-video relative overflow-hidden">
+                  <img 
+                    src={cert.image} 
+                    alt={cert.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <ExternalLink className="text-white" size={32} />
+                  </div>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-2">
+                    <ShieldCheck size={14} /> {cert.year}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-1">{cert.title}</h3>
+                  <p className="text-gray-400 text-sm mb-4">{cert.authority}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {cert.skills.slice(0, 2).map((skill, i) => (
+                      <span key={i} className="px-2 py-1 bg-slate-800 rounded text-[10px] text-gray-400 uppercase tracking-wider">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Extra Courses Section */}
+        <div>
+          <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+            <Briefcase className="text-cyan-400" />
+            Additional Qualifications
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {extraCerts.map((cert, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-slate-900/30 p-6 rounded-2xl border border-white/5"
+              >
+                <h4 className="text-lg font-bold text-white mb-1">{cert.title}</h4>
+                <p className="text-cyan-500/80 text-sm mb-2">{cert.institution}</p>
+                <p className="text-gray-400 text-sm leading-relaxed">{cert.details}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 

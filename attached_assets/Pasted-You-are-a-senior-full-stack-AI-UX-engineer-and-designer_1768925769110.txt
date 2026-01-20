@@ -1,0 +1,121 @@
+You are a senior full-stack AI/UX engineer and designer.
+
+I have uploaded my portfolio project folder. I need you to update it with full content edits, UI improvements, responsive design adjustments, and AI agent behavior fixes according to my requirements.
+
+----------------------------------------
+TASK 1 — UPDATE ABOUT SECTION
+----------------------------------------
+
+Replace the existing About section with the following professionally written version:
+
+Professional Vision:
+I am an AI Engineer and Business Strategist dedicated to building real-world, production-grade Generative AI systems that deliver measurable business value. My work sits at the intersection of AI engineering, data science, decision intelligence, and strategic business design.
+
+With a solid foundation in business strategy (MBA) and process optimization (Lean Six Sigma), I engineer AI solutions that are not only technically excellent but also aligned with business strategy and scalable in production.
+
+I specialize in architecting intelligent systems using frameworks and tools such as LangChain, LangGraph, LangSmith, MCP, neural architectures, n8n, Argo Workflows, and FastAPI. My projects include building AI agents, automated pipelines, RAG workflows, and scalable AI orchestration systems.
+
+My Philosophy:
+“I don’t just build models. I engineer intelligent systems with purpose. I think in systems, build with intent, and engineer for impact.”
+
+Career Summary:
+I have hands-on experience building and deploying advanced AI products with real business focus:
+• Generative AI & LLM applications
+• Intelligent agent systems using LangChain, MCP, LangSmith
+• Data analysis pipelines and automation with n8n and Argo
+• Backend integrations using FastAPI
+• Scalable AI system design and orchestration
+
+Ensure this new About section is formatted correctly and visually aligned with the site’s design.
+
+----------------------------------------
+TASK 2 — RESTRUCTURE CERTIFICATIONS & EDUCATION
+----------------------------------------
+
+Remove the *Learning Path* content from the About section.
+
+Add the following information to the **Certifications & Education** section:
+
+Degrees:
+• MBA in International Business (with specialization as Certified Python Business Analyst) — include details professionally written.
+• Bachelor’s degree — include details professionally written.
+
+Workshop / Certifications:
+• Workshop on Export Import Procedures and Documentation (Certified during MBA)
+• Lean Six Sigma Certification
+• PGDCA (Post Graduate Diploma in Computer Applications, 2014) — include that this covered C#, Tally ERP, Microsoft Office.
+
+Organize these cleanly under Education and Extra Courses/Certifications with consistent formatting.
+
+----------------------------------------
+TASK 3 — UI / DESIGN / RESPONSIVENESS IMPROVEMENTS
+----------------------------------------
+
+1) Improve homepage and section responsiveness for:
+   • Desktop
+   • Laptop
+   • Tablet
+   • Mobile
+
+2) Fix zoom/overflow issues so text does not get clipped:
+   • Adjust viewport settings
+   • Slightly reduce homepage hero font
+   • Ensure all headings and content always fully visible without manual zoom
+
+3) Add smooth scroll functionality:
+   • Add scroll navigation buttons where needed
+   • Smooth scrolling between sections
+
+4) Add more sliding animation effects:
+   • Slide-in headers
+   • Fade-in sections
+   • Modern motion patterns without being distracting
+
+Ensure the design feels modern, advanced, and consistent.
+
+----------------------------------------
+TASK 4 — AI AGENT (NAMI) BEHAVIOR & INTEGRATION
+----------------------------------------
+
+Update Nami so she:
+• Responds with contextually accurate answers
+• Uses portfolio content directly for instant replies
+• Does NOT ask for name/contact unless the visitor explicitly wants to collaborate, hire, or connect
+• Greets with:
+   “Hi, I am Nami — Arpan’s portfolio manager 😊  
+   Would you like to share your name, or do you have any queries about Arpan?”
+
+Ensure:
+• Nami does NOT remember any user data long-term
+• She only processes the current question
+• She answers using the portfolio content and the updated About section
+
+----------------------------------------
+PERFORMANCE RULES
+----------------------------------------
+
+• No memory persistence
+• No history or database storage
+• Stateless inference
+• Only last user question processed
+
+----------------------------------------
+OUTPUT REQUIREMENTS
+----------------------------------------
+
+1) Updated About section code
+2) Updated Certifications & Education section
+3) UI changes (CSS, animations, scroll)
+4) AI agent behavior code and config
+5) Confirmation that Nami responds correctly and contextually
+6) Confirmation that layout and responsiveness are fixed
+
+----------------------------------------
+FINAL GOAL
+----------------------------------------
+
+• A modern, responsive portfolio
+• A polished About with Professional Vision, Philosophy, Career Summary
+• Clean Certifications & Education
+• Smooth UI effects without cropping issues
+• Nami that truly answers portfolio questions
