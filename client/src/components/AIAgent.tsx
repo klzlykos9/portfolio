@@ -89,24 +89,31 @@ const AIAgent: React.FC = () => {
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="relative group">
-          <div className="absolute -inset-1 bg-primary rounded-full opacity-25 group-hover:opacity-50 blur transition duration-1000 group-hover:duration-200"></div>
-          <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-white border border-primary/20 shadow-xl overflow-hidden">
+          <div className="absolute -inset-1 bg-cyan-400 rounded-full opacity-30 group-hover:opacity-60 blur-md transition duration-1000 group-hover:duration-200"></div>
+          <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-slate-900 border border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.4)] overflow-hidden">
             <motion.div
-              animate={{ opacity: [0.1, 0.3, 0.1] }}
+              animate={{ opacity: [0.1, 0.4, 0.1] }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"
+              className="absolute inset-0 bg-gradient-to-t from-cyan-500/30 via-transparent to-cyan-500/10"
             />
             <div className="relative z-10 flex flex-col items-center">
-               <div className="w-8 h-8 rounded-full border-2 border-primary/50 flex items-center justify-center">
-                 <div className="w-1 h-1 bg-primary rounded-full mx-1 shadow-[0_0_5px_theme(colors.primary.DEFAULT)]" />
-                 <div className="w-1 h-1 bg-primary rounded-full mx-1 shadow-[0_0_5px_theme(colors.primary.DEFAULT)]" />
+               <div className="w-8 h-8 rounded-full border-2 border-cyan-400/60 flex items-center justify-center">
+                 <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full mx-1 shadow-[0_0_8px_rgba(103,232,249,0.8)]" />
+                 <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full mx-1 shadow-[0_0_8px_rgba(103,232,249,0.8)]" />
                </div>
-               <div className="w-4 h-1 border-b-2 border-primary/50 rounded-full mt-1" />
+               <div className="w-4 h-1 border-b-2 border-cyan-400/60 rounded-full mt-1 shadow-[0_1px_5px_rgba(34,211,238,0.5)]" />
             </div>
+            {/* Holographic scanning line */}
             <motion.div 
-              className="absolute bottom-0 w-full h-1 bg-primary/40"
-              animate={{ y: [-16, 16] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="absolute top-0 w-full h-px bg-cyan-300/60 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+              animate={{ top: ['0%', '100%'] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+            />
+            {/* Holographic flicker effect */}
+            <motion.div 
+              className="absolute inset-0 bg-cyan-400/5"
+              animate={{ opacity: [0, 0.1, 0] }}
+              transition={{ duration: 0.1, repeat: Infinity, repeatDelay: 1.5 }}
             />
           </div>
         </div>
@@ -118,54 +125,65 @@ const AIAgent: React.FC = () => {
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
-            className="fixed bottom-28 right-8 w-[350px] h-[500px] z-50 flex flex-col bg-[#0f172a]/90 backdrop-blur-xl border border-primary/30 rounded-[2rem] shadow-[0_0_50px_rgba(6,182,212,0.2)] overflow-hidden"
+            className="fixed bottom-28 right-8 w-[350px] h-[500px] z-50 flex flex-col bg-[#0f172a]/95 backdrop-blur-2xl border border-cyan-500/30 rounded-[2rem] shadow-[0_0_50px_rgba(34,211,238,0.25)] overflow-hidden"
           >
-            <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
+            <div className="p-4 border-b border-cyan-500/20 flex items-center justify-between bg-cyan-500/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.3)]">
-                  <Cpu className="text-primary" size={20} />
+                <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.4)]">
+                  <Cpu className="text-cyan-400" size={20} />
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-sm">Nami</h3>
-                  <p className="text-[10px] text-primary uppercase tracking-widest font-black">Neural Link Active</p>
+                  <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
+                    Neural Link Active
+                  </p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+              <button onClick={() => setIsOpen(false)} className="text-cyan-400/60 hover:text-cyan-400 transition-colors">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/40 relative">
+              {/* Holographic Grid Background Overlay */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.03]" 
+                   style={{backgroundImage: 'radial-gradient(circle, #22d3ee 1px, transparent 1px)', backgroundSize: '20px 20px'}} />
+              
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg ${msg.sender === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-slate-800/80 text-slate-200 border border-white/5 rounded-tl-none'}`}>
+                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg backdrop-blur-sm ${
+                    msg.sender === 'user' 
+                      ? 'bg-cyan-600/80 text-white rounded-tr-none border border-cyan-400/30' 
+                      : 'bg-slate-800/60 text-cyan-50 border border-cyan-500/20 rounded-tl-none shadow-[inset_0_0_10px_rgba(34,211,238,0.05)]'
+                  }`}>
                     {msg.text}
                   </div>
                 </div>
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-800/80 border border-white/5 p-4 rounded-2xl rounded-tl-none flex gap-1 shadow-lg">
-                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
-                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                  <div className="bg-slate-800/60 border border-cyan-500/20 p-4 rounded-2xl rounded-tl-none flex gap-1 shadow-lg">
+                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce"></span>
+                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
                   </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 bg-[#0f172a] border-t border-white/5">
+            <div className="p-4 bg-slate-950/80 border-t border-cyan-500/20">
               <div className="relative">
                 <input
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Transmit message..."
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  placeholder="Transmit neural command..."
+                  className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-full py-3 px-5 pr-12 text-sm text-cyan-50 placeholder-cyan-900 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-[inset_0_0_10px_rgba(34,211,238,0.05)]"
                 />
-                <button onClick={handleSend} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:scale-110 transition-transform">
+                <button onClick={handleSend} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-cyan-400 hover:text-cyan-300 hover:scale-110 transition-all">
                   <Send size={18} />
                 </button>
               </div>
