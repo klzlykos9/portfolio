@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+sentence-transformers
+faiss-cpu
+ctransformers
+huggingface_hub
+python-multipart

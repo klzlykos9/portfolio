@@ -1,0 +1,106 @@
+You are a senior frontend engineer and UI architect.
+
+I want the following precise updates applied to my portfolio website.
+
+Strict Rules:
+- Do NOT change branding, theme, colors, fonts, or layout style
+- Do NOT remove any content unless explicitly instructed
+- Do NOT modify personal data except where mentioned
+- Ensure perfect mobile responsiveness
+- Maintain clean, professional recruiter-grade design
+
+------------------------------------
+PART 1 — EDUCATION SECTION UPDATE
+------------------------------------
+
+1) Remove graduation year / timeline from:
+   - Bachelor Degree
+   - Master Degree
+
+2) In Bachelor Degree:
+   - Remove "Utkal University" text only
+
+3) In Master Degree:
+   - Add a new capstone project:
+
+     Title:
+     A STUDY ON CONSUMER INTENTION TO ADOPT  
+     ONLINE PHARMACIES AS AN ALTERNATIVE TO OFFLINE STORES
+
+   - Display it under Master Degree capstone projects
+   - Use the same design format as existing capstone projects
+
+------------------------------------
+PART 2 — SOCIAL LINKS REDIRECTION
+------------------------------------
+
+Ensure all icons and clickable logos redirect correctly:
+
+GitHub logo →  
+https://github.com/arpanpnayak
+
+LinkedIn logo →  
+https://www.linkedin.com/in/arpanpnayak
+
+Mail icon →  
+mailto:arpanpnayak@gmail.com
+
+Ensure:
+- All header, footer, hero, and contact section icons use these links
+- No broken or duplicate redirects
+
+------------------------------------
+PART 3 — MOBILE RESPONSIVENESS FIX
+------------------------------------
+
+Make sure the entire website is perfectly responsive:
+
+- Proper font scaling for mobile
+- No text overflow
+- No horizontal scrolling
+- Proper spacing on small screens
+- Cards stack correctly
+- Navigation works smoothly
+- Buttons remain tappable
+- Sections resize cleanly
+
+Test for:
+- 320px
+- 375px
+- 425px
+- 768px
+- 1024px
+
+------------------------------------
+PART 4 — BLOG / CAPSTONE PROJECTS SECTION
+------------------------------------
+
+I have uploaded two capstone project documents.
+
+Add them into the Blog / Case Study section with:
+
+- Professional project logos
+- Clean cover cards
+- Title
+- Short summary
+- "Read More" button
+- Full-page readable view
+- PDF / document viewer or formatted article layout
+
+Design:
+- Grid layout
+- Hover animation
+- Click to open full project
+- Reading-friendly typography
+
+------------------------------------
+DELIVERABLES
+------------------------------------
+
+1) Updated Education section
+2) Corrected social redirects
+3) Fully responsive mobile layout
+4) Blog section with capstone projects
+5) View & read format for projects
+
+Return only changed files and implementation notes.

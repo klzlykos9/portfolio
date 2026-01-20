@@ -1,0 +1,183 @@
+You are a senior full-stack frontend engineer and AI architect.
+
+I want you to restructure my portfolio website professionally and improve my AI assistant training.
+
+Strict Rules:
+- Do NOT change any existing text content meaning
+- Do NOT remove any personal data
+- Do NOT change branding, colors, fonts, or layout theme
+- Only reorganize sections and improve presentation & interaction
+- Make everything clean, modern, and recruiter-grade
+
+------------------------------------
+PART 1 — ABOUT SECTION RESTRUCTURE
+------------------------------------
+
+In the About section:
+- Remove the skills listed there
+- Move those skills into the dedicated Skills section
+- Make the Skills section interactive:
+  - Skill cards
+  - Hover animations
+  - Icons
+  - Categorization (Tech, Business, Analytics, Operations, AI, etc.)
+
+In the About section:
+- Create a new "Education & Certifications Path" timeline
+- Add a professional learning journey layout
+
+------------------------------------
+PART 2 — EDUCATION & CERTIFICATIONS SECTION
+------------------------------------
+
+Create a dedicated section:
+
+Title: Education & Certifications
+
+Organize and display certificate images for:
+- Lean Six Sigma Green Belt
+- Lean Six Sigma Black Belt
+- Certified Python Business Analyst
+
+Design:
+- Grid layout with certificate previews
+- Click to enlarge modal
+- Clean professional labels
+- Certification authority names
+- Completion year
+- Skills gained
+
+------------------------------------
+PART 3 — INTERNSHIP & TRAINING SECTION
+------------------------------------
+
+Create a new section:
+
+Title: Internship & Professional Training
+
+Add internship certificates:
+- Lean Six Sigma Green Belt Internship
+- Lean Six Sigma Black Belt Internship
+
+Design:
+- Timeline or card-based layout
+- Certificate previews
+- Organization name
+- Duration
+- Role
+- Key learning outcomes
+
+------------------------------------
+PART 4 — JOB EXPERIENCE SECTION RESTRUCTURE
+------------------------------------
+
+Redesign Job Experience section in a modern professional format.
+
+Add these roles:
+
+Sales Team Lead  
+THE INSPiREEZ IT SOLUTION — Full-time  
+Apr 2015 – Sep 2017 | Bhubaneswar, India  
+
+Responsibilities:
+- Managed international sales call center operations
+- Handled VoIP sales campaigns
+- Delegated tasks and monitored KPIs
+- Managed client communications
+- Led service and remote technical cleanup operations
+
+Customer Service Representative  
+Shinux.com — Full-time  
+May 2014 – Mar 2015 | Bhubaneswar, India  
+
+Responsibilities:
+- Sales process trainee
+- Client handling
+- Service support
+- Lead qualification
+
+Accountant  
+SACHIN ENTERPRISES — Full-time  
+Jan 2014 – Apr 2014 | Bhubaneswar, India  
+
+Responsibilities:
+- Tally ERP accounting
+- Financial records management
+- Billing and reconciliation
+
+Design:
+- Timeline or card layout
+- Company logos (if available)
+- Clear role hierarchy
+- Bullet-point achievements
+- Professional typography
+
+------------------------------------
+PART 5 — AI MODEL TRAINING (Nami Upgrade)
+------------------------------------
+
+Retrain Nami AI assistant using full portfolio data including:
+- About section
+- Skills section
+- All projects
+- Education
+- Certifications
+- Internships
+- Job experience
+- Technical stack
+- Business background
+
+Training Method:
+- Retrieval-Augmented Generation (RAG)
+- Portfolio content → embeddings → vector DB
+- No fine-tuning
+- Retrieval only
+
+AI Rules:
+- Answer only from portfolio data
+- No hallucination
+- If info missing say: "That information is not available yet."
+- Support English and Hindi
+- Professional + friendly + witty
+- Recruiter-grade responses
+
+------------------------------------
+PART 6 — AI CONVERSATION FIX
+------------------------------------
+
+Fix AI greeting logic:
+- AI must greet only ONCE per session
+- Do not repeat greeting again
+- Continue conversation naturally
+
+------------------------------------
+PART 7 — AI IDENTITY
+------------------------------------
+
+AI Name: Nami  
+Role: Arpan's personal AI portfolio assistant  
+Appearance: Modern hologram assistant  
+Tone: Professional, confident, friendly, witty  
+
+Conversation Flow:
+1. Greet visitor once
+2. Ask visitor name
+3. Ask what they want to know about Arpan
+4. Guide them through portfolio
+
+Greeting:
+"Hello human 👋 I'm Nami — Arpan's personal AI guide. What's your name?"
+
+------------------------------------
+DELIVERABLES
+------------------------------------
+
+1) Reorganized About section  
+2) Interactive Skills section  
+3) Education & Certifications section  
+4) Internship & Training section  
+5) Redesigned Job Experience section  
+6) Retrained AI assistant (Nami)  
+7) Fixed double greeting bug  
+
+Return only changed files and implementation details.

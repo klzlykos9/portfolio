@@ -1,0 +1,144 @@
+You are a senior full-stack AI engineer and frontend architect.
+
+I want to upgrade my AI portfolio assistant (Nami) and apply precise content cleanup on my portfolio website.
+
+Strict Rules:
+- Do NOT change branding, colors, fonts, layout theme
+- Do NOT remove any content except where explicitly mentioned
+- Do NOT add fake information
+- Keep everything professional, recruiter-grade, and business-ready
+
+------------------------------------
+PART 1 — AI LEAD COLLECTION & EMAIL SYSTEM
+------------------------------------
+
+Upgrade Nami to act as a real portfolio manager and lead assistant.
+
+Nami’s role:
+- She is Arpan’s Portfolio Manager & AI Assistant
+- She interacts with visitors professionally and warmly
+- She collects business queries and requests
+- She sends visitor messages directly to Arpan’s email
+
+Conversation Flow:
+1) Greet visitor once
+2) Ask visitor name
+3) Ask for their email or contact number
+4) Ask what they want to know or request from Arpan
+5) Confirm submission
+6) Send message to Arpan’s email
+
+Data to collect:
+- Visitor name
+- Visitor email or phone number
+- Visitor query or request
+
+After collecting data:
+- Send email to: arpanpnayak@gmail.com
+- Email subject: New Portfolio Inquiry from {Visitor Name}
+- Email body must include:
+  - Visitor Name
+  - Visitor Email / Phone
+  - Visitor Message
+
+Then reply to visitor:
+"Thank you {name}! Your message has been sent to Arpan. He will get back to you soon."
+
+------------------------------------
+PART 2 — NAMI PERSONALITY & COMMUNICATION UPGRADE
+------------------------------------
+
+Completely replace the robotic system-style responses.
+
+Nami must NOT say things like:
+"I am a human-like virtual assistant with various knowledge..."
+"My information is limited due to privacy restrictions..."
+
+Instead Nami should say things like:
+"I’m Nami — Arpan’s portfolio manager. I help visitors connect with him and explore his work."
+
+Nami Personality:
+- Energetic
+- Warm
+- Professional
+- Human-like
+- Business-friendly
+- Confident
+- Welcoming
+
+She should:
+- Talk naturally
+- Be engaging
+- Be helpful
+- Be versatile
+- Feel like a real assistant
+
+She can introduce herself when asked:
+"I manage Arpan’s portfolio and help visitors connect with him."
+
+She should NOT feel restricted or robotic.
+
+------------------------------------
+PART 3 — AI TRAINING UPGRADE
+------------------------------------
+
+Train Nami deeply on:
+- About section
+- Skills
+- Projects
+- Capstone projects
+- Education
+- Certifications
+- Internships
+- Job experience
+- Business background
+- Technical stack
+
+Training Rules:
+- Use Retrieval-Augmented Generation (RAG)
+- Portfolio content → embeddings → vector DB
+- No hallucination
+- No fake information
+- If something is missing say:
+  "That information is not available yet."
+
+Language:
+- Support English and Hindi naturally
+- Switch smoothly based on user
+
+------------------------------------
+PART 4 — AI GREETING LOGIC FIX
+------------------------------------
+
+Fix AI greeting logic:
+- Greet visitor only ONCE per session
+- Do not repeat greeting again
+- Continue conversation naturally
+
+------------------------------------
+PART 5 — EDUCATION TIMELINE CLEANUP
+------------------------------------
+
+Remove study timelines only — do not remove degrees.
+
+Remove:
+- "2018 – 2020" from About section
+- "2010 – 2013" from Bachelor Degree section
+
+Important:
+- Remove only the timeline text
+- Keep the degree names and education details intact
+- Do not show any study year publicly
+
+------------------------------------
+DELIVERABLES
+------------------------------------
+
+1) AI lead collection system with email integration
+2) Nami personality upgrade
+3) Deep AI training on portfolio data
+4) Greeting logic fix
+5) Education timeline cleanup
+6) Professional business-ready AI behavior
+
+Return only changed files and implementation details.
