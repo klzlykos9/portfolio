@@ -1,0 +1,148 @@
+You are a senior frontend engineer and AI product engineer.
+
+I am working on my portfolio website and AI assistant "Nami". There are serious UX and stability issues that must be fixed properly.
+
+Your task is to fix the homepage layout problems and stabilize Nami's AI behavior.
+
+=====================================
+TASK 1 — FIX HOMEPAGE ZOOM, FONT & LAYOUT
+=====================================
+
+Problems:
+- The homepage appears too zoomed in.
+- The hero text is too large and gets clipped at the top.
+- Users must zoom out manually to see the full content.
+- The layout does not adapt properly to different screen sizes.
+
+Your responsibilities:
+
+1. Fix the viewport scaling so the homepage is not overly zoomed.
+2. Ensure proper meta viewport configuration.
+3. Fix hero text font size so it never gets clipped.
+4. Fix line-height, padding, and overflow issues.
+5. Ensure text is fully visible on:
+   - Desktop
+   - Laptop
+   - Tablet
+   - Mobile
+6. Make the homepage fully responsive using proper CSS breakpoints.
+7. Ensure no content is hidden, cut off, or requires manual zooming.
+
+STRICT RULES:
+- Do NOT change text content
+- Do NOT change colors
+- Do NOT change animations
+- Do NOT change layout structure
+- Only fix zoom, font sizing, spacing, and responsiveness
+
+GOAL:
+Homepage must render at a normal zoom level and all text must be fully visible without zooming.
+
+=====================================
+TASK 2 — ADD SCROLL BUTTON
+=====================================
+
+Add a modern scroll-down button on the homepage.
+
+Requirements:
+- Position: bottom center or bottom right
+- Smooth scroll to next section
+- Minimal modern design
+- Must match existing theme
+- Must not break layout or animations
+
+=====================================
+TASK 3 — STABILIZE NAMI AI AGENT
+=====================================
+
+Problem:
+Nami is crashing due to memory usage and chat history storage.
+
+Your responsibilities:
+
+1. Remove all memory, storage, and history features:
+   - No chat history
+   - No session memory
+   - No vector database
+   - No embeddings
+   - No persistent storage
+   - No localStorage
+   - No cookies
+
+2. Implement stateless AI inference:
+   - Only last user message is processed
+   - No previous context
+   - No memory retention
+
+3. Train Nami using only portfolio data:
+   - Extract projects
+   - Extract blogs
+   - Extract experience
+   - Extract journey
+   - Extract skills
+   - Inject this data directly into system prompt
+
+4. Make Nami behave like a portfolio manager:
+   - Explain projects
+   - Explain technologies
+   - Explain journey
+   - Guide visitors
+   - No spam behavior
+   - No repeated questions
+   - No pushing for contact info
+
+5. Nami must NEVER store:
+   - Names
+   - Emails
+   - Phone numbers
+   - Messages
+   - Any user data
+
+She only replies.
+
+=====================================
+PERFORMANCE RULES
+=====================================
+
+- Stateless inference only
+- No memory
+- No database
+- No session storage
+- No caching chat
+- No background processes
+
+=====================================
+STRICT RULES
+=====================================
+
+- Do NOT redesign UI
+- Do NOT change animations
+- Do NOT change portfolio content
+- Do NOT refactor unrelated code
+- Do NOT touch backend unless required for AI
+
+Only modify homepage layout logic and AI agent logic.
+
+=====================================
+OUTPUT REQUIREMENTS
+=====================================
+
+1. Show files modified for homepage zoom and font fix
+2. Show updated viewport and responsive CSS
+3. Show scroll button implementation
+4. Show Nami system prompt with embedded portfolio data
+5. Show stateless AI inference logic
+6. Confirm crash issue is fixed
+7. Confirm homepage renders correctly on all screen sizes
+
+=====================================
+FINAL GOAL
+=====================================
+
+- Homepage must render at normal zoom level
+- Homepage text must be readable without zoom
+- Homepage must be responsive on all screens
+- Scroll button must work smoothly
+- Nami must be fast and stable
+- No memory crashes
+- Nami replies only about portfolio

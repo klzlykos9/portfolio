@@ -27,127 +27,71 @@ const AIAgent: React.FC = () => {
   const [leadData, setLeadData] = useState({ name: '', contact: '', query: '' });
 
   useEffect(() => {
-    const hasGreeted = sessionStorage.getItem('nami_greeted');
-    if (!hasGreeted && messages.length === 0) {
+    // No greeting lead collection, purely stateless
+    if (messages.length === 0) {
       setTimeout(() => {
         addMessage({
           id: '1',
-          text: "Hi, I am Nami — Arpan's portfolio manager 😊\nWould you like to share your name, or do you have any queries about Arpan?",
+          text: "Hi, I am Nami — Arpan's portfolio manager 😊 How can I help you explore Arpan's projects or journey?",
           sender: 'ai',
         });
-        setLeadStep('name');
-        sessionStorage.setItem('nami_greeted', 'true');
       }, 1500);
     }
   }, []);
 
-  const addMessage = (msg: Message) => setMessages(prev => [...prev, msg]);
+  const addMessage = (msg: Message) => setMessages(prev => [msg]); // Keep only last message for stateless feel
 
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const workerRef = useRef<Worker | null>(null);
+  const [portfolioData, setPortfolioData] = useState<string>('');
 
   useEffect(() => {
-    // Initialize Web Worker
-    workerRef.current = new Worker(new URL('../lib/ai-worker.ts', import.meta.url), {
-      type: 'module'
-    });
-
-    workerRef.current.onmessage = (e) => {
-      const { type, text, data, error } = e.data;
-      
-      if (type === 'progress') {
-        if (data.status === 'progress') {
-           // Track model loading progress
-           setLoadingProgress(Math.round(data.progress || 0));
-           setIsModelLoading(true);
-        } else if (data.status === 'done') {
-           setIsModelLoading(false);
-        }
-      } else if (type === 'complete') {
-        setIsTyping(false);
-        addMessage({ id: Date.now().toString(), text: text, sender: 'ai' });
-      } else if (type === 'error') {
-        setIsTyping(false);
-        console.error("AI Error:", error);
-        addMessage({ id: 'err', text: "I'm having trouble thinking right now. Please try again.", sender: 'ai' });
+    // Fetch data for system prompt
+    const loadPortfolioData = async () => {
+      try {
+        const { projects } = await import('../data/projects');
+        const { blogs } = await import('../data/blogs');
+        
+        const dataStr = `
+          ARPAN P. NAYAK PORTFOLIO DATA:
+          
+          PROJECTS:
+          ${projects.map(p => `- ${p.title}: ${p.description}. Tech: ${p.tech.join(', ')}`).join('\n')}
+          
+          BLOGS:
+          ${blogs.map(b => `- ${b.title}: ${b.excerpt}`).join('\n')}
+          
+          EXPERIENCE/JOURNEY:
+          Arpan is an AI Engineer & Strategist specializing in production-grade Generative AI, LangChain, and intelligent automation.
+          
+          SKILLS:
+          Generative AI, LLMs, LangChain, Python, Computer Vision, Machine Learning, React, TypeScript.
+        `;
+        setPortfolioData(dataStr);
+      } catch (err) {
+        console.error("Failed to load portfolio data", err);
       }
     };
-
-    return () => {
-      workerRef.current?.terminate();
-    };
+    loadPortfolioData();
   }, []);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
     const userText = inputValue.trim();
     setInputValue('');
-    addMessage({ id: Date.now().toString(), text: userText, sender: 'user' });
+    setMessages([{ id: Date.now().toString(), text: userText, sender: 'user' }]);
     setIsTyping(true);
 
-    if (leadStep === 'name') {
-      setLeadData(prev => ({ ...prev, name: userText }));
-      setUserName(userText);
-      setTimeout(() => {
-        setIsTyping(false);
-        addMessage({
-          id: Date.now().toString(),
-          text: `Nice to meet you, ${userText}! Could you please share your email or contact number so Arpan can get back to you?`,
-          sender: 'ai',
-        });
-        setLeadStep('contact');
-      }, 1000);
-      return;
-    }
-
-    if (leadStep === 'contact') {
-      setLeadData(prev => ({ ...prev, contact: userText }));
-      setTimeout(() => {
-        setIsTyping(false);
-        addMessage({
-          id: Date.now().toString(),
-          text: `Great! What would you like to know or request from Arpan?`,
-          sender: 'ai',
-        });
-        setLeadStep('query');
-      }, 1000);
-      return;
-    }
-
-    if (leadStep === 'query') {
-      const finalData = { ...leadData, query: userText };
-      setLeadData(finalData);
-      
-      // Send email logic (mailto or API)
-      const subject = encodeURIComponent(`New Portfolio Inquiry from ${finalData.name}`);
-      const body = encodeURIComponent(`Visitor Name: ${finalData.name}\nVisitor Email/Phone: ${finalData.contact}\nVisitor Message: ${finalData.query}`);
-      window.location.href = `mailto:arpanpnayak@gmail.com?subject=${subject}&body=${body}`;
-
-      setTimeout(() => {
-        setIsTyping(false);
-        addMessage({
-          id: Date.now().toString(),
-          text: `Thank you ${finalData.name}! Your message has been sent to Arpan. He will get back to you soon.`,
-          sender: 'ai',
-        });
-        setLeadStep('submitted');
-      }, 1000);
-      return;
-    }
-
-    // Send to Worker
+    // Send to Worker with portfolio data as system prompt
     if (workerRef.current) {
-        // We construct a simplified history for the worker if needed, but for now just sending text
-        // Ideally we pass context
         workerRef.current.postMessage({ 
             type: 'generate', 
-            text: userText,
-            userName: userName 
-            // messages: messages // Could pass history here
+            text: `System: You are Nami, Arpan P. Nayak's portfolio manager. Use this data to answer: ${portfolioData}\n\nUser: ${userText}`,
+            userName: null
         });
     }
   };
+
 
   return (
     <>
