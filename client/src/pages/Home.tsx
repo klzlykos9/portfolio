@@ -37,7 +37,7 @@ const Home: React.FC = () => {
             transition={{ delay: 0.4, duration: 1 }}
             className="text-5xl sm:text-7xl lg:text-9xl font-black text-white leading-none tracking-tighter"
           >
-            ARPAN P. <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-400 to-indigo-500 animate-gradient-x">NAYAK</span>
+            ARPAN P. <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-400 to-indigo-500 animate-gradient-x">NAYAK</span>
           </motion.h1>
 
           <motion.p
