@@ -136,7 +136,7 @@ const AIAgent: React.FC = () => {
                   <h3 className="font-bold text-white text-sm">Nami</h3>
                   <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
-                    Neural Link Active
+                    ARPAN'S PORTFOLIO MANAGER
                   </p>
                 </div>
               </div>
