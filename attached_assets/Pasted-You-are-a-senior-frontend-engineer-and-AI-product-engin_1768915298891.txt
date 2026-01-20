@@ -1,0 +1,164 @@
+You are a senior frontend engineer and AI product engineer.
+
+I have uploaded the entire project folder of my portfolio website.
+
+Your mission has multiple parts:
+
+========================================
+PART A — EXTRACT CONTENT & GENERATE KNOWLEDGE BASE
+========================================
+
+1. Traverse the whole project directory and extract all *user-visible text*:
+   - All section titles (e.g., About, Projects, Skills, Journey, Contact)
+   - Project names and descriptions
+   - Blog titles/summaries (if any)
+   - Experience, timeline, roles
+   - Any visible text content rendered in the site
+
+2. Produce a structured JSON object with the extracted text, like:
+{
+  "About": "...",
+  "Projects": [
+    { "title": "...", "description": "...", "technologies": [...] }, ...
+  ],
+  "Blogs": [
+    { "title": "...", "summary": "..." }, ...
+  ],
+  "Experience": [
+    { "role": "...", "company": "...", "duration": "...", "details": "..." }
+  ],
+  "Skills": [...],
+  "Journey": "...",
+  "Contact": "..."
+}
+
+3. From this content, create a **top 50 visitor questions and expert answers dataset**.
+
+This dataset should cover all probable visitor queries about the portfolio, such as:
+- Projects
+- Skills
+- Experience
+- Blogs
+- Tech stack
+- Purpose of work
+- Career journey
+
+Output this Q&A list in a JSON array:
+[
+  { "question": "...", "answer": "..." },
+  ...
+]
+
+This dataset will be used as Nami’s instant reply knowledge base.
+
+========================================
+PART B — HOMEPAGE FONT & RESPONSIVENESS FIX
+========================================
+
+4. Fix the homepage *zoom issue*, ensure the site does not appear overly zoomed.
+5. Adjust the hero text font size so the top content never gets clipped.
+6. Make homepage fully responsive:
+   - Desktop
+   - Tablet
+   - Mobile
+7. Ensure no manual zooming is required to view content.
+
+========================================
+PART C — SCROLL BUTTON
+========================================
+
+Add a smooth scroll button on the homepage with these specs:
+- Position: bottom center or bottom right
+- Smooth scroll to the next section
+- Minimal modern design
+- Must match your site’s theme
+- Do not break layout or animations
+
+========================================
+PART D — NAMING & AI AGENT UI
+========================================
+
+8. Replace the existing AI button with a **small hologram face of Nami**:
+   - Should look like a friendly AI girl hologram
+   - Keep it subtle, modern, and not intrusive
+   - Same position as the existing button
+   - Do not affect layout otherwise
+
+9. Make sure clicking the hologram opens the AI chat.
+
+========================================
+PART E — NAMING & AI BEHAVIOR
+========================================
+
+10. Configure Nami’s AI behavior rules
+
+Use the Q&A dataset created in Part A for instant replies — no dynamic searching, no memory of previous chats.
+
+Nami must:
+- Respond instantly using the dataset
+- Not store or remember user info (no session memory, no DB, no local storage)
+- Only process the *current* user question
+- Be friendly and good at conversation
+- Never spam with repetitive questions
+
+========================================
+NAMING & GREETING BEHAVIOR
+========================================
+
+11. When user opens Nami, she greets with:
+
+"Hi, I am Nami — Arpan’s portfolio manager 😊  
+Would you like to share your name, or do you have any queries about Arpan?"
+
+After this, analyze the visitor’s message and respond naturally using the Q&A.
+
+Only ask for name and contact IF the visitor clearly says:
+- They want to collaborate
+- They want to hire
+- They want to connect
+- They want to send a message
+
+Then follow:
+1) Ask politely if they want to leave a message
+2) If yes, ask name + email or phone
+
+Otherwise, never ask for contact info.
+
+Nami should be:
+- Friendly
+- Communicative
+- Professional
+- Simple, calm, and conversational
+
+========================================
+PERFORMANCE RULES
+========================================
+
+- Only use the extracted Q&A dataset
+- No memory between sessions
+- No chat history storage
+- Stateless inference
+- Only last message should be processed
+
+========================================
+OUTPUT REQUIREMENTS
+========================================
+
+Provide:
+1. Extracted structured JSON content
+2. Top 50 visitor Q&A dataset
+3. Modified homepage code with font and responsiveness fixes
+4. Scroll button implementation
+5. Hologram Nami button implementation
+6. Updated AI agent logic based on Q&A dataset
+7. Confirmation that Nami responds without memory and real time only
+
+========================================
+FINAL GOAL
+========================================
+
+- Homepage is readable and responsive
+- Smooth scroll works
+- Hologram Nami button works
+- Nami replies instantly using extracted portfolio knowledge
+- No memory, no crashes, natural conversation
