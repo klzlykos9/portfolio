@@ -62,85 +62,91 @@ const EducationTimeline = () => {
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="w-full min-h-screen py-20 bg-slate-950 relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl -ml-48 -mb-48 pointer-events-none" />
+    <section id="about" className="w-full min-h-screen py-24 bg-white relative overflow-hidden">
+      {/* Anime Cloud Accent */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -ml-64 -mb-64 pointer-events-none" />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-8 relative z-10">
         {/* Section Title */}
-        <div className="mb-16">
-          <motion.h2 
-            initial={{ opacity: 0, x: -50 }}
+        <div className="mb-20">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="text-4xl sm:text-5xl font-bold text-white mb-4"
+            className="flex items-center gap-4 mb-4"
           >
-            About <span className="text-cyan-400">Me</span>
-          </motion.h2>
-          <motion.div 
-            initial={{ width: 0 }}
-            whileInView={{ width: 80 }}
+            <span className="w-12 h-px bg-primary" />
+            <span className="text-primary font-bold tracking-widest uppercase text-sm">Introduction</span>
+          </motion.div>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="h-1 bg-cyan-500 rounded-full" 
-          />
+            className="text-4xl sm:text-6xl font-black text-slate-900 mb-4"
+          >
+            About <span className="text-primary">Me</span>
+          </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Content Column */}
-          <div className="lg:col-span-12 space-y-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="lg:col-span-12">
             <motion.div 
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-slate-900/50 backdrop-blur-md p-8 sm:p-10 rounded-3xl border border-cyan-500/10"
+              className="bg-white p-8 sm:p-12 rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-6">
-                  <h3 className="text-2xl font-bold text-white flex items-center gap-3">
-                    <Award className="text-cyan-400" />
-                    Professional Vision
-                  </h3>
-                  <div className="space-y-4 text-gray-300 leading-relaxed text-lg">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div className="space-y-8">
+                  <div className="inline-flex items-center gap-3 text-primary">
+                    <Award size={28} />
+                    <h3 className="text-2xl font-bold text-slate-900">Professional Vision</h3>
+                  </div>
+                  <div className="space-y-6 text-slate-500 leading-relaxed text-lg">
                     <p>
-                      I am an AI Engineer and Business Strategist dedicated to building real-world, production-grade Generative AI systems that deliver measurable business value. My work sits at the intersection of AI engineering, data science, decision intelligence, and strategic business design.
+                      I am an <span className="text-slate-900 font-bold">AI Engineer and Business Strategist</span> dedicated to building real-world, production-grade Generative AI systems that deliver measurable business value.
                     </p>
                     <p>
-                      With a solid foundation in business strategy (MBA) and process optimization (Lean Six Sigma), I engineer AI solutions that are not only technically excellent but also aligned with business strategy and scalable in production.
+                      With a solid foundation in business strategy (MBA) and process optimization (Lean Six Sigma), I engineer AI solutions that are not only technically excellent but also aligned with business strategy.
                     </p>
-                    <p>
-                      I specialize in architecting intelligent systems using frameworks and tools such as <span className="text-cyan-400 font-semibold">LangChain, LangGraph, LangSmith, MCP, neural architectures, n8n, Argo Workflows, and FastAPI</span>. My projects include building AI agents, automated pipelines, RAG workflows, and scalable AI orchestration systems.
+                    <p className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-slate-600 font-medium">
+                      Specializing in: <span className="text-primary font-bold">LangChain, LangGraph, LangSmith, MCP, neural architectures, n8n, Argo Workflows, and FastAPI.</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="p-8 bg-cyan-500/5 rounded-2xl border border-cyan-500/20">
-                    <h3 className="text-xl font-bold text-white mb-4">My Philosophy</h3>
-                    <p className="text-cyan-400 text-xl italic font-medium leading-relaxed">
-                      “I don’t just build models. I engineer intelligent systems with purpose. I think in systems, build with intent, and engineer for impact.”
-                    </p>
+                <div className="space-y-12">
+                  <div className="relative p-10 bg-gradient-to-br from-primary to-blue-600 rounded-[2rem] text-white overflow-hidden shadow-xl">
+                    <div className="relative z-10">
+                      <h3 className="text-lg font-bold uppercase tracking-widest opacity-80 mb-4">Philosophy</h3>
+                      <p className="text-2xl font-black italic leading-tight">
+                        “I don’t just build models. I engineer intelligent systems with purpose. I think in systems, build with intent, and engineer for impact.”
+                      </p>
+                    </div>
+                    {/* Abstract Shape Overlay */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
                   </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                      <BookOpen className="text-cyan-400 w-5 h-5" />
-                      Career Summary
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-slate-900 flex items-center gap-3">
+                      <BookOpen className="text-primary w-6 h-6" />
+                      Career Highlights
                     </h3>
-                    <ul className="space-y-3 text-gray-300">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {[
                         "Generative AI & LLM applications",
-                        "Intelligent agent systems using LangChain, MCP, LangSmith",
-                        "Data analysis pipelines and automation with n8n and Argo",
-                        "Backend integrations using FastAPI",
-                        "Scalable AI system design and orchestration"
+                        "Intelligent agent systems",
+                        "Data analysis pipelines",
+                        "Backend integrations",
+                        "Scalable AI orchestration"
                       ].map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-cyan-500 mt-1">•</span>
+                        <div key={i} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-600 font-medium text-sm">
+                          <div className="w-2 h-2 rounded-full bg-primary" />
                           {item}
-                        </li>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 </div>
               </div>

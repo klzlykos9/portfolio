@@ -1,0 +1,110 @@
+You are a senior frontend UI/UX engineer.
+
+Replit indicated the attempted full redesign is too large in scope, so I want you to make *targeted improvements* to enhance the homepage layout, theme, visuals, and navigation previews — without rewriting the entire site structure.
+
+**Your task is to:**
+1. Improve the homepage layout so content is not clipped, especially on laptops.
+2. Add a **scrollable preview image panel** below the hero section with larger visuals that link to sections.
+3. Change the theme to a **light, colorful, modern aesthetics** with subtle anime accents (One Piece, Naruto, Dragon Ball Z).
+4. Improve fonts so text is readable and not cut off across screens.
+5. Add smooth scroll navigation and micro-animations.
+
+**Details:**
+
+----------------------------------------
+A) LAYOUT + FONT IMPROVEMENTS
+----------------------------------------
+
+- Ensure the homepage does not appear too zoomed in — especially large headings.
+- Adjust CSS, margins, and viewport settings so all key text is visible without zooming manually.
+- Update font sizes for:
+  • Desktop
+  • Laptops
+  • Tablets
+  • Mobiles
+- Improve spacing so nothing clips or overlaps.
+
+----------------------------------------
+B) THEME + COLORS
+----------------------------------------
+
+- Replace the current simple blue theme with a **light, vibrant, modern palette**:  
+  • Soft pastel backgrounds  
+  • Gentle gradients  
+  • Accent colors inspired by anime energy (gold, orange, cyan, violet)  
+- Add subtle anime stylistic elements:
+  • Small, low-opacity background graphics/icons (e.g., silhouette outlines like Luffy’s straw hat, Naruto’s swirl, DBZ energy lines) placed tastefully — not overwhelming.
+  • Keep it artistic, clean, and modern.
+
+----------------------------------------
+C) PREVIEW IMAGE PANEL
+----------------------------------------
+
+Below the hero section, add a **scrollable panel** (carousel or row) with *larger preview cards* (not tiny icons) for:
+- About
+- Skills
+- Certifications
+- Internships
+- Experience
+- Projects
+- Blog
+- Contact
+
+Each card should contain:
+• A representative image/illustrative preview  
+• Section title  
+• Smooth hover animation  
+• Clickable scroll to the respective section
+
+Animations:
+- Fade-in on scroll
+- Slide-in from edges
+- Slight zoom on hover for preview cards
+
+On mobile:
+- Horizontal scroll with swipe interaction
+
+----------------------------------------
+D) SMOOTH SCROLL + MOTION UI
+----------------------------------------
+
+- Add smooth scrolling for navigation
+- Add subtle micro-interactions:
+  • Button hover effects
+  • Section fade-ins
+  • Slide-in headers
+
+Use CSS or JS scroll behavior enhancements.
+
+----------------------------------------
+E) RESPONSIVE CHECK
+----------------------------------------
+
+- Ensure all changes render well on:
+  • Desktop
+  • Laptop
+  • Tablet
+  • Mobile
+- No clipping of text or hidden elements
+- Preview cards should resize fluidly
+
+----------------------------------------
+OUTPUT REQUIREMENTS
+----------------------------------------
+
+1. Modified homepage code with updated layout & theme
+2. CSS or JS implementing color palette and animations
+3. Updated preview image panel below hero section
+4. Scroll navigation between sections
+5. Confirmation that fonts are readable and not clipped
+6. Confirmation of anime visual touches in theme
+
+----------------------------------------
+FINAL GOAL
+----------------------------------------
+
+• A more visually attractive, modern homepage  
+• Light, colorful anime-inspired theme  
+• Larger preview navigation instead of tiny icons  
+• Smooth interactions and swipe-friendly layout  
+• Better typography and spacing on all devices
