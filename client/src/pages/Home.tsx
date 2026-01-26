@@ -31,7 +31,7 @@ const Home: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-slate-900/80 border border-primary/30 text-primary font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-primary/5"
+            className="inline-flex items-center gap-3 px-6 py-2.5 mt-8 rounded-full bg-slate-900/80 border border-primary/30 text-primary font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-primary/5"
           >
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
