@@ -13,7 +13,6 @@ const Header: React.FC = () => {
     { name: 'SKILLS', path: '/skills' },
     { name: 'CERTIFICATIONS', path: '/certifications' },
     { name: 'TRAINING', path: '/internships' },
-    { name: 'CAREER', path: '/experience' },
     { name: 'PROJECTS', path: '/projects' },
     { name: 'BLOG', path: '/blog' },
     { name: 'CONTACT', path: '/contact' },

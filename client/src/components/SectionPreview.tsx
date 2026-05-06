@@ -6,7 +6,6 @@ import {
   Code2, 
   Award, 
   BookOpen, 
-  Briefcase, 
   Layers, 
   PenTool, 
   Mail,
@@ -19,7 +18,6 @@ import aboutImg from '@assets/generated_images/ai_neural_network_about_me_sectio
 import skillsImg from '@assets/generated_images/ai_skills_and_programming_visual.png';
 import certsImg from '@assets/generated_images/ai_certifications_and_achievements_visual.png';
 import trainingImg from '@assets/generated_images/ai_training_and_learning_visual.png';
-import careerImg from '@assets/generated_images/ai_career_and_professional_experience_visual.png';
 import workImg from '@assets/generated_images/ai_projects_and_development_visual.png';
 import insightsImg from '@assets/generated_images/ai_blog_and_research_insights_visual.png';
 import connectImg from '@assets/generated_images/ai_contact_and_connection_visual.png';
@@ -29,7 +27,6 @@ const sections = [
   { id: 'skills', title: 'Skills', icon: Code2, color: 'from-amber-400 to-orange-600', desc: 'Tech & Expertise', image: skillsImg },
   { id: 'certifications', title: 'Certifications', icon: Award, color: 'from-purple-500 to-fuchsia-600', desc: 'Degrees & Honors', image: certsImg },
   { id: 'internships', title: 'Training', icon: BookOpen, color: 'from-emerald-500 to-teal-600', desc: 'Growth & Learning', image: trainingImg },
-  { id: 'experience', title: 'Career', icon: Briefcase, color: 'from-rose-500 to-red-600', desc: 'Roles & Results', image: careerImg },
   { id: 'projects', title: 'Work', icon: Layers, color: 'from-blue-600 to-indigo-700', desc: 'AI & Code Projects', image: workImg },
   { id: 'blogs', title: 'Insights', icon: PenTool, color: 'from-cyan-500 to-blue-600', desc: 'Articles & Research', image: insightsImg },
   { id: 'contact', title: 'Connect', icon: Mail, color: 'from-violet-500 to-purple-700', desc: 'Say Hello!', image: connectImg },
@@ -61,7 +58,6 @@ export const SectionPreview: React.FC = () => {
       'skills': '/skills',
       'certifications': '/certifications',
       'internships': '/internships',
-      'experience': '/experience',
       'blogs': '/blog',
       'contact': '/contact'
     };
