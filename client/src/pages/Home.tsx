@@ -46,7 +46,7 @@ const Home: React.FC = () => {
             transition={{ delay: 0.4, duration: 1 }}
             className="text-5xl sm:text-7xl lg:text-9xl font-black text-white leading-none tracking-tighter"
           >
-            ARPAN P. <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-400 to-indigo-500 animate-gradient-x">NAYAK</span>
+            <span className="text-white">ARPAN P. </span><span style={{WebkitTextFillColor: 'transparent', WebkitBackgroundClip: 'text', backgroundClip: 'text', backgroundImage: 'linear-gradient(90deg, #facc15, #fbbf24, #f59e0b, #facc15)', backgroundSize: '200% auto', animation: 'shimmer 2.5s linear infinite', filter: 'drop-shadow(0 0 24px rgba(251,191,36,0.7))'}}>NAYAK</span>
           </motion.h1>
 
           <motion.p
