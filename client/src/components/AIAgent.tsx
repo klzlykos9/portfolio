@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Cpu } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { X, Send, Cpu, Loader2 } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -9,75 +8,133 @@ interface Message {
   sender: 'user' | 'ai';
 }
 
+type ModelStatus = 'idle' | 'loading' | 'ready' | 'error';
+
 const AIAgent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [modelStatus, setModelStatus] = useState<ModelStatus>('idle');
+  const [loadProgress, setLoadProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const location = useLocation();
+  const workerRef = useRef<Worker | null>(null);
+  const workerReadyRef = useRef(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const addMessage = useCallback((msg: Message) => {
+    setMessages(prev => [...prev, msg]);
+  }, []);
+
   useEffect(() => {
     if (messages.length === 0) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         addMessage({
           id: '1',
-          text: "Hi, I am Nami — Arpan’s portfolio manager 😊\nWould you like to share your name, or do you have any queries about Arpan?",
+          text: "Hi, I am Nami — Arpan's portfolio manager 😊\nWould you like to share your name, or do you have any queries about Arpan?",
           sender: 'ai',
         });
       }, 1500);
+      return () => clearTimeout(timer);
     }
   }, []);
 
-  const addMessage = (msg: Message) => setMessages(prev => [...prev, msg]);
+  const initWorker = useCallback(() => {
+    if (workerRef.current) return;
 
-  const [qaData, setQaData] = useState<any[]>([]);
+    setModelStatus('loading');
+    setLoadProgress(0);
 
-  useEffect(() => {
-    const loadQA = async () => {
-      try {
-        const data = await import('../data/nami_qa.json');
-        setQaData(data.default);
-      } catch (err) {
-        console.error("Failed to load QA data", err);
+    const worker = new Worker(
+      new URL('../lib/ai-worker.ts', import.meta.url),
+      { type: 'module' }
+    );
+
+    worker.onmessage = (event: MessageEvent) => {
+      const { type, data, text, error } = event.data;
+
+      if (type === 'progress') {
+        if (data?.status === 'progress' && data?.progress != null) {
+          setLoadProgress(Math.round(data.progress));
+        }
+      } else if (type === 'complete') {
+        setIsTyping(false);
+        addMessage({
+          id: Date.now().toString(),
+          text: text || "I couldn't generate a response. Please try again.",
+          sender: 'ai',
+        });
+      } else if (type === 'error') {
+        setIsTyping(false);
+        addMessage({
+          id: Date.now().toString(),
+          text: "Sorry, I ran into an issue. Please try again!",
+          sender: 'ai',
+        });
+        console.error('AI Worker error:', error);
+      } else if (type === 'ready') {
+        workerReadyRef.current = true;
+        setModelStatus('ready');
+        setLoadProgress(100);
       }
     };
-    loadQA();
+
+    worker.onerror = (err) => {
+      console.error('Worker error:', err);
+      setModelStatus('error');
+      setIsTyping(false);
+    };
+
+    workerRef.current = worker;
+
+    worker.postMessage({ type: 'init' });
+  }, [addMessage]);
+
+  useEffect(() => {
+    if (isOpen && !workerRef.current) {
+      initWorker();
+    }
+  }, [isOpen, initWorker]);
+
+  useEffect(() => {
+    return () => {
+      workerRef.current?.terminate();
+    };
   }, []);
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
-    const userText = inputValue.trim().toLowerCase();
+    if (!inputValue.trim() || isTyping) return;
+    const userText = inputValue.trim();
     setInputValue('');
-    
-    const userMsg: Message = { id: Date.now().toString(), text: userText, sender: 'user' };
-    setMessages(prev => [...prev, userMsg]);
+
+    addMessage({ id: Date.now().toString(), text: userText, sender: 'user' });
     setIsTyping(true);
 
-    setTimeout(() => {
-      setIsTyping(false);
-      
-      const leadKeywords = ['hire', 'collaborate', 'connect', 'contact', 'message', 'work with'];
-      const isLeadIntent = leadKeywords.some(k => userText.includes(k));
+    if (!workerRef.current) {
+      initWorker();
+    }
 
-      const match = qaData.find(qa => 
-        userText.includes(qa.question.toLowerCase()) || 
-        qa.question.toLowerCase().split(' ').some((word: string) => word.length > 3 && userText.includes(word))
-      );
-
-      let reply = match ? match.answer : "I specialize in explaining Arpan's AI projects and strategy. Feel free to ask about his work or experience!";
-
-      if (isLeadIntent) {
-        reply = "I'd love to help you connect with Arpan! Would you like to share your name and contact details so he can get back to you?";
-      }
-
-      addMessage({ id: (Date.now() + 1).toString(), text: reply, sender: 'ai' });
-    }, 600);
+    workerRef.current?.postMessage({
+      type: 'generate',
+      text: userText,
+    });
   };
+
+  const getStatusLabel = () => {
+    if (modelStatus === 'loading') return `Loading model… ${loadProgress}%`;
+    if (modelStatus === 'error') return 'Model error';
+    if (modelStatus === 'ready') return 'Online';
+    return 'Initializing';
+  };
+
+  const statusColor = modelStatus === 'ready'
+    ? 'bg-green-400'
+    : modelStatus === 'error'
+    ? 'bg-red-400'
+    : 'bg-yellow-400 animate-pulse';
 
   return (
     <>
@@ -103,14 +160,12 @@ const AIAgent: React.FC = () => {
                </div>
                <div className="w-4 h-1 border-b-2 border-cyan-400/60 rounded-full mt-1 shadow-[0_1px_5px_rgba(34,211,238,0.5)]" />
             </div>
-            {/* Holographic scanning line */}
-            <motion.div 
+            <motion.div
               className="absolute top-0 w-full h-px bg-cyan-300/60 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
               animate={{ top: ['0%', '100%'] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
             />
-            {/* Holographic flicker effect */}
-            <motion.div 
+            <motion.div
               className="absolute inset-0 bg-cyan-400/5"
               animate={{ opacity: [0, 0.1, 0] }}
               transition={{ duration: 0.1, repeat: Infinity, repeatDelay: 1.5 }}
@@ -125,8 +180,9 @@ const AIAgent: React.FC = () => {
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
-            className="fixed bottom-28 right-8 w-[300px] h-[450px] z-50 flex flex-col bg-[#0f172a]/95 backdrop-blur-2xl border border-cyan-500/30 rounded-[1.5rem] shadow-[0_0_50px_rgba(34,211,238,0.25)] overflow-hidden"
+            className="fixed bottom-28 right-8 w-[320px] h-[480px] z-50 flex flex-col bg-[#0f172a]/95 backdrop-blur-2xl border border-cyan-500/30 rounded-[1.5rem] shadow-[0_0_50px_rgba(34,211,238,0.25)] overflow-hidden"
           >
+            {/* Header */}
             <div className="p-4 border-b border-cyan-500/20 flex items-center justify-between bg-cyan-500/5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.4)]">
@@ -135,8 +191,10 @@ const AIAgent: React.FC = () => {
                 <div>
                   <h3 className="font-bold text-white text-sm">Nami</h3>
                   <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" />
-                    ARPAN'S PORTFOLIO MANAGER
+                    <span className={`w-1.5 h-1.5 rounded-full ${statusColor}`} />
+                    {modelStatus === 'loading'
+                      ? getStatusLabel()
+                      : "ARPAN'S PORTFOLIO MANAGER"}
                   </p>
                 </div>
               </div>
@@ -145,22 +203,43 @@ const AIAgent: React.FC = () => {
               </button>
             </div>
 
+            {/* Model loading bar */}
+            {modelStatus === 'loading' && (
+              <div className="h-1 w-full bg-slate-800">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                  animate={{ width: `${loadProgress}%` }}
+                  transition={{ ease: 'linear' }}
+                />
+              </div>
+            )}
+
+            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/40 relative">
-              {/* Holographic Grid Background Overlay */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.03]" 
+              <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
                    style={{backgroundImage: 'radial-gradient(circle, #22d3ee 1px, transparent 1px)', backgroundSize: '20px 20px'}} />
-              
+
+              {modelStatus === 'loading' && messages.length <= 1 && (
+                <div className="flex justify-center py-4">
+                  <div className="text-center text-cyan-400/60 text-xs flex flex-col items-center gap-2">
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Loading AI model ({loadProgress}%)<br />First load may take a moment…</span>
+                  </div>
+                </div>
+              )}
+
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg backdrop-blur-sm ${
-                    msg.sender === 'user' 
-                      ? 'bg-cyan-600/80 text-white rounded-tr-none border border-cyan-400/30' 
+                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-lg backdrop-blur-sm whitespace-pre-line ${
+                    msg.sender === 'user'
+                      ? 'bg-cyan-600/80 text-white rounded-tr-none border border-cyan-400/30'
                       : 'bg-slate-800/60 text-cyan-50 border border-cyan-500/20 rounded-tl-none shadow-[inset_0_0_10px_rgba(34,211,238,0.05)]'
                   }`}>
                     {msg.text}
                   </div>
                 </div>
               ))}
+
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="bg-slate-800/60 border border-cyan-500/20 p-4 rounded-2xl rounded-tl-none flex gap-1 shadow-lg">
@@ -173,6 +252,7 @@ const AIAgent: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Input */}
             <div className="p-4 bg-slate-950/80 border-t border-cyan-500/20">
               <div className="relative">
                 <input
@@ -180,10 +260,15 @@ const AIAgent: React.FC = () => {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Talk with Nami..."
-                  className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-full py-3 px-5 pr-12 text-sm text-cyan-50 placeholder-cyan-900 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-[inset_0_0_10px_rgba(34,211,238,0.05)]"
+                  placeholder={isTyping ? 'Nami is thinking…' : 'Talk with Nami...'}
+                  disabled={isTyping}
+                  className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-full py-3 px-5 pr-12 text-sm text-cyan-50 placeholder-cyan-900 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-[inset_0_0_10px_rgba(34,211,238,0.05)] disabled:opacity-50"
                 />
-                <button onClick={handleSend} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-cyan-400 hover:text-cyan-300 hover:scale-110 transition-all">
+                <button
+                  onClick={handleSend}
+                  disabled={isTyping || !inputValue.trim()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-cyan-400 hover:text-cyan-300 hover:scale-110 transition-all disabled:opacity-40"
+                >
                   <Send size={18} />
                 </button>
               </div>

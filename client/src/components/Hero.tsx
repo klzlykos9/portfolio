@@ -82,9 +82,17 @@ const Hero: React.FC = () => {
           {/* Main Heading */}
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white via-cyan-300 to-blue-400 bg-clip-text text-transparent leading-tight mb-6"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6"
           >
-            Arpan P. Nayak
+            <span className="bg-gradient-to-r from-white via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+              Arpan P.{' '}
+            </span>
+            <span className="relative inline-block">
+              <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,191,36,0.5)]">
+                Nayak
+              </span>
+              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-300 to-amber-400 rounded-full opacity-70" />
+            </span>
           </motion.h1>
 
           {/* Subheading */}
