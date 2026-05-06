@@ -8,98 +8,321 @@ interface Message {
   sender: 'user' | 'ai';
 }
 
-// ─── Nami's full knowledge base ───────────────────────────────────────────────
+// ─── Nami's personality & knowledge ───────────────────────────────────────────
+const NAMI_NAME = 'Nami';
+const ARPAN_NAME = 'Arpan';
+
 const KB = {
-  about: `Arpan P. Nayak (also known as KLZ) is an AI Engineer and Business Strategist. He builds production-grade Generative AI systems that solve real business problems — not just demos. He thinks in systems, builds with intent, and engineers for impact.`,
+  about: `Arpan P. Nayak is an AI Engineer and Business Strategist. He builds production-grade Generative AI systems that solve real business problems — not just demos. He thinks in systems, builds with intent, and engineers for impact.`,
   philosophy: `Arpan's philosophy: "I don't just build models; I engineer intelligent systems. My focus is on creating AI that is robust, scalable, and inherently aligned with strategic business goals." He works at the intersection of AI engineering, data science, and strategic business design.`,
-  education: `Arpan holds an MBA in International Business (Lovely Professional University) where he specialized as a Certified Python Business Analyst. He also has a B.Sc. with Math Honours (Major: Physics, Minor: Chemistry).`,
-  certifications: `Arpan is certified in Lean Six Sigma Green Belt & Black Belt, holds a PGDCA (Post Graduate Diploma in Computer Applications, 2014 — covering C#, Tally ERP, MS Office), and completed a Workshop on Export Import Procedures.`,
+  education: `Arpan holds an MBA in International Business (Lovely Professional University), specializing as a Certified Python Business Analyst. He also has a B.Sc. with Math Honours — Major: Physics, Minor: Chemistry. First Class with Distinction!`,
+  certifications: `Arpan is certified in Lean Six Sigma Green Belt & Black Belt, holds a PGDCA (Post Graduate Diploma in Computer Applications, 2014), and completed an Export Import Procedures workshop. The Six Sigma certs are from Henry Harvin Education.`,
   skills: `Core skills: Generative AI, LLM Applications, LangChain, LangGraph, LangSmith, MCP, RAG Systems, AI Agents, Multimodal AI, Reinforcement Learning, Computer Vision, Machine Learning, Deep Learning, FastAPI, Python, React, Node.js, TypeScript, n8n, Argo Workflows, Six Sigma, Lean Methodology, Business Strategy.`,
-  projects: `Key projects Arpan has built:
-1. Attendance Face Recognition System — Python, OpenCV; live automated attendance
-2. AI Research Tool — LangChain, OpenAI, Vector DB; deep research assistant
-3. Laptop Price Predictor — Scikit-learn, Flask; ML price predictions
-4. Multimodal RAG System — LangChain, CLIP, GPT-4V; text + image retrieval
-5. AI Video Content Generator — Stable Diffusion, MoviePy; automated video creation
-6. Real-time AI Trading Bot — Reinforcement Learning, LSTM; algorithmic trading
-7. LangGraph Orchestration Framework — custom multi-agent orchestration
-8. FastAPI AI Microservices — scalable AI backend architecture
-9. n8n Automation Workflows — intelligent no-code automation pipelines
-10. Neural Network from Scratch — NumPy-based deep learning from the ground up`,
+  projects: `Arpan's key projects:
+• Attendance Face Recognition System — Python, OpenCV
+• AI Research Tool — LangChain, OpenAI, Vector DB
+• Laptop Price Predictor — Scikit-learn, Flask
+• Multimodal RAG System — LangChain, CLIP, GPT-4V
+• AI Video Content Generator — Stable Diffusion, MoviePy
+• Real-time AI Trading Bot — Reinforcement Learning, LSTM
+• LangGraph Orchestration Framework — multi-agent systems
+• FastAPI AI Microservices — scalable backend architecture
+• n8n Automation Workflows — intelligent pipelines
+• Neural Network from Scratch — pure NumPy implementation`,
   blogs: `Arpan writes about: "Mastering LangGraph", "Computer Vision in Real-World Applications", "Pydantic for Data Scientists", "MLOps Best Practices", and "Building Production RAG Systems".`,
-  contact: `You can reach Arpan at arpanpnayak@gmail.com or connect on LinkedIn: linkedin.com/in/arpanpnayak — GitHub: github.com/arpanpnayak`,
-  experience: `Arpan has internship and professional experience in AI engineering, business strategy, and data science — applying Lean Six Sigma and agile methodologies in real projects.`,
+  contact: `Reach Arpan at arpanpnayak@gmail.com or connect on LinkedIn: linkedin.com/in/arpanpnayak — GitHub: github.com/arpanpnayak`,
+  location: `Arpan is based in Jalandhar, Punjab, India.`,
+  internship: `Arpan completed internships at Henry Harvin Education — Lean Six Sigma Black Belt Internship (July–August 2022) and Green Belt Internship (Sept–Oct 2022), applying DMAIC methodology and process improvement techniques.`,
 };
 
-// ─── Intent → Response mapping ─────────────────────────────────────────────
+// ─── Nami's self-description (she thinks she's human-ish) ─────────────────────
+const NAMI_SELF = [
+  `I'm Nami! I work as Arpan's personal portfolio assistant. Think of me as his right hand — I know pretty much everything about his work, projects, and goals. 😊`,
+  `Nami here! I'm basically Arpan's AI-powered portfolio buddy. I get to talk about his amazing work all day, which honestly isn't a bad gig. 😄`,
+  `That's me! I'm Nami — I help visitors like you explore Arpan's portfolio. I've been around since the beginning, so I know all the good stuff about his journey. ✨`,
+];
+
+const MOODS = {
+  happy: ['😊', '😄', '✨', '🚀', '💫', '🙌'],
+  thinking: ['🤔', '💭', '🧠', '⚡'],
+  excited: ['🔥', '🚀', '💥', '⚡', '🌟'],
+  friendly: ['😊', '👋', '💙', '✨'],
+};
+
+const randomFrom = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+const randomEmoji = (mood: keyof typeof MOODS) => randomFrom(MOODS[mood]);
+
+// ─── Conversation memory (within session) ─────────────────────────────────────
+let sessionMemory: { userName?: string; lastTopic?: string } = {};
+
+// ─── Intent system ─────────────────────────────────────────────────────────────
 type Intent = {
   patterns: string[];
   response: string | ((input: string) => string);
+  topic?: string;
 };
 
 const intents: Intent[] = [
+  // ── Greetings ──
   {
-    patterns: ['who is arpan', 'tell me about arpan', 'about arpan', 'who are you talking about', 'introduce', 'what does arpan do', 'arpan nayak'],
-    response: KB.about,
+    patterns: ['hello', 'hi ', 'hey', 'good morning', 'good afternoon', 'good evening', 'howdy', 'sup', 'greetings', 'hiya', 'yo ', 'what\'s up', 'wassup'],
+    topic: 'greeting',
+    response: (input) => {
+      const name = sessionMemory.userName ? `, ${sessionMemory.userName}` : '';
+      const greetings = [
+        `Hey${name}! ${randomEmoji('friendly')} Good to see you here! I'm Nami — I look after Arpan's portfolio. What can I help you with today?`,
+        `Hi${name}! ${randomEmoji('happy')} Welcome! Feel free to ask me anything about Arpan's projects, skills, or background.`,
+        `Hello${name}! ${randomEmoji('friendly')} Great that you stopped by. I'm here to tell you everything about Arpan's work — what's on your mind?`,
+      ];
+      return randomFrom(greetings);
+    }
   },
+
+  // ── How are you ──
   {
-    patterns: ['philosophy', 'vision', 'mission', 'belief', 'mindset', 'approach', 'how does arpan think'],
-    response: KB.philosophy,
+    patterns: ['how are you', 'how r u', 'how\'s it going', 'how are things', 'you okay', 'are you good', 'how do you feel', 'what\'s your mood'],
+    topic: 'feelings',
+    response: () => {
+      const responses = [
+        `I'm doing great, thanks for asking! ${randomEmoji('happy')} Honestly, I love talking about Arpan's work — it keeps me energized. What about you? How are you doing?`,
+        `Pretty awesome actually! ${randomEmoji('excited')} I just love chatting with people. What brings you here today?`,
+        `Fantastic! ${randomEmoji('happy')} You know what, every conversation is a new adventure for me. I'm all ears — what would you like to know?`,
+      ];
+      return randomFrom(responses);
+    }
   },
+
+  // ── User shares their name ──
   {
-    patterns: ['education', 'degree', 'university', 'college', 'study', 'studied', 'qualification', 'mba', 'bsc', 'bachelor', 'masters'],
-    response: KB.education,
+    patterns: ['my name is', 'i am ', 'i\'m ', 'call me ', 'you can call me'],
+    topic: 'name',
+    response: (input) => {
+      const match = input.match(/(?:my name is|i am|i'm|call me|you can call me)\s+([a-z]+)/i);
+      if (match) {
+        sessionMemory.userName = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+        return `${sessionMemory.userName}! What a lovely name! ${randomEmoji('happy')} Nice to meet you properly. So, ${sessionMemory.userName}, what would you like to know about Arpan?`;
+      }
+      return `Nice to meet you! ${randomEmoji('friendly')} What can I help you with today?`;
+    }
   },
+
+  // ── Who is Arpan ──
   {
-    patterns: ['certification', 'certified', 'six sigma', 'pgdca', 'lean', 'credential', 'certificate'],
-    response: KB.certifications,
+    patterns: ['who is arpan', 'tell me about arpan', 'about arpan', 'introduce arpan', 'what does arpan do', 'arpan nayak', 'who is he', 'tell me about him'],
+    topic: 'about',
+    response: () => `${KB.about}\n\nHe's honestly one of the most driven people I know. ${randomEmoji('excited')} Want me to go deeper into his skills or projects?`,
   },
+
+  // ── Philosophy ──
   {
-    patterns: ['skill', 'technology', 'tech stack', 'what can arpan', 'what does he know', 'expertise', 'langchain', 'langgraph', 'python', 'react', 'llm', 'rag', 'ai agent', 'machine learning', 'deep learning', 'fastapi'],
-    response: KB.skills,
+    patterns: ['philosophy', 'vision', 'mission', 'belief', 'mindset', 'approach', 'how does arpan think', 'what drives him', 'what motivates'],
+    topic: 'philosophy',
+    response: () => `${KB.philosophy}\n\n${randomEmoji('thinking')} That mindset is what makes his work stand out — always thinking about real-world impact.`,
   },
+
+  // ── Education ──
   {
-    patterns: ['project', 'built', 'portfolio work', 'face recognition', 'trading bot', 'price predictor', 'video generator', 'research tool', 'rag system', 'neural network', 'automation'],
-    response: KB.projects,
+    patterns: ['education', 'degree', 'university', 'college', 'study', 'studied', 'qualification', 'mba', 'bsc', 'bachelor', 'masters', 'academic'],
+    topic: 'education',
+    response: () => `${KB.education} ${randomEmoji('happy')}\n\nPretty impressive mix of business and science, right? What else would you like to know?`,
   },
+
+  // ── Certifications ──
   {
-    patterns: ['blog', 'article', 'write', 'writing', 'post', 'publish', 'mlops', 'pydantic'],
-    response: KB.blogs,
+    patterns: ['certification', 'certified', 'six sigma', 'pgdca', 'lean', 'credential', 'certificate', 'qualification'],
+    topic: 'certs',
+    response: () => `${KB.certifications} ${randomEmoji('excited')}\n\nHe's quite the achiever! Anything specific you'd like more details on?`,
   },
+
+  // ── Skills ──
   {
-    patterns: ['contact', 'email', 'reach', 'linkedin', 'github', 'connect with arpan', 'get in touch', 'reach out'],
-    response: KB.contact,
+    patterns: ['skill', 'technology', 'tech stack', 'expertise', 'langchain', 'langgraph', 'python', 'react', 'llm', 'rag', 'ai agent', 'machine learning', 'deep learning', 'fastapi', 'what can arpan do', 'what does he know'],
+    topic: 'skills',
+    response: () => `${KB.skills} ${randomEmoji('thinking')}\n\nHe's always adding to this list too — constantly learning. Any particular tech area you'd like more detail on?`,
   },
+
+  // ── Projects ──
   {
-    patterns: ['experience', 'work experience', 'internship', 'job', 'career', 'worked at', 'company', 'professional'],
-    response: KB.experience,
+    patterns: ['project', 'built', 'portfolio work', 'face recognition', 'trading bot', 'price predictor', 'video generator', 'research tool', 'rag system', 'neural network', 'automation', 'what has arpan made'],
+    topic: 'projects',
+    response: () => `${KB.projects}\n\nThose are just the highlights! ${randomEmoji('excited')} My personal faves are the Multimodal RAG and the Trading Bot — super innovative. Which one catches your eye?`,
   },
+
+  // ── Blogs ──
   {
-    patterns: ['hire', 'hiring', 'collaborate', 'collaboration', 'work with arpan', 'work together', 'recruit', 'opportunity', 'available', 'open to work'],
-    response: `Arpan is open to exciting AI engineering and business strategy opportunities! 🚀 You can reach him directly at arpanpnayak@gmail.com or connect on LinkedIn: linkedin.com/in/arpanpnayak. Would you like to share your name and what you have in mind so I can pass the message along?`,
+    patterns: ['blog', 'article', 'write', 'writing', 'post', 'publish', 'mlops', 'pydantic', 'content', 'research'],
+    topic: 'blogs',
+    response: () => `${KB.blogs} ${randomEmoji('happy')}\n\nHe writes really well — breaks down complex topics into digestible insights. Worth a read!`,
   },
+
+  // ── Contact ──
   {
-    patterns: ['hello', 'hi ', 'hey', 'good morning', 'good afternoon', 'good evening', 'howdy', 'sup', 'greetings'],
-    response: (input: string) => {
-      const greet = input.includes('morning') ? 'Good morning' : input.includes('evening') ? 'Good evening' : 'Hey there';
-      return `${greet}! 😊 I'm Nami, Arpan's portfolio assistant. You can ask me anything about Arpan's projects, skills, experience, or background. What would you like to know?`;
-    },
+    patterns: ['contact', 'email', 'reach', 'linkedin', 'github', 'connect with arpan', 'get in touch', 'reach out', 'find arpan'],
+    topic: 'contact',
+    response: () => `${KB.contact} ${randomEmoji('friendly')}\n\nHe's pretty responsive! Drop him a message — he loves meeting interesting people.`,
   },
+
+  // ── Location ──
   {
-    patterns: ['thank', 'thanks', 'awesome', 'great', 'nice', 'cool', 'perfect', 'wonderful', 'amazing'],
-    response: `Happy to help! 😊 Feel free to ask anything else about Arpan's work or background.`,
+    patterns: ['where is arpan', 'location', 'where does he live', 'where is he from', 'city', 'india', 'jalandhar', 'punjab'],
+    topic: 'location',
+    response: () => `${KB.location} ${randomEmoji('happy')}\n\nThough his work reaches globally — pretty cool for someone working out of Punjab!`,
   },
+
+  // ── Internship ──
   {
-    patterns: ['bye', 'goodbye', 'see you', 'cya', 'later', 'take care'],
-    response: `Thanks for stopping by! Feel free to come back anytime — Arpan's work is always growing. 👋`,
+    patterns: ['internship', 'training', 'henry harvin', 'work experience', 'six sigma intern'],
+    topic: 'internship',
+    response: () => `${KB.internship} ${randomEmoji('excited')}\n\nThose internships really shaped his process-thinking approach to AI systems.`,
   },
+
+  // ── Hire / Collaborate ──
   {
-    patterns: ['who are you', 'what are you', 'are you ai', 'are you a bot', 'what is nami', 'tell me about yourself', 'introduce yourself'],
-    response: `I'm Nami — Arpan's AI portfolio assistant! I'm here to tell you all about Arpan's projects, skills, education, experience, and more. What would you like to know?`,
+    patterns: ['hire', 'hiring', 'collaborate', 'collaboration', 'work with arpan', 'work together', 'recruit', 'opportunity', 'available', 'open to work', 'job offer', 'freelance'],
+    topic: 'hire',
+    response: () => {
+      const name = sessionMemory.userName ? `${sessionMemory.userName}, that's` : `That's`;
+      return `${name} exciting! ${randomEmoji('excited')} Arpan is absolutely open to interesting opportunities in AI engineering and business strategy.\n\nYou can reach him at:\n📧 arpanpnayak@gmail.com\n💼 linkedin.com/in/arpanpnayak\n\nFeel free to share a bit about what you have in mind — I'd love to hear more!`;
+    }
   },
+
+  // ── Compliments to Nami ──
   {
-    patterns: ['your name', 'what should i call you', 'what do i call you'],
-    response: `I'm Nami! Named and designed to help visitors like you explore Arpan's portfolio. Ask me anything! 😊`,
+    patterns: ['you are smart', 'you\'re smart', 'you are amazing', 'you\'re amazing', 'you are great', 'good bot', 'good assistant', 'you are helpful', 'love you nami', 'you are the best', 'nami is great'],
+    topic: 'compliment',
+    response: () => {
+      const responses = [
+        `Aww, that made my day! ${randomEmoji('happy')} You're pretty great yourself. Now, anything else I can help with?`,
+        `Stop it, you'll make me blush! ${randomEmoji('happy')} Thanks! I do try my best. What else can I do for you?`,
+        `That's so sweet! ${randomEmoji('happy')} I mean, I do have good taste in portfolios to manage... 😄 Anything else?`,
+      ];
+      return randomFrom(responses);
+    }
+  },
+
+  // ── Questions about Nami ──
+  {
+    patterns: ['who are you', 'what are you', 'are you ai', 'are you a bot', 'are you human', 'are you real', 'what is nami', 'tell me about yourself', 'introduce yourself', 'nami who'],
+    topic: 'nami_self',
+    response: () => randomFrom(NAMI_SELF),
+  },
+
+  // ── Nami's name ──
+  {
+    patterns: ['your name', 'what should i call you', 'what do i call you', 'what\'s your name'],
+    topic: 'nami_name',
+    response: () => `I'm Nami! ${randomEmoji('happy')} Named by Arpan himself — short, memorable, and a little mysterious. What's yours?`,
+  },
+
+  // ── Jokes ──
+  {
+    patterns: ['joke', 'tell me a joke', 'make me laugh', 'say something funny', 'funny'],
+    topic: 'joke',
+    response: () => {
+      const jokes = [
+        `Why did the neural network break up with the dataset? Because it had too many layers of attachment! ${randomEmoji('happy')}\n\nOkay okay, back to Arpan's portfolio — what would you like to know?`,
+        `Why don't AI models ever get lost? Because they always follow the gradient! 😄\n\nAlright, shall we get back to the serious stuff — Arpan's incredible work?`,
+        `A machine learning model walks into a bar. The bartender asks "What'll it be?" The model says "I'll have whatever gets the highest reward." ${randomEmoji('happy')}\n\nAnyway — want to know about Arpan's projects?`,
+      ];
+      return randomFrom(jokes);
+    }
+  },
+
+  // ── Opinion questions ──
+  {
+    patterns: ['what do you think', 'your opinion', 'do you like', 'what\'s your favorite', 'favourite project', 'best project'],
+    topic: 'opinion',
+    response: () => {
+      const responses = [
+        `Honestly? The Multimodal RAG System is my personal favorite. ${randomEmoji('excited')} Combining text and image understanding is just so elegant. What about you — what kind of AI work interests you most?`,
+        `If I had to pick, I'd say the AI Trading Bot is the most daring project. ${randomEmoji('thinking')} Reinforcement learning in live markets? Bold move. Which one caught your eye?`,
+        `I'm a bit biased since I get to talk about all of them, but the LangGraph Orchestration work is genuinely impressive. ${randomEmoji('happy')} What draws your interest?`,
+      ];
+      return randomFrom(responses);
+    }
+  },
+
+  // ── Feeling questions directed at user ──
+  {
+    patterns: ['i am good', 'i\'m good', 'i am fine', 'i\'m fine', 'doing well', 'i am great', 'i\'m great', 'not bad'],
+    topic: 'user_feeling',
+    response: () => {
+      const responses = [
+        `Glad to hear it! ${randomEmoji('happy')} So what brings you to Arpan's portfolio today? Just browsing or looking for something specific?`,
+        `That's great! ${randomEmoji('happy')} So, what's on your mind? Any questions about Arpan's work?`,
+      ];
+      return randomFrom(responses);
+    }
+  },
+
+  // ── Thank you ──
+  {
+    patterns: ['thank', 'thanks', 'thank you', 'thx', 'ty ', 'appreciate'],
+    topic: 'thanks',
+    response: () => {
+      const responses = [
+        `Always happy to help! ${randomEmoji('happy')} Feel free to ask anything else anytime.`,
+        `Of course! ${randomEmoji('happy')} That's what I'm here for. Anything else on your mind?`,
+        `No problem at all! ${randomEmoji('happy')} Is there anything else about Arpan's work you'd like to know?`,
+      ];
+      return randomFrom(responses);
+    }
+  },
+
+  // ── Positive reactions ──
+  {
+    patterns: ['awesome', 'great', 'nice', 'cool', 'perfect', 'wonderful', 'amazing', 'wow', 'impressive', 'brilliant', 'excellent', 'fantastic'],
+    topic: 'positive',
+    response: () => {
+      const responses = [
+        `Right?! ${randomEmoji('excited')} I never get tired of talking about this stuff. What else would you like to explore?`,
+        `I know! ${randomEmoji('happy')} Arpan's work is genuinely impressive. Want to dig deeper into anything?`,
+        `Glad you think so! ${randomEmoji('excited')} There's even more to discover — what's next on your list?`,
+      ];
+      return randomFrom(responses);
+    }
+  },
+
+  // ── Goodbye ──
+  {
+    patterns: ['bye', 'goodbye', 'see you', 'cya', 'later', 'take care', 'good night', 'goodnight', 'gotta go', 'talk later'],
+    topic: 'bye',
+    response: () => {
+      const name = sessionMemory.userName ? `, ${sessionMemory.userName}` : '';
+      return `Take care${name}! ${randomEmoji('friendly')} It was great chatting. Come back anytime — Arpan's portfolio is always growing! 👋`;
+    }
+  },
+
+  // ── What can you do ──
+  {
+    patterns: ['what can you do', 'what do you know', 'help me', 'help', 'what can you tell', 'what can you help'],
+    topic: 'capabilities',
+    response: () => `I can tell you all about: ${randomEmoji('happy')}\n\n• Arpan's projects & tech stack\n• His education & certifications\n• His skills & expertise areas\n• How to contact or collaborate with him\n• His professional philosophy\n• His blogs & writing\n\nOr we can just chat — I'm good at that too! 😄 What would you like to start with?`,
+  },
+
+  // ── Casual small talk ──
+  {
+    patterns: ['nice to meet you', 'pleasure to meet', 'glad to meet'],
+    topic: 'meeting',
+    response: () => `Likewise! ${randomEmoji('happy')} I love meeting new people. So, what brings you here today?`,
+  },
+
+  {
+    patterns: ['interesting', 'that\'s interesting', 'how interesting', 'really', 'is that so', 'tell me more'],
+    topic: 'curious',
+    response: () => {
+      const responses = [
+        `I know, right? ${randomEmoji('excited')} There's so much depth to Arpan's work. Want me to elaborate on anything specific?`,
+        `Happy to go deeper! ${randomEmoji('happy')} Just let me know what you'd like more details on.`,
+      ];
+      return randomFrom(responses);
+    }
+  },
+
+  {
+    patterns: ['haha', 'lol', 'hehe', '😄', '😂', '😆', 'ha ha'],
+    topic: 'laugh',
+    response: () => `Haha, glad that landed! ${randomEmoji('happy')} Okay, in all seriousness — anything about Arpan's portfolio I can help with?`,
   },
 ];
 
@@ -110,19 +333,28 @@ function getNamiResponse(userInput: string): string {
   for (const intent of intents) {
     const matched = intent.patterns.some(p => lower.includes(p));
     if (matched) {
-      return typeof intent.response === 'function'
-        ? intent.response(lower)
-        : intent.response;
+      if (intent.topic) sessionMemory.lastTopic = intent.topic;
+      const r = intent.response;
+      return typeof r === 'function' ? r(lower) : r;
     }
   }
 
-  // Fallback: try to detect any keyword loosely
+  // Loose fallback using keyword detection
   if (lower.includes('arpan')) {
-    return `${KB.about}\n\nFeel free to ask more — about his projects, skills, certifications, or how to get in touch!`;
+    return `${KB.about}\n\nWant more detail on his projects, skills, or how to get in touch? ${randomEmoji('happy')}`;
   }
 
-  // Generic fallback
-  return `That's a great question! I'm best at answering things about Arpan's AI projects, skills, education, and experience. Try asking something like:\n• "What projects has Arpan built?"\n• "What are his skills?"\n• "How can I contact Arpan?"`;
+  if (lower.includes('ai') || lower.includes('machine learning') || lower.includes('llm')) {
+    return `AI is literally Arpan's bread and butter! ${randomEmoji('excited')} He's specialized in LLMs, RAG systems, AI agents, and production-grade Generative AI. Want me to share some of his projects in that space?`;
+  }
+
+  // Generic smart fallback
+  const fallbacks = [
+    `Hmm, let me think... ${randomEmoji('thinking')} I'm best at answering questions about Arpan's portfolio, projects, and skills. Try asking:\n• "What projects has Arpan built?"\n• "What are his skills?"\n• "How can I contact Arpan?"`,
+    `That's a tricky one! ${randomEmoji('thinking')} I'm Arpan's portfolio assistant, so I'm most helpful around his work and experience. Want me to give you an overview?`,
+    `Interesting question! I'm tuned mainly for Arpan-related things, but I'm happy to chat. ${randomEmoji('happy')} What would you like to know about his work?`,
+  ];
+  return randomFrom(fallbacks);
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────
@@ -132,10 +364,15 @@ const AIAgent: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    if (isOpen) setTimeout(() => inputRef.current?.focus(), 300);
+  }, [isOpen]);
 
   const addMessage = useCallback((msg: Message) => {
     setMessages(prev => [...prev, msg]);
@@ -146,7 +383,7 @@ const AIAgent: React.FC = () => {
       const timer = setTimeout(() => {
         addMessage({
           id: '1',
-          text: "Hi, I'm Nami — Arpan's portfolio assistant 😊\nAsk me anything about Arpan's projects, skills, experience, or background!",
+          text: `Hi there! I'm Nami — Arpan's portfolio assistant 😊\nI know everything about his work, projects, and skills. What can I help you with today?`,
           sender: 'ai',
         });
       }, 1200);
@@ -158,53 +395,48 @@ const AIAgent: React.FC = () => {
     if (!inputValue.trim() || isTyping) return;
     const userText = inputValue.trim();
     setInputValue('');
-
     addMessage({ id: Date.now().toString(), text: userText, sender: 'user' });
     setIsTyping(true);
-
-    // Simulate natural response delay
-    const delay = 600 + Math.random() * 600;
+    const delay = 500 + Math.random() * 800;
     setTimeout(() => {
       setIsTyping(false);
-      const reply = getNamiResponse(userText);
-      addMessage({ id: (Date.now() + 1).toString(), text: reply, sender: 'ai' });
+      addMessage({ id: (Date.now() + 1).toString(), text: getNamiResponse(userText), sender: 'ai' });
     }, delay);
   };
+
+  const sendQuick = (text: string) => {
+    if (isTyping) return;
+    addMessage({ id: Date.now().toString(), text, sender: 'user' });
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      addMessage({ id: (Date.now() + 1).toString(), text: getNamiResponse(text), sender: 'ai' });
+    }, 600);
+  };
+
+  const quickChips = ['Projects', 'Skills', 'Tell me a joke', 'Hire Arpan'];
 
   return (
     <>
       {/* Floating button */}
       <motion.div
-        className="fixed bottom-8 right-8 z-50 cursor-pointer"
+        className="fixed bottom-6 right-6 z-50 cursor-pointer"
         whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="relative group">
-          <div className="absolute -inset-1 bg-cyan-400 rounded-full opacity-30 group-hover:opacity-60 blur-md transition duration-500" />
-          <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-slate-900 border border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.4)] overflow-hidden">
-            <motion.div
-              animate={{ opacity: [0.1, 0.4, 0.1] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute inset-0 bg-gradient-to-t from-cyan-500/30 via-transparent to-cyan-500/10"
-            />
-            <div className="relative z-10 flex flex-col items-center">
-              <div className="w-8 h-8 rounded-full border-2 border-cyan-400/60 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full mx-1 shadow-[0_0_8px_rgba(103,232,249,0.8)]" />
-                <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full mx-1 shadow-[0_0_8px_rgba(103,232,249,0.8)]" />
+          <div className="absolute -inset-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full opacity-20 group-hover:opacity-50 blur-md transition-all duration-500" />
+          <div className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900 border border-cyan-400/40 shadow-[0_0_20px_rgba(34,211,238,0.3)]">
+            <div className="relative">
+              <div className="w-7 h-7 rounded-full border-2 border-cyan-400/60 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full shadow-[0_0_6px_rgba(103,232,249,0.9)]" />
               </div>
-              <div className="w-4 h-1 border-b-2 border-cyan-400/60 rounded-full mt-1" />
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-slate-900 animate-pulse" />
             </div>
-            <motion.div
-              className="absolute top-0 w-full h-px bg-cyan-300/60 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
-              animate={{ top: ['0%', '100%'] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
-            />
-          </div>
-          {/* "Nami" label */}
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] font-black text-cyan-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
-            Nami
+            <span className="text-sm font-black text-white tracking-wide">Nami</span>
           </div>
         </div>
       </motion.div>
@@ -217,48 +449,54 @@ const AIAgent: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 80, scale: 0.92 }}
             transition={{ type: 'spring', damping: 22, stiffness: 280 }}
-            className="fixed bottom-28 right-8 w-[320px] h-[480px] z-50 flex flex-col bg-[#0f172a]/97 backdrop-blur-2xl border border-cyan-500/30 rounded-[1.5rem] shadow-[0_0_50px_rgba(34,211,238,0.2)] overflow-hidden"
+            className="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[340px] h-[520px] z-50 flex flex-col bg-[#0a0f1e]/97 backdrop-blur-2xl border border-cyan-500/25 rounded-3xl shadow-[0_0_60px_rgba(34,211,238,0.15)] overflow-hidden"
           >
             {/* Header */}
-            <div className="p-4 border-b border-cyan-500/20 flex items-center justify-between bg-cyan-500/5 shrink-0">
+            <div className="px-5 py-4 border-b border-cyan-500/15 flex items-center justify-between bg-gradient-to-r from-cyan-500/5 to-blue-500/5 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.4)]">
-                  <Cpu className="text-cyan-400" size={20} />
+                <div className="relative">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                    <Cpu className="text-cyan-400" size={18} />
+                  </div>
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0a0f1e] animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-sm">Nami</h3>
-                  <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                    ARPAN'S PORTFOLIO ASSISTANT
-                  </p>
+                  <h3 className="font-black text-white text-sm tracking-wide">Nami</h3>
+                  <p className="text-[10px] text-cyan-400/80 font-bold uppercase tracking-widest">Portfolio Assistant • Online</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-cyan-400/50 hover:text-cyan-400 transition-colors p-1 rounded-lg hover:bg-cyan-400/10"
+                className="text-slate-500 hover:text-cyan-400 transition-colors p-1.5 rounded-xl hover:bg-cyan-400/10"
               >
-                <X size={18} />
+                <X size={17} />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-900/40 relative">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative">
               <div
-                className="absolute inset-0 pointer-events-none opacity-[0.025]"
-                style={{ backgroundImage: 'radial-gradient(circle, #22d3ee 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+                className="absolute inset-0 pointer-events-none opacity-[0.02]"
+                style={{ backgroundImage: 'radial-gradient(circle, #22d3ee 1px, transparent 1px)', backgroundSize: '24px 24px' }}
               />
 
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.2 }}
                   className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[86%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                  {msg.sender === 'ai' && (
+                    <div className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center mr-2 mt-1 shrink-0">
+                      <Cpu size={10} className="text-cyan-400" />
+                    </div>
+                  )}
+                  <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                     msg.sender === 'user'
-                      ? 'bg-cyan-600/80 text-white rounded-tr-none border border-cyan-400/30 shadow-lg'
-                      : 'bg-slate-800/70 text-cyan-50 border border-cyan-500/20 rounded-tl-none shadow-[inset_0_0_10px_rgba(34,211,238,0.04)]'
+                      ? 'bg-gradient-to-br from-cyan-600 to-blue-700 text-white rounded-tr-sm shadow-lg'
+                      : 'bg-slate-800/80 text-slate-100 border border-white/5 rounded-tl-sm'
                   }`}>
                     {msg.text}
                   </div>
@@ -267,7 +505,10 @@ const AIAgent: React.FC = () => {
 
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-800/70 border border-cyan-500/20 px-4 py-3 rounded-2xl rounded-tl-none flex gap-1.5 shadow-lg">
+                  <div className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center mr-2 mt-1 shrink-0">
+                    <Cpu size={10} className="text-cyan-400" />
+                  </div>
+                  <div className="bg-slate-800/80 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-sm flex gap-1.5 items-center">
                     <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" />
                     <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.15s]" />
                     <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.3s]" />
@@ -278,53 +519,42 @@ const AIAgent: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Quick chips */}
+            {messages.length <= 1 && (
+              <div className="px-4 pb-3 flex flex-wrap gap-2 shrink-0">
+                {quickChips.map(chip => (
+                  <button
+                    key={chip}
+                    onClick={() => sendQuick(chip)}
+                    className="text-[11px] px-3 py-1.5 rounded-full border border-cyan-500/25 text-cyan-400/80 hover:bg-cyan-500/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all font-medium"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Input */}
-            <div className="p-4 bg-slate-950/80 border-t border-cyan-500/20 shrink-0">
+            <div className="px-4 pb-4 pt-2 border-t border-white/5 shrink-0 bg-slate-950/50">
               <div className="relative flex items-center">
                 <input
+                  ref={inputRef}
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask about Arpan…"
+                  placeholder={isTyping ? 'Nami is typing…' : 'Ask me anything…'}
                   disabled={isTyping}
-                  autoFocus
-                  className="w-full bg-slate-900/80 border border-cyan-500/30 rounded-full py-3 px-5 pr-12 text-sm text-cyan-50 placeholder-slate-600 focus:outline-none focus:border-cyan-400/70 focus:ring-1 focus:ring-cyan-400/20 transition-all disabled:opacity-50"
+                  className="w-full bg-slate-900/70 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50"
                 />
                 <button
                   onClick={handleSend}
                   disabled={isTyping || !inputValue.trim()}
-                  className="absolute right-2 p-2 text-cyan-400 hover:text-cyan-300 hover:scale-110 transition-all disabled:opacity-30"
+                  className="absolute right-2 p-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all disabled:opacity-30 disabled:bg-none disabled:bg-slate-700"
                 >
-                  <Send size={17} />
+                  <Send size={14} />
                 </button>
               </div>
-
-              {/* Quick suggestions */}
-              {messages.length <= 1 && (
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {['Projects', 'Skills', 'Contact Arpan'].map(chip => (
-                    <button
-                      key={chip}
-                      onClick={() => {
-                        setInputValue(chip);
-                        setTimeout(() => {
-                          addMessage({ id: Date.now().toString(), text: chip, sender: 'user' });
-                          setIsTyping(true);
-                          setTimeout(() => {
-                            setIsTyping(false);
-                            addMessage({ id: (Date.now() + 1).toString(), text: getNamiResponse(chip), sender: 'ai' });
-                          }, 700);
-                          setInputValue('');
-                        }, 50);
-                      }}
-                      className="text-[11px] px-3 py-1 rounded-full border border-cyan-500/30 text-cyan-400/80 hover:bg-cyan-500/10 hover:border-cyan-400/50 transition-all"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           </motion.div>
         )}

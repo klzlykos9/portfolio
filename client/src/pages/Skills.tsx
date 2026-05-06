@@ -1,185 +1,155 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  BarChart3, 
-  Code2, 
-  BrainCircuit,
-  LineChart,
-  ChevronRight,
-  TrendingUp,
-  Zap,
-  Target
-} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BrainCircuit, BarChart3, Code2, LineChart, Zap, Target, TrendingUp, ChevronDown } from 'lucide-react';
+import Footer from '../components/Footer';
 
-interface SkillCategory {
-  title: string;
-  icon: React.ReactNode;
-  skills: string[];
-  color: string;
-}
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.55 } }),
+};
+
+const categories = [
+  {
+    title: 'AI & Data Science',
+    icon: BrainCircuit,
+    color: 'from-cyan-500 to-blue-600',
+    bg: 'from-cyan-500/10 to-blue-600/10',
+    border: 'border-cyan-500/25',
+    skills: ['Generative AI', 'LLM Applications', 'LangChain & LangGraph', 'Machine Learning', 'Deep Learning', 'Reinforcement Learning', 'Natural Language Processing', 'Computer Vision', 'RAG Systems', 'AI Agents', 'TensorFlow', 'PyTorch', 'Scikit-learn', 'MLOps'],
+  },
+  {
+    title: 'Business & Strategy',
+    icon: BarChart3,
+    color: 'from-blue-500 to-indigo-600',
+    bg: 'from-blue-500/10 to-indigo-600/10',
+    border: 'border-blue-500/25',
+    skills: ['Business Strategy', 'Process Optimization', 'Six Sigma', 'Lean Methodology', 'Quality Assurance', 'Supply Chain', 'International Business', 'Finance & Operations', 'Decision Intelligence'],
+  },
+  {
+    title: 'Technical Stack',
+    icon: Code2,
+    color: 'from-purple-500 to-pink-600',
+    bg: 'from-purple-500/10 to-pink-600/10',
+    border: 'border-purple-500/25',
+    skills: ['Python', 'React', 'Node.js', 'TypeScript', 'JavaScript', 'SQL', 'FastAPI', 'Flask', 'PostgreSQL', 'MongoDB', 'Docker', 'Tailwind CSS'],
+  },
+  {
+    title: 'Analytics & Tools',
+    icon: LineChart,
+    color: 'from-emerald-500 to-teal-600',
+    bg: 'from-emerald-500/10 to-teal-600/10',
+    border: 'border-emerald-500/25',
+    skills: ['Power BI', 'R Studio', 'SPSS', 'Minitab', 'Excel', 'n8n', 'Git', 'LangSmith', 'Argo Workflows'],
+  },
+];
+
+const expertise = [
+  { icon: Zap, title: 'Production-Grade AI', desc: 'Architecting scalable systems that bridge research and real-world deployment.', color: 'text-cyan-400' },
+  { icon: BrainCircuit, title: 'Intelligent Automation', desc: 'Designing autonomous agents and complex workflow orchestrations.', color: 'text-purple-400' },
+  { icon: TrendingUp, title: 'Data Intelligence', desc: 'Converting raw information into strategic insights through predictive modeling.', color: 'text-emerald-400' },
+  { icon: Target, title: 'Strategic AI Design', desc: 'Aligning technical AI implementations with high-level business objectives.', color: 'text-amber-400' },
+];
 
 const Skills: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<number>(0);
-
-  const categories: SkillCategory[] = [
-    {
-      title: 'AI & Data Science',
-      icon: <BrainCircuit />,
-      color: 'from-cyan-500 to-blue-600',
-      skills: [
-        'Generative AI', 'LLM Applications', 'LangChain & LangGraph',
-        'Machine Learning', 'Deep Learning', 'Reinforcement Learning',
-        'Natural Language Processing', 'Computer Vision', 'RAG Systems',
-        'AI Agents', 'TensorFlow', 'PyTorch', 'Scikit-learn', 'MLOps'
-      ]
-    },
-    {
-      title: 'Business & Strategy',
-      icon: <BarChart3 />,
-      color: 'from-blue-500 to-indigo-600',
-      skills: [
-        'Business Strategy', 'Process Optimization', 'Six Sigma',
-        'Lean Methodology', 'Quality Assurance', 'Supply Chain',
-        'International Business', 'Finance & Operations', 'Decision Intelligence'
-      ]
-    },
-    {
-      title: 'Technical Stack',
-      icon: <Code2 />,
-      color: 'from-purple-500 to-pink-600',
-      skills: [
-        'Python', 'React', 'Node.js', 'TypeScript',
-        'JavaScript', 'SQL', 'FastAPI', 'Flask',
-        'PostgreSQL', 'MongoDB', 'Docker', 'Tailwind CSS'
-      ]
-    },
-    {
-      title: 'Analytics & Tools',
-      icon: <LineChart />,
-      color: 'from-emerald-500 to-teal-600',
-      skills: [
-        'Power BI', 'R Studio', 'SPSS', 'Minitab',
-        'Excel', 'n8n', 'Git', 'LangSmith', 'Aron'
-      ]
-    }
-  ];
-
-  const expertise = [
-    {
-      icon: Zap,
-      title: 'Production-Grade AI',
-      description: 'Architecting scalable systems that bridge the gap between research and real-world deployment.'
-    },
-    {
-      icon: BrainCircuit,
-      title: 'Intelligent Automation',
-      description: 'Designing autonomous agents and complex workflow orchestrations for business transformation.'
-    },
-    {
-      icon: TrendingUp,
-      title: 'Data Intelligence',
-      description: 'Converting raw information into strategic insights through advanced predictive modeling.'
-    },
-    {
-      icon: Target,
-      title: 'Strategic AI Design',
-      description: 'Aligning technical AI implementations with high-level business objectives and KPIs.'
-    }
-  ];
+  const [selected, setSelected] = useState(0);
 
   return (
-    <div className="min-h-screen pt-20 pb-20 bg-slate-950">
-      <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="max-w-[1200px] mx-auto relative z-10">
-          {/* Section Title */}
-          <div className="text-center mb-20">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-4xl sm:text-6xl font-bold text-white mb-6"
-            >
-              Professional <span className="text-cyan-400">Expertise</span>
-            </motion.h2>
-            <div className="w-24 h-1 bg-cyan-500 mx-auto rounded-full mb-8" />
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              A synergistic fusion of advanced AI engineering, robust data science, and 
-              strategic business leadership.
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#080e1a] pt-16">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Glows */}
+        <div className="absolute top-1/4 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Expertise Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
-            {expertise.map((item, index) => (
+        <div className="max-w-6xl mx-auto relative z-10">
+          {/* Title */}
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="text-center mb-14 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-black uppercase tracking-widest mb-6">
+              <Zap size={12} /> Technical Expertise
+            </div>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
+              Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Expertise</span>
+            </h1>
+            <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto mb-6" />
+            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+              A synergistic fusion of advanced AI engineering, robust data science, and strategic business leadership.
+            </p>
+          </motion.div>
+
+          {/* Expertise Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-16 sm:mb-24">
+            {expertise.map((item, i) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group bg-slate-900/40 backdrop-blur-sm p-8 rounded-3xl border border-white/5 hover:border-cyan-500/30 transition-all duration-500"
+                key={i}
+                custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                whileHover={{ y: -6, scale: 1.01 }}
+                className="group p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-900/50 border border-white/6 hover:border-white/15 transition-all duration-400 backdrop-blur-sm"
               >
-                <div className="flex items-start gap-6">
-                  <div className="p-4 bg-cyan-500/10 rounded-2xl text-cyan-400 group-hover:scale-110 transition-transform duration-500">
-                    <item.icon size={32} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
-                    <p className="text-gray-400 leading-relaxed">{item.description}</p>
-                  </div>
+                <div className={`inline-flex p-3.5 rounded-2xl bg-white/5 mb-5 group-hover:scale-110 transition-transform duration-400 ${item.color}`}>
+                  <item.icon size={26} />
                 </div>
+                <h3 className="text-lg sm:text-xl font-black text-white mb-2">{item.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
 
-          {/* Interactive Skills Categories */}
-          <div className="space-y-12">
-            <div className="flex flex-wrap justify-center gap-4">
-              {categories.map((cat, index) => (
+          {/* Category tabs — horizontal scroll on mobile */}
+          <div className="mb-8">
+            <div className="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
+              {categories.map((cat, i) => (
                 <button
-                  key={index}
-                  onClick={() => setSelectedCategory(index)}
-                  className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
-                    selectedCategory === index
-                      ? `bg-gradient-to-r ${cat.color} text-white shadow-xl shadow-cyan-500/20 scale-105`
-                      : 'bg-slate-900/50 text-gray-400 hover:text-white border border-white/5'
+                  key={i}
+                  onClick={() => setSelected(i)}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-sm whitespace-nowrap transition-all duration-300 shrink-0 ${
+                    selected === i
+                      ? `bg-gradient-to-r ${cat.color} text-white shadow-xl scale-105`
+                      : 'bg-slate-900/60 text-slate-400 hover:text-white border border-white/6 hover:border-white/15'
                   }`}
                 >
-                  {cat.icon}
+                  <cat.icon size={16} />
                   {cat.title}
                 </button>
               ))}
             </div>
+          </div>
 
+          {/* Skills panel */}
+          <AnimatePresence mode="wait">
             <motion.div
-              key={selectedCategory}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-900/30 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
+              key={selected}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{ duration: 0.35 }}
+              className={`p-6 sm:p-10 rounded-3xl bg-gradient-to-br ${categories[selected].bg} border ${categories[selected].border} relative overflow-hidden backdrop-blur-sm`}
             >
-              <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none">
-                {React.cloneElement(categories[selectedCategory].icon as React.ReactElement, { size: 240 })}
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
+                {React.createElement(categories[selected].icon, { size: 200 })}
               </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 relative z-10">
-                {categories[selectedCategory].skills.map((skill, i) => (
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 relative z-10">
+                {categories[selected].skills.map((skill, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    whileHover={{ y: -5, scale: 1.02 }}
-                    className="flex items-center gap-3 p-4 bg-slate-800/40 rounded-2xl border border-white/5 hover:border-cyan-500/20 hover:bg-slate-800/60 transition-all cursor-default"
+                    transition={{ delay: i * 0.04 }}
+                    whileHover={{ y: -4, scale: 1.03 }}
+                    className="flex items-center gap-2.5 p-3 sm:p-4 bg-slate-900/60 rounded-xl sm:rounded-2xl border border-white/6 hover:border-cyan-500/25 hover:bg-slate-800/60 transition-all cursor-default backdrop-blur-sm"
                   >
-                    <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
-                    <span className="text-gray-200 font-medium">{skill}</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] shrink-0" />
+                    <span className="text-slate-200 font-semibold text-xs sm:text-sm">{skill}</span>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
-          </div>
+          </AnimatePresence>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
