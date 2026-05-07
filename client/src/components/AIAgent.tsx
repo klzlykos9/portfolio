@@ -14,7 +14,7 @@ interface SessionMemory {
   lastTopic?: string;
 }
 
-// ─── Nami's knowledge base ────────────────────────────────────────────────────
+// ─── Shusee's knowledge base ────────────────────────────────────────────────────
 const KB = {
   about: `Arpan P. Nayak is an AI Engineer and Business Strategist. He builds production-grade Generative AI systems that solve real business problems — not just demos. He thinks in systems, builds with intent, and engineers for impact.`,
   philosophy: `Arpan's philosophy: "I don't just build models; I engineer intelligent systems. My focus is on creating AI that is robust, scalable, and inherently aligned with strategic business goals." He works at the intersection of AI engineering, data science, and strategic business design.`,
@@ -29,9 +29,9 @@ const KB = {
 };
 
 const NAMI_SELF = [
-  `I'm Nami! I work as Arpan's personal portfolio assistant. Think of me as his right hand — I know pretty much everything about his work, projects, and goals. 😊`,
-  `Nami here! I'm basically Arpan's AI-powered portfolio buddy. I get to talk about his amazing work all day — honestly not a bad gig. 😄`,
-  `That's me! I'm Nami — I help visitors like you explore Arpan's portfolio. I know all the good stuff about his journey. ✨`,
+  `I'm Shusee! I work as Arpan's personal portfolio assistant. Think of me as his right hand — I know pretty much everything about his work, projects, and goals. 😊`,
+  `Shusee here! I'm basically Arpan's AI-powered portfolio buddy. I get to talk about his amazing work all day — honestly not a bad gig. 😄`,
+  `That's me! I'm Shusee — I help visitors like you explore Arpan's portfolio. I know all the good stuff about his journey. ✨`,
 ];
 
 const MOODS = {
@@ -58,7 +58,7 @@ const intents: Intent[] = [
     response: (_input, mem) => {
       const name = mem.userName ? `, ${mem.userName}` : '';
       return randomFrom([
-        `Hey${name}! ${randomEmoji('friendly')} Good to see you here! I'm Nami — I look after Arpan's portfolio. What can I help you with today?`,
+        `Hey${name}! ${randomEmoji('friendly')} Good to see you here! I'm Shusee — I look after Arpan's portfolio. What can I help you with today?`,
         `Hi${name}! ${randomEmoji('happy')} Welcome! Feel free to ask me anything about Arpan's projects, skills, or background.`,
         `Hello${name}! ${randomEmoji('friendly')} Great that you stopped by. What's on your mind?`,
       ]);
@@ -160,7 +160,7 @@ const intents: Intent[] = [
   {
     patterns: ['your name', 'what should i call you', "what's your name"],
     topic: 'nami_name',
-    response: () => `I'm Nami! ${randomEmoji('happy')} Named by Arpan himself — short, memorable, a little mysterious. What's yours?`,
+    response: () => `I'm Shusee! ${randomEmoji('happy')} Named by Arpan himself — unique, warm, and a little mysterious. What's yours?`,
   },
   {
     patterns: ['joke', 'tell me a joke', 'make me laugh', 'say something funny', 'funny'],
@@ -240,7 +240,7 @@ const intents: Intent[] = [
 ];
 
 // ─── Smart response engine (stateless: memory passed in) ──────────────────────
-function getNamiResponse(userInput: string, memory: SessionMemory): string {
+function getShuseeResponse(userInput: string, memory: SessionMemory): string {
   const lower = userInput.toLowerCase().trim();
 
   for (const intent of intents) {
@@ -296,7 +296,7 @@ const AIAgent: React.FC = () => {
       const timer = setTimeout(() => {
         addMessage({
           id: '1',
-          text: `Hi there! I'm Nami — Arpan's portfolio assistant 😊\nI know everything about his work, projects, and skills. What can I help you with today?`,
+          text: `Hi there! I'm Shusee — Arpan's portfolio assistant 😊\nI know everything about his work, projects, and skills. What can I help you with today?`,
           sender: 'ai',
         });
       }, 1200);
@@ -313,7 +313,7 @@ const AIAgent: React.FC = () => {
     const delay = 500 + Math.random() * 800;
     setTimeout(() => {
       setIsTyping(false);
-      addMessage({ id: (Date.now() + 1).toString(), text: getNamiResponse(userText, memory.current), sender: 'ai' });
+      addMessage({ id: (Date.now() + 1).toString(), text: getShuseeResponse(userText, memory.current), sender: 'ai' });
     }, delay);
   };
 
@@ -323,7 +323,7 @@ const AIAgent: React.FC = () => {
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
-      addMessage({ id: (Date.now() + 1).toString(), text: getNamiResponse(text, memory.current), sender: 'ai' });
+      addMessage({ id: (Date.now() + 1).toString(), text: getShuseeResponse(text, memory.current), sender: 'ai' });
     }, 600);
   };
 
@@ -349,7 +349,7 @@ const AIAgent: React.FC = () => {
               </div>
               <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-slate-900 animate-pulse" />
             </div>
-            <span className="text-sm font-black text-white tracking-wide">Nami</span>
+            <span className="text-sm font-black text-white tracking-wide">Shusee</span>
           </div>
         </div>
       </motion.div>
@@ -374,7 +374,7 @@ const AIAgent: React.FC = () => {
                   <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0a0f1e] animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-black text-white text-sm tracking-wide">Nami</h3>
+                  <h3 className="font-black text-white text-sm tracking-wide">Shusee</h3>
                   <p className="text-[10px] text-cyan-400/80 font-bold uppercase tracking-widest">Portfolio Assistant • Online</p>
                 </div>
               </div>
@@ -456,7 +456,7 @@ const AIAgent: React.FC = () => {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder={isTyping ? 'Nami is typing…' : 'Ask me anything…'}
+                  placeholder={isTyping ? 'Shusee is typing…' : 'Ask me anything…'}
                   disabled={isTyping}
                   className="w-full bg-slate-900/70 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50"
                 />
