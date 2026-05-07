@@ -47,7 +47,7 @@ const About: React.FC = () => {
             </div>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-none tracking-tighter mb-4">
               Who is{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+              <span className="text-cyan-400">
                 Arpan?
               </span>
             </h1>

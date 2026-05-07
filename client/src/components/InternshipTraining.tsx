@@ -52,7 +52,7 @@ const InternshipTraining: React.FC = () => {
             <Sparkles size={12} /> Practical Training
           </div>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
-            Internship & <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Training</span>
+            Internship & <span className="text-cyan-400">Training</span>
           </h1>
           <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full" />
         </motion.div>

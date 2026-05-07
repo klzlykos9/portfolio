@@ -51,7 +51,7 @@ const Contact: React.FC = () => {
               <Sparkles size={12} /> Get In Touch
             </div>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
-              Let's <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Connect</span>
+              Let's <span className="text-cyan-400">Connect</span>
             </h1>
             <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto mb-6" />
             <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto">

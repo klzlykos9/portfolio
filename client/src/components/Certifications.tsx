@@ -92,7 +92,7 @@ const Certifications: React.FC = () => {
             <Sparkles size={12} /> Education & Credentials
           </div>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
-            Education & <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Certifications</span>
+            Education & <span className="text-cyan-400">Certifications</span>
           </h1>
           <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full" />
         </motion.div>
