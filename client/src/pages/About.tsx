@@ -27,30 +27,29 @@ const About: React.FC = () => {
   ];
 
   const traits = [
-    { label: 'Systems Thinker', desc: 'Sees the big picture, designs for scale' },
-    { label: 'Impact-Driven', desc: 'Every project solves a real problem' },
-    { label: 'Lifelong Learner', desc: 'Always upskilling, always building' },
-    { label: 'Strategic AI', desc: 'Business + Engineering mindset' },
+    { label: "Systems Thinker", desc: "Sees the big picture, designs for scale" },
+    { label: "Impact-Driven", desc: "Every project solves a real problem" },
+    { label: "Lifelong Learner", desc: "Always upskilling, always building" },
+    { label: "Strategic AI", desc: "Business + Engineering mindset" },
   ];
 
   return (
     <div className="min-h-screen bg-[#080e1a] pt-16">
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background glows */}
         <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Header */}
-          <motion.div
-            initial="hidden" whileInView="visible" viewport={{ once: true }}
-            variants={fadeUp} className="mb-14 sm:mb-20"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-black uppercase tracking-widest mb-6">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-14 sm:mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-6">
               <Sparkles size={12} /> About Me
             </div>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-none tracking-tighter mb-4">
-              Who is <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Arpan?</span>
+              Who is{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                Arpan?
+              </span>
             </h1>
             <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full" />
           </motion.div>
@@ -60,35 +59,43 @@ const About: React.FC = () => {
             <div className="space-y-6">
               <motion.div
                 custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/8 backdrop-blur-sm"
+                className="p-6 sm:p-8 rounded-3xl bg-slate-800/60 border border-white/10 backdrop-blur-sm"
               >
                 <h2 className="text-xl sm:text-2xl font-black text-white mb-5 flex items-center gap-3">
                   <Award className="text-cyan-400 shrink-0" size={24} /> Professional Vision
                 </h2>
-                <div className="space-y-4 text-slate-300 text-sm sm:text-base leading-relaxed">
+                <div className="space-y-4 text-slate-200 text-sm sm:text-base leading-relaxed">
                   <p>
-                    I am an <span className="text-cyan-400 font-bold">AI Engineer and Business Strategist</span> dedicated to building{" "}
-                    <span className="text-white font-bold">production-grade Generative AI systems</span> that deliver real business value.
+                    I am an{" "}
+                    <span className="text-cyan-400 font-bold">AI Engineer and Business Strategist</span>{" "}
+                    dedicated to building{" "}
+                    <span className="text-white font-bold">production-grade Generative AI systems</span>{" "}
+                    that deliver real business value.
                   </p>
                   <p>
                     My journey began during my MBA when I became a{" "}
-                    <span className="text-cyan-400 font-bold">Certified Python Business Analyst</span>. This unique fusion of strategic business thinking and technical depth lets me bridge the gap between complex AI research and practical industry solutions.
+                    <span className="text-cyan-400 font-bold">Certified Python Business Analyst</span>. This
+                    unique fusion of strategic business thinking and technical depth lets me bridge the gap
+                    between complex AI research and practical industry solutions.
                   </p>
                   <p>
-                    I specialize in <span className="text-white font-semibold">LangChain, LangGraph, and Neural Architectures</span> — building intelligent agents and automated pipelines that transform how organizations operate.
+                    I specialize in{" "}
+                    <span className="text-white font-semibold">LangChain, LangGraph, and Neural Architectures</span>{" "}
+                    — building intelligent agents and automated pipelines that transform how organizations operate.
                   </p>
                 </div>
               </motion.div>
 
               <motion.div
                 custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="p-6 rounded-3xl bg-gradient-to-br from-cyan-500/8 to-blue-600/8 border border-cyan-500/15"
+                className="p-6 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 border border-cyan-500/20"
               >
-                <h3 className="text-cyan-400 font-black text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                <h3 className="text-cyan-300 font-black text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
                   <ArrowRight size={14} /> My Philosophy
                 </h3>
-                <p className="italic text-slate-300 text-sm sm:text-base leading-relaxed">
-                  "I don't just build models; I engineer intelligent systems. My focus is on creating AI that is robust, scalable, and inherently aligned with strategic business goals."
+                <p className="italic text-slate-200 text-sm sm:text-base leading-relaxed">
+                  "I don't just build models; I engineer intelligent systems. My focus is on creating AI
+                  that is robust, scalable, and inherently aligned with strategic business goals."
                 </p>
               </motion.div>
 
@@ -98,9 +105,14 @@ const About: React.FC = () => {
                 className="grid grid-cols-2 gap-3"
               >
                 {traits.map((t, i) => (
-                  <div key={i} className="p-4 rounded-2xl bg-slate-900/40 border border-white/6 hover:border-cyan-500/20 transition-all group">
-                    <div className="text-white font-black text-sm mb-1 group-hover:text-cyan-400 transition-colors">{t.label}</div>
-                    <div className="text-slate-500 text-xs">{t.desc}</div>
+                  <div
+                    key={i}
+                    className="p-4 rounded-2xl bg-slate-800/60 border border-white/10 hover:border-cyan-500/25 transition-all group"
+                  >
+                    <div className="text-white font-black text-sm mb-1.5 group-hover:text-cyan-400 transition-colors">
+                      {t.label}
+                    </div>
+                    <div className="text-slate-400 text-xs leading-relaxed">{t.desc}</div>
                   </div>
                 ))}
               </motion.div>
@@ -124,13 +136,13 @@ const About: React.FC = () => {
                     <div className="absolute -left-[13px] top-0 w-6 h-6 rounded-full bg-[#080e1a] border-2 border-cyan-500 flex items-center justify-center text-cyan-400 group-hover:border-cyan-300 transition-colors">
                       <item.icon size={12} />
                     </div>
-                    <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/50 border border-white/6 hover:border-cyan-500/20 transition-all">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase tracking-wider mb-3">
+                    <div className="p-5 sm:p-6 rounded-2xl bg-slate-800/60 border border-white/10 hover:border-cyan-500/25 transition-all">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 text-[10px] font-black uppercase tracking-wider mb-3">
                         {item.note}
                       </span>
                       <h4 className="text-white font-black text-base sm:text-lg mb-1">{item.degree}</h4>
-                      <p className="text-cyan-400/80 text-sm font-semibold mb-3">{item.institution}</p>
-                      <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                      <p className="text-cyan-400 text-sm font-semibold mb-3">{item.institution}</p>
+                      <p className="text-slate-300 text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </motion.div>
                 ))}

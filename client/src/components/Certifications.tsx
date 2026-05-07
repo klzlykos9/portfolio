@@ -82,14 +82,13 @@ const Certifications: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#080e1a] pt-16">
     <section className="w-full py-16 sm:py-24 relative overflow-hidden">
-      {/* Glows */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-14 sm:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-black uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-6">
             <Sparkles size={12} /> Education & Credentials
           </div>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
@@ -105,19 +104,19 @@ const Certifications: React.FC = () => {
               key={i}
               custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
               whileHover={{ y: -4 }}
-              className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/8 hover:border-cyan-500/20 transition-all backdrop-blur-sm group"
+              className="p-6 sm:p-8 rounded-3xl bg-slate-800/60 border border-white/10 hover:border-cyan-500/25 transition-all backdrop-blur-sm group"
             >
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
                   <degree.icon className="text-cyan-400" size={22} />
                 </div>
                 <div>
-                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase tracking-wider mb-2">
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 text-[10px] font-black uppercase tracking-wider mb-2">
                     {degree.note}
                   </span>
                   <h3 className="text-base sm:text-lg font-black text-white mb-1">{degree.title}</h3>
-                  <p className="text-cyan-400/80 font-bold text-sm mb-3">{degree.institution}</p>
-                  <p className="text-slate-400 text-sm leading-relaxed">{degree.details}</p>
+                  <p className="text-cyan-400 font-bold text-sm mb-3">{degree.institution}</p>
+                  <p className="text-slate-300 text-sm leading-relaxed">{degree.details}</p>
                 </div>
               </div>
             </motion.div>
@@ -139,7 +138,7 @@ const Certifications: React.FC = () => {
                 custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
                 whileHover={{ y: -8, scale: 1.01 }}
                 onClick={() => setSelectedCert(cert)}
-                className="bg-slate-900/60 rounded-2xl sm:rounded-3xl overflow-hidden border border-white/8 hover:border-cyan-500/40 transition-all cursor-pointer group backdrop-blur-sm"
+                className="bg-slate-800/60 rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 hover:border-cyan-500/40 transition-all cursor-pointer group backdrop-blur-sm"
               >
                 <div className="aspect-video relative overflow-hidden">
                   <img
@@ -156,10 +155,10 @@ const Certifications: React.FC = () => {
                     <ShieldCheck size={12} /> {cert.year}
                   </div>
                   <h3 className="text-base sm:text-lg font-black text-white mb-1 group-hover:text-cyan-400 transition-colors">{cert.title}</h3>
-                  <p className="text-slate-500 text-xs sm:text-sm mb-4">{cert.authority}</p>
+                  <p className="text-slate-300 text-xs sm:text-sm mb-4">{cert.authority}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {cert.skills.slice(0, 2).map((skill, j) => (
-                      <span key={j} className="px-2 py-1 bg-slate-800/80 rounded text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                      <span key={j} className="px-2 py-1 bg-slate-700/80 rounded text-[10px] text-slate-200 font-bold uppercase tracking-wider">
                         {skill}
                       </span>
                     ))}
@@ -183,11 +182,11 @@ const Certifications: React.FC = () => {
               <motion.div
                 key={i}
                 custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-                className="p-5 sm:p-6 rounded-2xl bg-slate-900/40 border border-white/6 hover:border-white/15 transition-all"
+                className="p-5 sm:p-6 rounded-2xl bg-slate-800/60 border border-white/10 hover:border-white/20 transition-all"
               >
                 <h4 className="text-sm sm:text-base font-black text-white mb-1">{cert.title}</h4>
-                <p className="text-cyan-500/70 text-xs font-bold mb-3">{cert.institution}</p>
-                <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{cert.details}</p>
+                <p className="text-cyan-400 text-xs font-bold mb-3">{cert.institution}</p>
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">{cert.details}</p>
               </motion.div>
             ))}
           </div>
@@ -231,12 +230,12 @@ const Certifications: React.FC = () => {
                   <p className="text-cyan-400 text-base sm:text-lg font-bold mb-6">{selectedCert.authority}</p>
 
                   <div>
-                    <h4 className="text-slate-500 uppercase tracking-widest text-xs font-black mb-4 flex items-center gap-2">
+                    <h4 className="text-slate-400 uppercase tracking-widest text-xs font-black mb-4 flex items-center gap-2">
                       <Award size={14} className="text-cyan-400" /> Key Skills Gained
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {selectedCert.skills.map((skill, i) => (
-                        <div key={i} className="flex items-center gap-2 text-slate-300 text-sm">
+                        <div key={i} className="flex items-center gap-2 text-slate-200 text-sm">
                           <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
                           {skill}
                         </div>
@@ -245,8 +244,8 @@ const Certifications: React.FC = () => {
                   </div>
 
                   <div className="mt-6 pt-6 border-t border-white/8 flex items-center justify-between">
-                    <span className="text-slate-500 font-mono text-sm">Issued: {selectedCert.year}</span>
-                    <span className="px-3 py-1.5 bg-cyan-500/10 text-cyan-400 rounded-full text-xs font-black border border-cyan-500/20">
+                    <span className="text-slate-400 font-mono text-sm">Issued: {selectedCert.year}</span>
+                    <span className="px-3 py-1.5 bg-cyan-500/10 text-cyan-300 rounded-full text-xs font-black border border-cyan-500/20">
                       Verified Professional
                     </span>
                   </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrainCircuit, BarChart3, Code2, LineChart, Zap, Target, TrendingUp, ChevronDown } from 'lucide-react';
+import { BrainCircuit, BarChart3, Code2, LineChart, Zap, Target, TrendingUp } from 'lucide-react';
 import Footer from '../components/Footer';
 
 const fadeUp = {
@@ -44,10 +44,10 @@ const categories = [
 ];
 
 const expertise = [
-  { icon: Zap, title: 'Production-Grade AI', desc: 'Architecting scalable systems that bridge research and real-world deployment.', color: 'text-cyan-400' },
-  { icon: BrainCircuit, title: 'Intelligent Automation', desc: 'Designing autonomous agents and complex workflow orchestrations.', color: 'text-purple-400' },
-  { icon: TrendingUp, title: 'Data Intelligence', desc: 'Converting raw information into strategic insights through predictive modeling.', color: 'text-emerald-400' },
-  { icon: Target, title: 'Strategic AI Design', desc: 'Aligning technical AI implementations with high-level business objectives.', color: 'text-amber-400' },
+  { icon: Zap, title: 'Production-Grade AI', desc: 'Architecting scalable systems that bridge research and real-world deployment.', color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+  { icon: BrainCircuit, title: 'Intelligent Automation', desc: 'Designing autonomous agents and complex workflow orchestrations.', color: 'text-purple-400', bg: 'bg-purple-500/10' },
+  { icon: TrendingUp, title: 'Data Intelligence', desc: 'Converting raw information into strategic insights through predictive modeling.', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  { icon: Target, title: 'Strategic AI Design', desc: 'Aligning technical AI implementations with high-level business objectives.', color: 'text-amber-400', bg: 'bg-amber-500/10' },
 ];
 
 const Skills: React.FC = () => {
@@ -56,7 +56,6 @@ const Skills: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#080e1a] pt-16">
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Glows */}
         <div className="absolute top-1/4 right-0 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -66,14 +65,14 @@ const Skills: React.FC = () => {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             className="text-center mb-14 sm:mb-20"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-black uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-6">
               <Zap size={12} /> Technical Expertise
             </div>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
               Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Expertise</span>
             </h1>
             <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto mb-6" />
-            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+            <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
               A synergistic fusion of advanced AI engineering, robust data science, and strategic business leadership.
             </p>
           </motion.div>
@@ -85,18 +84,18 @@ const Skills: React.FC = () => {
                 key={i}
                 custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
                 whileHover={{ y: -6, scale: 1.01 }}
-                className="group p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-900/50 border border-white/6 hover:border-white/15 transition-all duration-400 backdrop-blur-sm"
+                className="group p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-800/60 border border-white/10 hover:border-white/20 transition-all duration-400 backdrop-blur-sm"
               >
-                <div className={`inline-flex p-3.5 rounded-2xl bg-white/5 mb-5 group-hover:scale-110 transition-transform duration-400 ${item.color}`}>
+                <div className={`inline-flex p-3.5 rounded-2xl ${item.bg} mb-5 group-hover:scale-110 transition-transform duration-400 ${item.color}`}>
                   <item.icon size={26} />
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-white mb-2">{item.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg sm:text-xl font-black text-white mb-3">{item.title}</h3>
+                <p className="text-slate-300 text-sm leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
 
-          {/* Category tabs — horizontal scroll on mobile */}
+          {/* Category tabs */}
           <div className="mb-8">
             <div className="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
               {categories.map((cat, i) => (
@@ -106,7 +105,7 @@ const Skills: React.FC = () => {
                   className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-sm whitespace-nowrap transition-all duration-300 shrink-0 ${
                     selected === i
                       ? `bg-gradient-to-r ${cat.color} text-white shadow-xl scale-105`
-                      : 'bg-slate-900/60 text-slate-400 hover:text-white border border-white/6 hover:border-white/15'
+                      : 'bg-slate-800/80 text-slate-300 hover:text-white border border-white/10 hover:border-white/20'
                   }`}
                 >
                   <cat.icon size={16} />
@@ -138,10 +137,10 @@ const Skills: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04 }}
                     whileHover={{ y: -4, scale: 1.03 }}
-                    className="flex items-center gap-2.5 p-3 sm:p-4 bg-slate-900/60 rounded-xl sm:rounded-2xl border border-white/6 hover:border-cyan-500/25 hover:bg-slate-800/60 transition-all cursor-default backdrop-blur-sm"
+                    className="flex items-center gap-2.5 p-3 sm:p-4 bg-slate-900/80 rounded-xl sm:rounded-2xl border border-white/10 hover:border-cyan-500/30 hover:bg-slate-800/80 transition-all cursor-default"
                   >
                     <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] shrink-0" />
-                    <span className="text-slate-200 font-semibold text-xs sm:text-sm">{skill}</span>
+                    <span className="text-white font-semibold text-xs sm:text-sm">{skill}</span>
                   </motion.div>
                 ))}
               </div>

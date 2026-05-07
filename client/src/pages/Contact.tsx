@@ -30,12 +30,13 @@ const Contact: React.FC = () => {
   ];
 
   const socials = [
-    { icon: Github, href: 'https://github.com/klzlykos9', label: 'GitHub', color: 'hover:border-white/40 hover:text-white' },
-    { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak/', label: 'LinkedIn', color: 'hover:border-blue-500/50 hover:text-blue-400' },
-    { icon: Mail, href: 'mailto:arpanpnayak@gmail.com', label: 'Email', color: 'hover:border-cyan-500/50 hover:text-cyan-400' },
+    { icon: Github, href: 'https://github.com/klzlykos9', label: 'GitHub', color: 'hover:border-white/50 hover:text-white' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak/', label: 'LinkedIn', color: 'hover:border-blue-400/60 hover:text-blue-400' },
+    { icon: Mail, href: 'mailto:arpanpnayak@gmail.com', label: 'Email', color: 'hover:border-cyan-400/60 hover:text-cyan-400' },
   ];
 
-  const inputClass = "w-full px-4 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all text-sm";
+  const inputClass = "w-full px-4 py-3 bg-slate-800/80 border border-white/15 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/60 focus:ring-1 focus:ring-cyan-500/20 transition-all text-sm";
+  const labelClass = "block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2";
 
   return (
     <div className="min-h-screen bg-[#080e1a] pt-16">
@@ -46,14 +47,14 @@ const Contact: React.FC = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Header */}
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mb-14 sm:mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-black uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-6">
               <Sparkles size={12} /> Get In Touch
             </div>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
               Let's <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Connect</span>
             </h1>
             <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto mb-6" />
-            <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto">
+            <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto">
               Ready to collaborate on your next AI project? Let's discuss how we can bring your ideas to life.
             </p>
           </motion.div>
@@ -64,24 +65,24 @@ const Contact: React.FC = () => {
               custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
               className="lg:col-span-2 space-y-5"
             >
-              <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/8 backdrop-blur-sm">
+              <div className="p-6 sm:p-8 rounded-3xl bg-slate-800/60 border border-white/10 backdrop-blur-sm">
                 <h2 className="text-xl font-black text-white mb-6">Get in Touch</h2>
                 <div className="space-y-5">
                   {contactItems.map(({ icon: Icon, label, value }, i) => (
                     <div key={i} className="flex items-start gap-4">
-                      <div className="p-2.5 bg-cyan-500/10 border border-cyan-500/20 rounded-xl shrink-0">
+                      <div className="p-2.5 bg-cyan-500/10 border border-cyan-500/25 rounded-xl shrink-0">
                         <Icon className="text-cyan-400" size={18} />
                       </div>
                       <div>
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-0.5">{label}</p>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">{label}</p>
                         <p className="text-white text-sm font-semibold">{value}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-white/6">
-                  <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-4">Find me on</p>
+                <div className="mt-8 pt-6 border-t border-white/8">
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-4">Find me on</p>
                   <div className="flex gap-3">
                     {socials.map(({ icon: Icon, href, label, color }) => (
                       <a
@@ -90,7 +91,7 @@ const Contact: React.FC = () => {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={label}
-                        className={`p-3 bg-slate-800/60 border border-white/8 rounded-xl text-slate-400 transition-all duration-300 hover:-translate-y-1 ${color}`}
+                        className={`p-3 bg-slate-700/60 border border-white/10 rounded-xl text-slate-300 transition-all duration-300 hover:-translate-y-1 ${color}`}
                       >
                         <Icon size={18} />
                       </a>
@@ -100,14 +101,14 @@ const Contact: React.FC = () => {
               </div>
 
               {/* Availability tag */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 flex items-center gap-4">
-                <div className="relative">
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/25 flex items-center gap-4">
+                <div className="relative shrink-0">
                   <div className="w-3 h-3 bg-emerald-400 rounded-full" />
                   <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-40" />
                 </div>
                 <div>
-                  <p className="text-emerald-400 font-black text-sm">Available for Work</p>
-                  <p className="text-slate-500 text-xs">Open to AI engineering projects</p>
+                  <p className="text-emerald-300 font-black text-sm">Available for Work</p>
+                  <p className="text-slate-400 text-xs mt-0.5">Open to AI engineering projects</p>
                 </div>
               </div>
             </motion.div>
@@ -117,7 +118,7 @@ const Contact: React.FC = () => {
               custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
               className="lg:col-span-3"
             >
-              <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/8 backdrop-blur-sm">
+              <div className="p-6 sm:p-8 rounded-3xl bg-slate-800/60 border border-white/10 backdrop-blur-sm">
                 <h2 className="text-xl font-black text-white mb-6">Send a Message</h2>
 
                 {sent ? (
@@ -128,26 +129,26 @@ const Contact: React.FC = () => {
                   >
                     <CheckCircle className="text-emerald-400" size={48} />
                     <h3 className="text-white font-black text-xl">Message Sent!</h3>
-                    <p className="text-slate-400 text-sm">Thanks for reaching out. Arpan will get back to you soon.</p>
+                    <p className="text-slate-300 text-sm">Thanks for reaching out. Arpan will get back to you soon.</p>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Name</label>
+                        <label className={labelClass}>Name</label>
                         <input type="text" name="name" value={formData.name} onChange={handleChange} required className={inputClass} placeholder="Your name" />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email</label>
+                        <label className={labelClass}>Email</label>
                         <input type="email" name="email" value={formData.email} onChange={handleChange} required className={inputClass} placeholder="your@email.com" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Subject</label>
+                      <label className={labelClass}>Subject</label>
                       <input type="text" name="subject" value={formData.subject} onChange={handleChange} required className={inputClass} placeholder="Project collaboration" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Message</label>
+                      <label className={labelClass}>Message</label>
                       <textarea name="message" value={formData.message} onChange={handleChange} required rows={5} className={`${inputClass} resize-none`} placeholder="Tell me about your project..." />
                     </div>
                     <button

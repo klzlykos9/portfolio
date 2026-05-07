@@ -62,10 +62,10 @@ const StatItem = ({ value, label, suffix = '+' }: { value: number; label: string
       viewport={{ once: true }}
       className="text-center"
     >
-      <div className="text-3xl sm:text-4xl font-black text-white">
+      <div className="text-2xl sm:text-4xl font-black text-white">
         {count}{suffix}
       </div>
-      <div className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">{label}</div>
+      <div className="text-xs sm:text-sm text-slate-300 mt-1 font-medium">{label}</div>
     </motion.div>
   );
 };
@@ -86,6 +86,11 @@ const Home: React.FC = () => {
     'Systems Thinker',
     'Problem Solver',
   ], 75, 2200);
+
+  const scrollDown = () => {
+    const el = document.getElementById('section-preview');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="relative min-h-screen bg-[#080e1a] overflow-x-hidden">
@@ -119,13 +124,13 @@ const Home: React.FC = () => {
             Available for AI Projects
           </motion.div>
 
-          {/* Main heading */}
+          {/* Main heading — mobile-safe responsive sizes */}
           <div>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.9 }}
-              className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-black leading-none tracking-tighter"
+              className="text-[2.4rem] leading-none xs:text-5xl sm:text-7xl lg:text-8xl font-black tracking-tighter"
             >
               <span className="text-white">ARPAN P. </span>
               <span style={{
@@ -158,7 +163,7 @@ const Home: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed px-2"
+            className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed px-2"
           >
             Architecting <span className="text-white font-semibold">intelligent systems</span> that bridge cutting-edge AI technology and strategic business transformation.
           </motion.p>
@@ -171,7 +176,7 @@ const Home: React.FC = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
           >
             <button
-              onClick={() => { const el = document.getElementById('section-preview'); el?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={scrollDown}
               className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white rounded-2xl font-black text-base transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.4)] flex items-center justify-center gap-3 active:scale-95"
             >
               Explore Portfolio
@@ -179,7 +184,7 @@ const Home: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/projects')}
-              className="group w-full sm:w-auto px-8 py-4 border-2 border-white/12 text-white rounded-2xl font-black text-base transition-all hover:bg-white/5 hover:border-primary/50 flex items-center justify-center gap-2"
+              className="group w-full sm:w-auto px-8 py-4 border-2 border-white/15 text-white rounded-2xl font-black text-base transition-all hover:bg-white/5 hover:border-primary/50 flex items-center justify-center gap-2"
             >
               View Projects
             </button>
@@ -192,14 +197,14 @@ const Home: React.FC = () => {
             transition={{ delay: 1.1 }}
             className="flex flex-wrap justify-center gap-3 pt-6"
           >
-            {floatingTech.map((tech, i) => (
+            {floatingTech.map((tech) => (
               <motion.div
                 key={tech.label}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.1 + tech.delay }}
                 whileHover={{ y: -4, scale: 1.05 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${tech.color} bg-opacity-10 border border-white/10 text-white text-xs font-bold shadow-lg backdrop-blur-sm`}
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 text-white text-xs font-bold shadow-lg backdrop-blur-sm"
                 style={{ background: 'rgba(255,255,255,0.05)' }}
               >
                 <tech.icon size={13} className="text-cyan-300" />
@@ -238,7 +243,7 @@ const Home: React.FC = () => {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={label}
-                className={`group relative p-4 bg-slate-900/60 rounded-2xl border border-white/6 transition-all duration-400 hover:border-primary/40 hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] text-slate-400 ${hover}`}
+                className={`group relative p-4 bg-slate-900/60 rounded-2xl border border-white/8 transition-all duration-400 hover:border-primary/40 hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] text-slate-400 ${hover}`}
               >
                 <Icon size={22} className="relative z-10" />
               </a>
@@ -246,15 +251,17 @@ const Home: React.FC = () => {
           </motion.div>
         </motion.div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-600"
+        {/* Scroll indicator — clickable + visible */}
+        <motion.button
+          onClick={scrollDown}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer group"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
+          aria-label="Scroll down"
         >
           <span className="text-[10px] uppercase tracking-widest font-bold">Scroll</span>
-          <ChevronDown size={16} />
-        </motion.div>
+          <ChevronDown size={18} className="group-hover:scale-125 transition-transform" />
+        </motion.button>
       </div>
 
       {/* ── Section Shortcuts ── */}
@@ -262,7 +269,7 @@ const Home: React.FC = () => {
         <SectionPreview />
       </div>
 
-      {/* ── AI Features Strip ── */}
+      {/* ── What I Build Strip ── */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -274,7 +281,7 @@ const Home: React.FC = () => {
             <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
               What I <span className="text-primary">Build</span>
             </h2>
-            <p className="text-slate-500 text-sm">Production-grade AI systems, not just prototypes</p>
+            <p className="text-slate-300 text-sm">Production-grade AI systems, not just prototypes</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -282,7 +289,7 @@ const Home: React.FC = () => {
               { icon: Brain, title: 'LLM Applications', desc: 'LangChain, LangGraph, RAG, Agents', color: 'from-cyan-500/20 to-blue-600/20', border: 'border-cyan-500/20' },
               { icon: Zap, title: 'AI Automation', desc: 'n8n workflows, intelligent pipelines', color: 'from-amber-500/20 to-orange-500/20', border: 'border-amber-500/20' },
               { icon: Code2, title: 'AI Backends', desc: 'FastAPI microservices, scalable APIs', color: 'from-emerald-500/20 to-teal-500/20', border: 'border-emerald-500/20' },
-              { icon: Cpu, title: 'Vision & Multimodal', desc: 'Computer vision, CLIP, image+text AI', color: 'from-purple-500/20 to-pink-500/20', border: 'border-purple-500/20' },
+              { icon: Cpu, title: 'Vision & Multimodal', desc: 'Computer vision, CLIP, image + text AI', color: 'from-purple-500/20 to-pink-500/20', border: 'border-purple-500/20' },
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -296,8 +303,8 @@ const Home: React.FC = () => {
                 <div className="p-3 rounded-xl bg-white/5 w-fit mb-4 group-hover:scale-110 transition-transform duration-300">
                   <item.icon className="text-white" size={22} />
                 </div>
-                <h3 className="text-white font-black text-sm mb-1">{item.title}</h3>
-                <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+                <h3 className="text-white font-black text-sm mb-1.5">{item.title}</h3>
+                <p className="text-slate-300 text-xs leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>

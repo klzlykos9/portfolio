@@ -14,7 +14,7 @@ const experiences = [
     duration: 'July 2022 – August 2022',
     role: 'Six Sigma Intern',
     color: 'from-cyan-500/15 to-blue-600/15',
-    border: 'border-cyan-500/20',
+    border: 'border-cyan-500/25',
     outcomes: [
       'Mastered advanced process optimization strategies',
       'Applied Black Belt methodologies to real-world business cases',
@@ -28,7 +28,7 @@ const experiences = [
     duration: 'Sept 2022 – Oct 2022',
     role: 'Six Sigma Intern',
     color: 'from-emerald-500/15 to-teal-600/15',
-    border: 'border-emerald-500/20',
+    border: 'border-emerald-500/25',
     outcomes: [
       'Implemented DMAIC methodology for process improvement',
       'Successfully completed project-based assignments',
@@ -48,7 +48,7 @@ const InternshipTraining: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-14 sm:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-black uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-6">
             <Sparkles size={12} /> Practical Training
           </div>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
@@ -69,39 +69,34 @@ const InternshipTraining: React.FC = () => {
               whileHover={{ y: -6 }}
               className={`relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br ${exp.color} border ${exp.border} backdrop-blur-sm overflow-hidden group transition-all duration-400`}
             >
-              {/* Decorative icon */}
               <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <Briefcase size={90} className="text-cyan-400" />
               </div>
 
               <div className="relative z-10 flex flex-col gap-5">
-                {/* Meta */}
-                <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-black uppercase tracking-widest">
+                <div className="flex items-center gap-2 text-cyan-300 text-[11px] font-black uppercase tracking-widest">
                   <Calendar size={13} /> {exp.duration}
                 </div>
 
-                {/* Title */}
                 <div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-black text-white mb-1 group-hover:text-cyan-300 transition-colors leading-tight">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-black text-white mb-1.5 group-hover:text-cyan-300 transition-colors leading-tight">
                     {exp.title}
                   </h3>
-                  <p className="text-slate-400 font-bold text-sm sm:text-base">{exp.organization}</p>
+                  <p className="text-slate-300 font-bold text-sm sm:text-base">{exp.organization}</p>
                 </div>
 
-                {/* Role badge */}
-                <span className="self-start px-3 py-1.5 rounded-full bg-slate-900/60 border border-white/10 text-slate-300 text-xs font-black uppercase tracking-wider">
+                <span className="self-start px-3 py-1.5 rounded-full bg-slate-900/60 border border-white/15 text-slate-200 text-xs font-black uppercase tracking-wider">
                   {exp.role}
                 </span>
 
-                {/* Outcomes */}
                 <div>
-                  <h4 className="text-[11px] font-black text-cyan-500/70 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                  <h4 className="text-[11px] font-black text-cyan-300/80 uppercase tracking-widest mb-3 flex items-center gap-1.5">
                     <Award size={13} /> Key Learning Outcomes
                   </h4>
                   <ul className="space-y-2.5">
                     {exp.outcomes.map((item, j) => (
-                      <li key={j} className="flex items-start gap-2 text-slate-300 text-xs sm:text-sm">
-                        <ChevronRight className="text-cyan-500 mt-0.5 shrink-0" size={15} />
+                      <li key={j} className="flex items-start gap-2 text-slate-200 text-xs sm:text-sm">
+                        <ChevronRight className="text-cyan-400 mt-0.5 shrink-0" size={15} />
                         {item}
                       </li>
                     ))}
