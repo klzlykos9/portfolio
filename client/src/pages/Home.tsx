@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Cpu, Zap, Brain, Code2, Sparkles, Network } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Cpu, Zap, Brain, Code2, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
 import AIHudEffect from '../components/AIHudEffect';
-import FloatingTechBadges from '../components/FloatingTechBadges';
 import CircuitDecor from '../components/CircuitDecor';
-import NeuralNetworkIcon from '../components/NeuralNetworkIcon';
-import MobileTechBadges from '../components/MobileTechBadges';
+import NamiHologram from '../components/NamiHologram';
 import { SectionPreview } from '../components/SectionPreview';
 
 // ─── Typewriter hook ─────────────────────────────────────────────────────────
@@ -144,141 +142,138 @@ const Home: React.FC = () => {
       <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center pt-16 pb-20">
 
         <AIHudEffect />
-        <FloatingTechBadges />
 
         {/* Glow orbs */}
         <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-cyan-500/6 rounded-full blur-[80px] pointer-events-none" />
         <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-600/6 rounded-full blur-[80px] pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/4 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto relative z-20 flex flex-col items-center gap-4 sm:gap-5">
+        {/* Two-column hero layout on large screens, stacked on mobile */}
+        <div className="max-w-6xl mx-auto w-full relative z-20 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 px-2">
 
-          {/* ── Neural network logo + availability badge ── */}
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.5 }}
-            className="flex flex-col items-center gap-2.5"
-          >
-            <div className="relative">
-              <div className="absolute inset-0 rounded-2xl blur-xl bg-cyan-500/20 scale-110" />
-              <div className="relative p-3 rounded-2xl bg-slate-900/70 border border-cyan-500/25 backdrop-blur-sm shadow-[0_0_30px_rgba(6,182,212,0.15)]">
-                <NeuralNetworkIcon size={1.1} />
-              </div>
-            </div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-primary/30 text-primary font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] glow-pulse">
+          {/* ── Left: Text content ── */}
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5 flex-1 max-w-xl">
+
+            {/* Availability badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05, duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-primary/30 text-primary font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] glow-pulse"
+            >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
               Available for AI Projects
-            </div>
-          </motion.div>
+            </motion.div>
 
-          {/* ── Name + Typewriter ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.6 }}
-          >
-            <h1 className="text-[2.2rem] leading-none sm:text-6xl lg:text-7xl font-black tracking-tighter">
-              <span className="text-white">ARPAN P. </span>
-              <span style={{
-                WebkitTextFillColor: 'transparent',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                backgroundImage: 'linear-gradient(90deg,#facc15,#fbbf24,#f59e0b,#facc15)',
-                backgroundSize: '200% auto',
-                animation: 'shimmer 2.5s linear infinite',
-                filter: 'drop-shadow(0 0 24px rgba(251,191,36,0.6))',
-              }}>NAYAK</span>
-            </h1>
-            <div className="mt-3 h-9 sm:h-11 flex items-center justify-center">
-              <span className="text-lg sm:text-2xl font-bold text-primary">
-                {typed}
-                <span className="inline-block w-0.5 h-5 sm:h-7 bg-primary ml-0.5 animate-pulse align-middle" />
-              </span>
-            </div>
-          </motion.div>
-
-          {/* ── Description ── */}
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.28, duration: 0.5 }}
-            className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-xl mx-auto leading-relaxed px-2"
-          >
-            Architecting <span className="text-white font-semibold">intelligent systems</span> that bridge cutting-edge AI and strategic business transformation.
-          </motion.p>
-
-          {/* ── Tech badges — LangChain/LangGraph featured + all tools ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="w-full max-w-lg"
-          >
-            <MobileTechBadges />
-          </motion.div>
-
-          {/* ── CTA Buttons ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.52, duration: 0.45 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center items-center w-full sm:w-auto"
-          >
-            <button
-              onClick={scrollDown}
-              className="group w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-primary to-blue-600 text-white rounded-2xl font-black text-sm transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.45)] flex items-center justify-center gap-2 active:scale-95"
+            {/* Name */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.6 }}
             >
-              Explore Portfolio
-              <ArrowRight size={17} className="group-hover:translate-x-1.5 transition-transform" />
-            </button>
-            <button
-              onClick={() => navigate('/projects')}
-              className="group w-full sm:w-auto px-7 py-3.5 border-2 border-white/15 text-white rounded-2xl font-black text-sm transition-all hover:bg-white/5 hover:border-primary/50 hover:shadow-[0_0_24px_rgba(6,182,212,0.12)] flex items-center justify-center gap-2"
+              <h1 className="text-[2.4rem] leading-none sm:text-6xl lg:text-7xl font-black tracking-tighter">
+                <span className="text-white">ARPAN P. </span>
+                <span style={{
+                  WebkitTextFillColor: 'transparent',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  backgroundImage: 'linear-gradient(90deg,#facc15,#fbbf24,#f59e0b,#facc15)',
+                  backgroundSize: '200% auto',
+                  animation: 'shimmer 2.5s linear infinite',
+                  filter: 'drop-shadow(0 0 24px rgba(251,191,36,0.6))',
+                }}>NAYAK</span>
+              </h1>
+              <div className="mt-3 h-9 sm:h-11 flex items-center justify-center lg:justify-start">
+                <span className="text-lg sm:text-2xl font-bold text-primary">
+                  {typed}
+                  <span className="inline-block w-0.5 h-5 sm:h-7 bg-primary ml-0.5 animate-pulse align-middle" />
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.28, duration: 0.5 }}
+              className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-md"
             >
-              View Projects
-            </button>
-          </motion.div>
+              Architecting <span className="text-white font-semibold">intelligent systems</span> that bridge cutting-edge AI and strategic business transformation.
+            </motion.p>
 
-          {/* ── Stats ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.62, duration: 0.45 }}
-            className="grid grid-cols-3 gap-8 sm:gap-14 pt-4 border-t border-white/8 max-w-xs sm:max-w-sm mx-auto w-full"
-          >
-            <StatItem value={20} label="Projects Built" color="text-cyan-400" />
-            <StatItem value={10} label="AI Systems" color="text-purple-400" />
-            <StatItem value={5} label="Certifications" suffix="+" color="text-amber-400" />
-          </motion.div>
-
-          {/* ── Social Icons ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.72, duration: 0.4 }}
-            className="flex justify-center gap-4"
-          >
-            {[
-              { icon: Github,   href: 'https://github.com/arpanpnayak',            label: 'GitHub',   hover: 'hover:text-white hover:border-white/40' },
-              { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak',   label: 'LinkedIn', hover: 'hover:text-blue-400 hover:border-blue-400/40' },
-              { icon: Mail,     href: 'mailto:arpanpnayak@gmail.com',              label: 'Email',    hover: 'hover:text-primary hover:border-primary/40' },
-            ].map(({ icon: Icon, href, label, hover }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={label}
-                className={`p-3.5 bg-slate-900/60 rounded-xl border border-white/8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)] text-slate-400 ${hover}`}
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.45 }}
+              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center w-full sm:w-auto"
+            >
+              <button
+                onClick={scrollDown}
+                className="group w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-primary to-blue-600 text-white rounded-2xl font-black text-sm transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.45)] flex items-center justify-center gap-2 active:scale-95"
               >
-                <Icon size={19} />
-              </a>
-            ))}
+                Explore Portfolio
+                <ArrowRight size={17} className="group-hover:translate-x-1.5 transition-transform" />
+              </button>
+              <button
+                onClick={() => navigate('/projects')}
+                className="group w-full sm:w-auto px-7 py-3.5 border-2 border-white/15 text-white rounded-2xl font-black text-sm transition-all hover:bg-white/5 hover:border-primary/50 flex items-center justify-center gap-2"
+              >
+                View Projects
+              </button>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.52, duration: 0.45 }}
+              className="grid grid-cols-3 gap-8 sm:gap-10 pt-4 border-t border-white/8 w-full max-w-xs sm:max-w-sm mx-auto lg:mx-0"
+            >
+              <StatItem value={20} label="Projects Built" color="text-cyan-400" />
+              <StatItem value={10} label="AI Systems" color="text-purple-400" />
+              <StatItem value={5} label="Certifications" suffix="+" color="text-amber-400" />
+            </motion.div>
+
+            {/* Social */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.62, duration: 0.4 }}
+              className="flex justify-center lg:justify-start gap-4"
+            >
+              {[
+                { icon: Github,   href: 'https://github.com/arpanpnayak',          label: 'GitHub',   hover: 'hover:text-white hover:border-white/40' },
+                { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak', label: 'LinkedIn', hover: 'hover:text-blue-400 hover:border-blue-400/40' },
+                { icon: Mail,     href: 'mailto:arpanpnayak@gmail.com',            label: 'Email',    hover: 'hover:text-primary hover:border-primary/40' },
+              ].map(({ icon: Icon, href, label, hover }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                  className={`p-3.5 bg-slate-900/60 rounded-xl border border-white/8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)] text-slate-400 ${hover}`}
+                >
+                  <Icon size={19} />
+                </a>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* ── Right: Nami Hologram ── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
+            className="flex-shrink-0"
+          >
+            <NamiHologram />
           </motion.div>
+
         </div>
 
         {/* Scroll indicator */}

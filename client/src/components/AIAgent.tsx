@@ -336,7 +336,10 @@ const AIAgent: React.FC = () => {
         className="fixed bottom-6 right-6 z-50 cursor-pointer"
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          if (!isOpen) window.dispatchEvent(new Event('nami-open'));
+        }}
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       >
