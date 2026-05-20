@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import ParticleBackground from '../components/ParticleBackground';
 import AIHudEffect from '../components/AIHudEffect';
 import CircuitDecor from '../components/CircuitDecor';
-import NamiHologram from '../components/NamiHologram';
 import { SectionPreview } from '../components/SectionPreview';
 
 // ─── Typewriter hook ─────────────────────────────────────────────────────────
@@ -148,11 +147,7 @@ const Home: React.FC = () => {
         <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-600/6 rounded-full blur-[80px] pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/4 rounded-full blur-[100px] pointer-events-none" />
 
-        {/* Two-column hero layout on large screens, stacked on mobile */}
-        <div className="max-w-6xl mx-auto w-full relative z-20 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 px-2">
-
-          {/* ── Left: Text content ── */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5 flex-1 max-w-xl">
+        <div className="max-w-3xl mx-auto w-full relative z-20 flex flex-col items-center text-center gap-5 px-2">
 
             {/* Availability badge */}
             <motion.div
@@ -262,18 +257,6 @@ const Home: React.FC = () => {
                 </a>
               ))}
             </motion.div>
-          </div>
-
-          {/* ── Right: Nami Hologram ── */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
-            className="flex-shrink-0"
-          >
-            <NamiHologram />
-          </motion.div>
-
         </div>
 
         {/* Scroll indicator */}
