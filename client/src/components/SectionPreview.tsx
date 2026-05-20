@@ -75,18 +75,18 @@ export const SectionPreview: React.FC = () => {
   };
 
   return (
-    <section className="w-full py-20 relative overflow-hidden bg-slate-900/40 border-y border-white/5">
+    <section className="w-full py-12 sm:py-20 relative overflow-hidden bg-slate-900/40 border-y border-white/5">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8">
-        <div className="flex items-center justify-between mb-12 px-2">
+        <div className="flex items-center justify-between mb-8 sm:mb-12 px-2">
           <div className="space-y-1">
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
               Section <span className="text-primary">Shortcuts</span>
               <span className="text-2xl animate-pulse">🤖</span>
             </h2>
             <p className="text-slate-400 text-sm font-medium">Neural pathways to my digital workspace</p>
           </div>
           
-          <div className="flex gap-3">
+          <div className="hidden sm:flex gap-3">
             <button 
               onClick={() => scroll('left')}
               className="p-3 rounded-full bg-slate-800 border border-white/5 hover:bg-slate-700 hover:border-primary/50 text-white transition-all shadow-lg"

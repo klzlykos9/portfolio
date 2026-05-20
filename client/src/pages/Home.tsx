@@ -169,7 +169,7 @@ const Home: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.6 }}
             >
-              <h1 className="text-[2.4rem] leading-none sm:text-6xl lg:text-7xl font-black tracking-tighter">
+              <h1 className="text-[1.9rem] leading-none xs:text-[2.4rem] sm:text-6xl lg:text-7xl font-black tracking-tighter">
                 <span className="text-white">ARPAN P. </span>
                 <span style={{
                   WebkitTextFillColor: 'transparent',
@@ -181,7 +181,7 @@ const Home: React.FC = () => {
                   filter: 'drop-shadow(0 0 24px rgba(251,191,36,0.6))',
                 }}>NAYAK</span>
               </h1>
-              <div className="mt-3 h-9 sm:h-11 flex items-center justify-center lg:justify-start">
+              <div className="mt-3 h-9 sm:h-11 flex items-center justify-center">
                 <span className="text-lg sm:text-2xl font-bold text-primary">
                   {typed}
                   <span className="inline-block w-0.5 h-5 sm:h-7 bg-primary ml-0.5 animate-pulse align-middle" />
@@ -204,7 +204,7 @@ const Home: React.FC = () => {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.45 }}
-              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center w-full sm:w-auto"
+              className="flex flex-col sm:flex-row gap-3 justify-center items-center w-full sm:w-auto"
             >
               <button
                 onClick={scrollDown}
@@ -226,7 +226,7 @@ const Home: React.FC = () => {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.52, duration: 0.45 }}
-              className="grid grid-cols-3 gap-8 sm:gap-10 pt-4 border-t border-white/8 w-full max-w-xs sm:max-w-sm mx-auto lg:mx-0"
+              className="grid grid-cols-3 gap-8 sm:gap-10 pt-4 border-t border-white/8 w-full max-w-xs sm:max-w-sm mx-auto"
             >
               <StatItem value={20} label="Projects Built" color="text-cyan-400" />
               <StatItem value={10} label="AI Systems" color="text-purple-400" />
@@ -238,7 +238,7 @@ const Home: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.62, duration: 0.4 }}
-              className="flex justify-center lg:justify-start gap-4"
+              className="flex justify-center gap-4"
             >
               {[
                 { icon: Github,   href: 'https://github.com/arpanpnayak',          label: 'GitHub',   hover: 'hover:text-white hover:border-white/40' },
