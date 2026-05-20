@@ -345,13 +345,11 @@ const AIAgent: React.FC = () => {
       >
         <div className="relative group">
           <div className="absolute -inset-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full opacity-20 group-hover:opacity-50 blur-md transition-all duration-500" />
-          <div className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-900 border border-cyan-400/40 shadow-[0_0_20px_rgba(34,211,238,0.3)]">
-            <div className="relative">
-              <div className="w-7 h-7 rounded-full border-2 border-cyan-400/60 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-cyan-300 rounded-full shadow-[0_0_6px_rgba(103,232,249,0.9)]" />
-              </div>
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-slate-900 animate-pulse" />
-            </div>
+          <div className="relative flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 border border-cyan-400/40 shadow-[0_0_20px_rgba(34,211,238,0.3)]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+            </span>
             <span className="text-sm font-black text-white tracking-wide">Nami</span>
           </div>
         </div>
