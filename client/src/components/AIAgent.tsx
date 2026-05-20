@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Cpu } from 'lucide-react';
+import { retrieveChunks, topicLabel, KBChunk } from '../data/namiRag';
 
 interface Message {
   id: string;
@@ -12,16 +13,15 @@ interface Message {
 interface SessionMemory {
   userName?: string;
   lastTopic?: string;
+  lastChunkId?: string;
   topicHistory: string[];
   responseIndices: Record<string, number>;
-  lastResponseText: string;
 }
 
 function initMemory(): SessionMemory {
-  return { topicHistory: [], responseIndices: {}, lastResponseText: '' };
+  return { topicHistory: [], responseIndices: {} };
 }
 
-// ─── Rotation helper — never repeats the same index twice in a row ────────────
 function cycleFrom(arr: string[], key: string, mem: SessionMemory): string {
   const cur = mem.responseIndices[key] ?? -1;
   const next = (cur + 1) % arr.length;
@@ -34,40 +34,7 @@ function pushTopic(topic: string, mem: SessionMemory) {
   mem.topicHistory = [topic, ...mem.topicHistory.filter(t => t !== topic)].slice(0, 6);
 }
 
-// ─── Knowledge base ──────────────────────────────────────────────────────────
-const KB = {
-  about: `Arpan P. Nayak is an AI Engineer and Business Strategist who builds production-grade Generative AI systems. He thinks in systems, builds with intent, and engineers for real impact — not just cool demos.`,
-  aboutExtra: `What sets Arpan apart is the rare fusion of technical depth and strategic business thinking. He doesn't just hand over a model — he designs end-to-end intelligent pipelines that align with business goals from day one.`,
-  philosophy: `"I don't just build models; I engineer intelligent systems. My focus is on creating AI that is robust, scalable, and inherently aligned with strategic business goals."`,
-  philosophyExtra: `He applies that mindset practically: every project starts with the business problem, then works backward to the AI solution. No over-engineering, no tech for tech's sake.`,
-  education: `Arpan holds an MBA in International Business (Lovely Professional University) where he earned his Certified Python Business Analyst credential. He also has a B.Sc. with Math Honours — Major Physics, Minor Chemistry — First Class with Distinction.`,
-  educationExtra: `The MBA isn't just a credential — it fundamentally shapes how he approaches AI. He's as comfortable presenting to a boardroom as he is debugging a transformer architecture.`,
-  certifications: `He holds a Lean Six Sigma Green Belt & Black Belt (Henry Harvin Education), a PGDCA (2014), and completed an Export-Import Procedures workshop.`,
-  certificationsExtra: `The Six Sigma certifications are especially relevant to his AI work — he applies DMAIC methodology to model improvement cycles and data pipeline optimization.`,
-  skills: `Core: Generative AI · LLM Applications · LangChain · LangGraph · LangSmith · MCP · RAG Systems · AI Agents · Multimodal AI · Reinforcement Learning · Computer Vision · Machine Learning · Deep Learning · FastAPI · Python · React · Node.js · TypeScript · n8n · Argo Workflows · Six Sigma · Business Strategy.`,
-  skillsExtra: `He's particularly strong in the agentic AI space — LangGraph orchestration, multi-agent systems, and production RAG pipelines with FAISS or Pinecone. And he keeps adding to this list constantly.`,
-  projects: `Key projects:\n• Attendance Face Recognition System — Python, OpenCV\n• AI Research Tool — LangChain, OpenAI, Vector DB\n• Laptop Price Predictor — Scikit-learn, Flask\n• Multimodal RAG System — LangChain, CLIP, GPT-4V\n• AI Video Content Generator — Stable Diffusion, MoviePy\n• Real-time AI Trading Bot — RL, LSTM\n• LangGraph Orchestration Framework — multi-agent systems\n• FastAPI AI Microservices — scalable backend architecture\n• n8n Automation Workflows — intelligent pipelines\n• Neural Network from Scratch — pure NumPy`,
-  projectsExtra: `The Multimodal RAG System and the LangGraph Orchestration Framework are the most technically ambitious — both deal with complex reasoning chains and real-time data retrieval at scale.`,
-  blogs: `He writes about: "Mastering LangGraph", "Computer Vision in Real-World Applications", "Pydantic for Data Scientists", "MLOps Best Practices", and "Building Production RAG Systems".`,
-  blogsExtra: `His writing style is practical — he skips the fluff and gets straight to working patterns you can use. The MLOps and RAG articles in particular have gotten strong reception.`,
-  contact: `📧 arpanpnayak@gmail.com\n💼 linkedin.com/in/arpanpnayak\n🐙 github.com/arpanpnayak`,
-  location: `Arpan is based in Jalandhar, Punjab, India — though his work and collaborations span globally.`,
-  internship: `He completed internships at Henry Harvin Education — Lean Six Sigma Black Belt (July–Aug 2022) and Green Belt (Sept–Oct 2022), applying DMAIC methodology and process improvement in real projects.`,
-};
-
-// ─── Expanded "tell me more" detail per topic ─────────────────────────────────
-const MORE: Record<string, string> = {
-  about: KB.aboutExtra,
-  philosophy: KB.philosophyExtra,
-  education: KB.educationExtra,
-  certs: KB.certificationsExtra,
-  skills: KB.skillsExtra,
-  projects: KB.projectsExtra,
-  blogs: KB.blogsExtra,
-  greeting: `I'm Nami — I live inside this portfolio and know Arpan's work inside out. Ask me anything — projects, skills, how to hire him, or just have a chat. I'm here! 😊`,
-};
-
-// ─── Short / filler inputs that should NOT trigger intent matching ─────────────
+// ─── Short filler guard ───────────────────────────────────────────────────────
 const FILLERS = new Set([
   'yes','yeah','yep','yup','ok','okay','k','sure','alright','right','got it',
   'i see','understood','makes sense','interesting','noted','cool','great',
@@ -75,339 +42,226 @@ const FILLERS = new Set([
   'exactly','indeed','fair','fine','good','awesome','perfect','brilliant',
 ]);
 
-// ─── Acknowledgement responses ────────────────────────────────────────────────
-const acks = (mem: SessionMemory): string => {
-  const follow = mem.lastTopic && MORE[mem.lastTopic]
-    ? ` Want me to go deeper on ${mem.lastTopic === 'certs' ? 'his certifications' : mem.lastTopic}?`
-    : ` What else would you like to know about Arpan?`;
+// ─── RAG response builder ─────────────────────────────────────────────────────
+const TOPIC_INTROS: Record<string, string[]> = {
+  about:          ['Here\'s the overview 😊', 'Happy to introduce Arpan!', 'Great question to start with!'],
+  philosophy:     ['His thinking on this is really compelling 🧠', 'This is what drives everything he does —', 'Arpan\'s philosophy is distinct —'],
+  education:      ['Here\'s his academic background 🎓', 'Educationally, Arpan has an interesting mix —', 'His education story is actually quite unique —'],
+  certifications: ['Here are the credentials 🏆', 'He has some impressive certifications —', 'Certification-wise:'],
+  internship:     ['Here\'s the training background 💼', 'His hands-on training —', 'These internships shaped a lot of his thinking —'],
+  skills:         ['Here\'s what he works with 💻', 'Great question on skills —', 'His tech arsenal:'],
+  contact:        ['Here\'s how to reach him 📬', 'Getting in touch is easy —', 'You can find Arpan here:'],
+  projects:       ['Found the details on this project 🚀', 'Here\'s that project —', 'Great pick — here\'s the breakdown:'],
+  blogs:          ['Here\'s that article 📝', 'Found the piece you\'re looking for —', 'Here\'s what Arpan wrote on that:'],
+  experience:     ['Here\'s his professional experience 💼', 'On the work experience side —', 'His career so far:'],
+};
+
+const TOPIC_OUTROS: Record<string, string[]> = {
+  projects:  ['Want me to walk through any other project?', 'Curious about any other one in his portfolio?', 'He has 20 projects total — want to explore another?'],
+  blogs:     ['He has 9 articles in total — want to know about another?', 'More articles on different topics if you\'re interested!', 'Worth a read if that topic interests you!'],
+  skills:    ['Any specific technology you\'d like more detail on?', 'Want to dig deeper into any particular area?', 'He\'s always adding to this — ask about any tech specifically.'],
+  education: ['Any questions about his academic journey?', 'His MBA + science combo is pretty unusual — any follow-ups?'],
+  certifications: ['He has three credentials in total — want the full picture?'],
+  default:   ['Want to know anything else?', 'What else would you like to explore?', 'Anything else I can help with? 😊'],
+};
+
+function getIntro(topic: string, mem: SessionMemory): string {
+  const pool = TOPIC_INTROS[topic] ?? TOPIC_INTROS.about;
+  return cycleFrom(pool, `intro_${topic}`, mem);
+}
+
+function getOutro(topic: string, mem: SessionMemory): string {
+  const pool = TOPIC_OUTROS[topic] ?? TOPIC_OUTROS.default;
+  return cycleFrom(pool, `outro_${topic}`, mem);
+}
+
+function buildRagResponse(chunks: KBChunk[], mem: SessionMemory): string {
+  if (chunks.length === 0) return '';
+  const primary = chunks[0];
+  pushTopic(primary.topic, mem);
+  mem.lastChunkId = primary.id;
+
+  const intro = getIntro(primary.topic, mem);
+  const outro = getOutro(primary.topic, mem);
+
+  let body = primary.response;
+
+  // If a second chunk is from a different topic, append a brief note
+  if (chunks[1] && chunks[1].topic !== primary.topic) {
+    const secondLabel = topicLabel(chunks[1].topic);
+    body += `\n\nI also have info on his ${secondLabel} if you'd like to go there next.`;
+  }
+
+  return `${intro}\n\n${body}\n\n${outro}`;
+}
+
+// ─── Acknowledgement responses ─────────────────────────────────────────────────
+function acks(mem: SessionMemory): string {
+  const follow = mem.lastTopic
+    ? ` We were just talking about his ${topicLabel(mem.lastTopic)} — want to go deeper, or shall we switch topics?`
+    : ` What would you like to know about Arpan?`;
   return cycleFrom([
     `Glad that landed! 😊${follow}`,
     `Good to know!${follow}`,
-    `Noted! 😄${follow}`,
+    `Got it! 😄${follow}`,
     `Happy to help.${follow}`,
-    `Got it — feel free to ask anything else! 😊`,
+    `Feel free to keep asking — I'm here! 😊${follow}`,
   ], 'ack', mem);
-};
+}
 
-// ─── Intent definitions ───────────────────────────────────────────────────────
-type Intent = {
-  patterns: string[];
-  topic: string;
-  respond: (input: string, mem: SessionMemory) => string;
-};
+// ─── Pure conversational intents (no RAG needed) ──────────────────────────────
+type CIntent = { patterns: string[]; topic: string; respond: (input: string, mem: SessionMemory) => string };
 
-const intents: Intent[] = [
-  // Greetings
+const CONV_INTENTS: CIntent[] = [
   {
-    patterns: ['hello','hi ','hey','good morning','good afternoon','good evening','howdy','sup','greetings','hiya','yo ','wassup',"what's up",'whats up'],
+    patterns: ['hello','hi ','hey ','good morning','good afternoon','good evening','howdy','greetings','hiya','yo ','wassup',"what's up",'whats up'],
     topic: 'greeting',
-    respond: (_i, mem) => {
+    respond: (_, mem) => {
       const name = mem.userName ? `, ${mem.userName}` : '';
       return cycleFrom([
         `Hey${name}! 👋 Great to see you here. I'm Nami — Arpan's portfolio assistant. What can I help you with?`,
-        `Hi${name}! 😊 Welcome to Arpan's portfolio. Feel free to ask me anything about his work, projects, or skills.`,
-        `Hello${name}! ✨ You've found the right place. I know everything about Arpan — where would you like to start?`,
-        `Hey${name}! 🚀 Nice of you to stop by. I'm Nami — ask me about Arpan's AI work, background, or how to reach him.`,
+        `Hi${name}! 😊 Welcome. I know everything about Arpan's work — where would you like to start?`,
+        `Hello${name}! ✨ You've found the right place. Ask me about projects, skills, blogs, anything!`,
+        `Hey${name}! 🚀 Nami here. What would you like to know about Arpan today?`,
       ], 'greeting', mem);
     },
   },
-
-  // How are you
   {
-    patterns: ['how are you','how r u',"how's it going",'how are things','you okay','are you good','how do you feel'],
+    patterns: ['how are you','how r u',"how's it going",'how are things','you okay','are you good'],
     topic: 'feelings',
-    respond: (_i, mem) => cycleFrom([
-      `Honestly? Loving it here — every conversation is different. 😄 What brings you to Arpan's portfolio today?`,
-      `Pretty great, thanks! 🙌 I spend my days talking about some really cool AI work. What can I help you with?`,
-      `Doing well! ✨ Always energized when someone shows up curious. What would you like to explore?`,
-      `Never better! 😊 Ready to talk AI, projects, or whatever's on your mind. What's up?`,
+    respond: (_, mem) => cycleFrom([
+      `Honestly? Loving it — every conversation is different. 😄 What brings you here today?`,
+      `Pretty great! 🙌 Ready to talk AI and interesting work. What can I help with?`,
+      `Never better! ✨ What would you like to explore about Arpan?`,
     ], 'feelings', mem),
   },
-
-  // Name introduction
   {
-    patterns: ['my name is','i am ','call me ','you can call me'],
+    patterns: ['my name is','call me ','you can call me'],
     topic: 'name',
     respond: (input, mem) => {
-      const match = input.match(/(?:my name is|i am|i'm|call me|you can call me)\s+([a-z]+)/i);
+      const match = input.match(/(?:my name is|call me|you can call me)\s+([a-z]+)/i);
       if (match) {
         mem.userName = match[1].charAt(0).toUpperCase() + match[1].slice(1);
         return cycleFrom([
-          `${mem.userName}! Love that name 😊 Nice to meet you properly. So, ${mem.userName} — what brings you here today?`,
+          `${mem.userName}! Love that name 😊 Nice to meet you properly. What can I help you with?`,
           `Oh nice, ${mem.userName}! 🙌 Great to meet you. What would you like to know about Arpan?`,
-          `${mem.userName} — noted! ✨ I'll remember that. What can I help you with?`,
         ], 'name', mem);
       }
-      return `Nice to meet you! 😊 What can I help you with today?`;
+      return `Nice to meet you! 😊 What can I help you with?`;
     },
   },
-
-  // Who is Arpan
   {
-    patterns: ['who is arpan','about arpan','introduce arpan','what does arpan do','arpan nayak','who is he','tell me about him','tell me about arpan'],
-    topic: 'about',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.about}\n\nHe works at the intersection of AI engineering, data science, and business strategy. Want to dive into his projects or skills?`,
-      `${KB.about}\n\n${KB.aboutExtra} Curious about anything specific — his tech stack, background, or projects?`,
-      `Here's the quick version: ${KB.about}\n\nAsk me about his projects, skills, or philosophy — any of those interest you?`,
-    ], 'about', mem),
-  },
-
-  // Philosophy / mindset
-  {
-    patterns: ['philosophy','vision','mission','belief','mindset','approach','what drives him','what motivates','values'],
-    topic: 'philosophy',
-    respond: (_i, mem) => cycleFrom([
-      `Arpan's guiding principle: ${KB.philosophy}\n\n${KB.philosophyExtra}`,
-      `He puts it simply: ${KB.philosophy}\n\nIn practice that means he designs systems around business outcomes first, technology second.`,
-      `${KB.philosophyExtra}\n\nHis core philosophy: ${KB.philosophy}`,
-    ], 'philosophy', mem),
-  },
-
-  // Education
-  {
-    patterns: ['education','degree','university','college','study','studied','qualification','mba','bsc','bachelor','masters','academic','school'],
-    topic: 'education',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.education}\n\n${KB.educationExtra}`,
-      `Academically, ${KB.education}\n\nThat MBA + hard science combo is rare — it's what gives him both the technical depth and the business acumen.`,
-      `${KB.education}\n\nFun fact: the MBA capstone was about online marketing impact — already thinking about real-world application back then.`,
-    ], 'education', mem),
-  },
-
-  // Certifications
-  {
-    patterns: ['certification','certified','six sigma','pgdca','lean','credential','certificate'],
-    topic: 'certs',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.certifications}\n\n${KB.certificationsExtra}`,
-      `Arpan's credentials: ${KB.certifications}\n\nThe Six Sigma work isn't just a badge — he actively applies DMAIC thinking to how he structures AI pipelines.`,
-      `${KB.certifications}\n\nPretty diverse range of credentials for someone who's also an AI engineer — that's the business-tech hybrid at work.`,
-    ], 'certs', mem),
-  },
-
-  // Skills
-  {
-    patterns: ['skill','technology','tech stack','expertise','langchain','langgraph','python','react','llm','rag','ai agent','machine learning','deep learning','fastapi','what can arpan do','tools','languages'],
-    topic: 'skills',
-    respond: (_i, mem) => cycleFrom([
-      `Here's what Arpan works with:\n\n${KB.skills}\n\n${KB.skillsExtra}`,
-      `His tech stack is broad but deep:\n\n${KB.skills}\n\nThe LangChain / LangGraph / RAG cluster is where he's most cutting-edge right now.`,
-      `${KB.skills}\n\nAnd he's constantly adding to this — he's been deep in agentic AI and MCP lately. Want to know more about any specific area?`,
-    ], 'skills', mem),
-  },
-
-  // Projects
-  {
-    patterns: ['project','built','portfolio work','face recognition','trading bot','price predictor','video generator','research tool','rag system','neural network','automation','what has arpan made','what has he built','show me projects'],
-    topic: 'projects',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.projects}\n\nThose are the highlights. My personal favourites are the Multimodal RAG and the Trading Bot. Which one catches your eye?`,
-      `Arpan has built a lot:\n\n${KB.projects}\n\n${KB.projectsExtra} Want details on any specific one?`,
-      `${KB.projects}\n\nRange is impressive right? From computer vision to RL trading to production backends. Any of these spark your curiosity?`,
-    ], 'projects', mem),
-  },
-
-  // Blog / writing
-  {
-    patterns: ['blog','article','write','writing','post','publish','mlops','pydantic','content','read','insights'],
-    topic: 'blogs',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.blogs}\n\n${KB.blogsExtra}`,
-      `Arpan writes to share what he's learning: ${KB.blogs}\n\nHe writes for practitioners — code-first, no hand-waving.`,
-      `${KB.blogs}\n\nThe LangGraph and RAG articles are especially worth a read if you're building in that space.`,
-    ], 'blogs', mem),
-  },
-
-  // Contact
-  {
-    patterns: ['contact','email','reach','linkedin','github','connect with arpan','get in touch','reach out','find arpan','message him','talk to him'],
-    topic: 'contact',
-    respond: (_i, mem) => cycleFrom([
-      `You can reach Arpan here:\n\n${KB.contact}\n\nHe's pretty responsive — especially on LinkedIn. Worth a message!`,
-      `Here's how to get in touch:\n\n${KB.contact}\n\nDrop him a note — he loves connecting with people working on interesting problems.`,
-      `${KB.contact}\n\nIf you're thinking about collaborating or hiring him, LinkedIn is your best bet. He checks it regularly.`,
-    ], 'contact', mem),
-  },
-
-  // Location
-  {
-    patterns: ['where is arpan','location','where does he live','city','india','jalandhar','punjab','based'],
-    topic: 'location',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.location} 🌍 Quite the range for someone based in Punjab!`,
-      `${KB.location} Remote-first by nature — his projects and collaborations span multiple countries.`,
-      `Jalandhar, Punjab, India — but his work reaches way beyond that. 🚀`,
-    ], 'location', mem),
-  },
-
-  // Internship / training
-  {
-    patterns: ['internship','training','henry harvin','work experience','six sigma intern','industry experience'],
-    topic: 'internship',
-    respond: (_i, mem) => cycleFrom([
-      `${KB.internship}\n\nThose internships really shaped his process-first approach — he applies that structured thinking to AI systems now.`,
-      `${KB.internship}\n\nThe DMAIC mindset from Six Sigma shows up constantly in how he approaches AI project scoping and iteration.`,
-      `${KB.internship}\n\nNot just box-ticking — those projects involved real process analysis and measurable outcomes.`,
-    ], 'internship', mem),
-  },
-
-  // Hiring / collaboration
-  {
-    patterns: ['hire','hiring','collaborate','collaboration','work with arpan','work together','recruit','opportunity','open to work','job offer','freelance','contract','available for'],
-    topic: 'hire',
-    respond: (_, mem) => {
-      const name = mem.userName ? `${mem.userName}, great news` : `Great news`;
-      return cycleFrom([
-        `${name}! 🔥 Arpan is absolutely open to exciting opportunities in AI engineering and business strategy.\n\n${KB.contact}\n\nFeel free to tell me more about what you have in mind — I'll do my best to help bridge the intro!`,
-        `Yes! 🚀 Arpan is actively looking for interesting AI collaborations and roles.\n\n${KB.contact}\n\nWhat kind of project or role are you thinking about?`,
-        `${name}! Arpan is open to the right opportunity — especially in agentic AI, LLM systems, or strategic AI consulting.\n\n${KB.contact}`,
-      ], 'hire', mem);
-    },
-  },
-
-  // Nami self-awareness
-  {
-    patterns: ['who are you','what are you','are you ai','are you a bot','are you human','are you real','what is nami','tell me about yourself','introduce yourself','about you'],
+    patterns: ['who are you','what are you','are you ai','are you a bot','are you human','what is nami','tell me about yourself','introduce yourself'],
     topic: 'nami_self',
-    respond: (_i, mem) => cycleFrom([
-      `I'm Nami! Arpan's portfolio assistant — basically his AI-powered spokesperson. I know his work, projects, and background inside out. What can I help you with? 😊`,
-      `That's me — Nami! Think of me as Arpan's right hand for portfolio conversations. I know all the good stuff about his journey. ✨ What would you like to explore?`,
-      `Nami here! I'm an AI assistant living inside this portfolio. Arpan built me to help visitors like you navigate his work without having to dig through everything manually. 😄`,
+    respond: (_, mem) => cycleFrom([
+      `I'm Nami! Arpan's AI-powered portfolio assistant. I know his work, projects, skills, and background inside out. Ask me anything 😊`,
+      `Nami here! Think of me as Arpan's right hand for portfolio conversations. ✨ What would you like to explore?`,
+      `I'm Nami — I live inside this portfolio and know every detail about Arpan's work. 😄 Where shall we start?`,
     ], 'nami_self', mem),
   },
-
-  // Nami's name
   {
     patterns: ['your name','what should i call you',"what's your name",'who are you called'],
     topic: 'nami_name',
-    respond: (_i, mem) => cycleFrom([
-      `I'm Nami! 😊 Named by Arpan himself. So — what's yours?`,
-      `Nami's the name! ✨ Unique, warm, and a little mysterious. What can I help you with?`,
-      `Call me Nami! 😄 Short for... well, Nami. What would you like to know?`,
+    respond: (_, mem) => cycleFrom([
+      `I'm Nami! 😊 Named by Arpan himself. And you?`,
+      `Nami's the name! ✨ Short, warm, and a little mysterious. What can I help with?`,
     ], 'nami_name', mem),
   },
-
-  // Tell me more / expand
   {
-    patterns: ['tell me more','more details','elaborate','go deeper','expand','more about that','what else','say more','continue','more info','dig deeper'],
+    patterns: ['tell me more','more details','elaborate','go deeper','expand','what else','say more','continue','more info','dig deeper'],
     topic: 'more',
-    respond: (_i, mem) => {
-      const t = mem.lastTopic;
-      if (t && MORE[t]) {
-        return `${MORE[t]} 😊 Want to keep going on this, or is there something else you'd like to explore?`;
+    respond: (_, mem) => {
+      if (mem.lastTopic) {
+        const chunks = retrieveChunks(mem.lastTopic, 3);
+        const extra = chunks.find(c => c.id !== mem.lastChunkId);
+        if (extra) {
+          const res = `Going deeper on ${topicLabel(mem.lastTopic)} 😊\n\n${extra.response}\n\nAnything else you'd like to explore?`;
+          mem.lastChunkId = extra.id;
+          return res;
+        }
+        return `I've shared everything I know about ${topicLabel(mem.lastTopic)}! 😊 Want to switch to a different topic — his projects, skills, or background?`;
       }
-      return `Happy to go deeper! 😊 What topic would you like me to expand on — his projects, skills, background, or something else?`;
+      return `Happy to go deeper! 😊 What topic would you like me to expand on — projects, skills, education, or something else?`;
     },
   },
-
-  // Jokes
   {
-    patterns: ['joke','tell me a joke','make me laugh','say something funny','funny','humour','humor'],
+    patterns: ['joke','tell me a joke','make me laugh','say something funny','funny'],
     topic: 'joke',
-    respond: (_i, mem) => cycleFrom([
-      `Why did the neural network break up with the dataset? Too many layers of attachment! 😄\n\nOkay okay — back to the serious stuff. What would you like to know?`,
+    respond: (_, mem) => cycleFrom([
+      `Why did the neural network break up with the dataset? Too many layers of attachment! 😄\n\nOkay, back to the serious stuff — what would you like to know?`,
       `A machine learning model walks into a bar. "What'll it be?" "Whatever gets the highest reward." 😄\n\nAnyway — want to know about Arpan's projects?`,
-      `Why don't AI models ever get lost? They always follow the gradient! 🤣\n\nShall we get back to Arpan's actual (very impressive) work?`,
-      `Two data scientists walk into a bar. One says "The mean drink here is terrible." The other says "But the median one was great!" 😄\n\nRight — what would you like to know about Arpan?`,
+      `Why don't AI models ever get lost? They always follow the gradient! 🤣\n\nRight — what can I help you with?`,
+      `Two data scientists walk into a bar. One says "The mean drink here is terrible." The other: "But the median was great!" 😄\n\nBack to Arpan's portfolio?`,
     ], 'joke', mem),
   },
-
-  // Compliments to Nami
   {
-    patterns: ['you are smart',"you're smart",'you are amazing',"you're amazing",'good bot','you are helpful','love you nami','you are the best','nami is great','well done','great job nami'],
+    patterns: ['you are smart',"you're smart",'you are amazing',"you're amazing",'good bot','you are helpful','love you nami','you are the best','nami is great','well done'],
     topic: 'compliment',
-    respond: (_i, mem) => cycleFrom([
+    respond: (_, mem) => cycleFrom([
       `Aww, that made my day! 😊 You're pretty great yourself. Anything else I can help with?`,
-      `Stop it, you'll make me blush! 😄 Thanks! What else can I do for you?`,
-      `That's so sweet! 🙌 I do have excellent taste in portfolios to manage... Anything else?`,
-      `You're too kind! ✨ I'm just here doing my thing. What else would you like to know?`,
+      `Stop it, you'll make me blush! 😄 What else can I do for you?`,
+      `That's so sweet! 🙌 I do have excellent taste in portfolios to manage. Anything else?`,
     ], 'compliment', mem),
   },
-
-  // Thanks
   {
     patterns: ['thank','thanks','thank you','thx','ty ','appreciate','cheers'],
     topic: 'thanks',
-    respond: (_i, mem) => cycleFrom([
+    respond: (_, mem) => cycleFrom([
       `Always happy to help! 😊 Feel free to ask anything else anytime.`,
       `Of course! 🙌 That's what I'm here for. Anything else on your mind?`,
-      `No problem at all! ✨ Is there anything more about Arpan's work you'd like to know?`,
-      `Anytime! 😄 What else can I help you with?`,
+      `Anytime! ✨ What else can I help with?`,
     ], 'thanks', mem),
   },
-
-  // Goodbye
   {
-    patterns: ['bye','goodbye','see you','cya','later','take care','good night','goodnight','gotta go','farewell','signing off'],
+    patterns: ['bye','goodbye','see you','cya','later','take care','good night','goodnight','gotta go','farewell'],
     topic: 'bye',
     respond: (_, mem) => {
       const name = mem.userName ? `, ${mem.userName}` : '';
       return cycleFrom([
-        `Take care${name}! 👋 It was great chatting. Come back anytime — Arpan's portfolio is always growing!`,
-        `See you${name}! ✨ Hope I was helpful. Don't hesitate to drop back if you have more questions!`,
-        `Bye${name}! 😊 Lovely chatting with you. Arpan would be glad you stopped by!`,
+        `Take care${name}! 👋 It was great chatting. Come back anytime!`,
+        `See you${name}! ✨ Hope I was helpful. Don't hesitate to drop back!`,
+        `Bye${name}! 😊 Lovely chatting. Arpan would be glad you stopped by!`,
       ], 'bye', mem);
     },
   },
-
-  // What can Nami do
   {
-    patterns: ['what can you do','what do you know','help me','help','what can you tell','what can you help','capabilities','what topics'],
+    patterns: ['what can you do','what do you know','help me','help ','capabilities','what topics'],
     topic: 'capabilities',
-    respond: (_i, mem) => cycleFrom([
-      `Here's what I can cover 😊\n\n• Arpan's projects & tech stack\n• His education & certifications\n• Skills & expertise areas\n• How to contact or collaborate\n• His professional philosophy\n• His blogs & writing\n\nOr we can just chat — I'm good at that too! 😄 Where would you like to start?`,
-      `Glad you asked! I can tell you about:\n\n• What Arpan has built (projects)\n• What he knows (skills & stack)\n• His background (education, certs)\n• How to reach him (contact)\n• His thinking (philosophy & blogs)\n\nWhat sounds most useful to you?`,
+    respond: (_, mem) => cycleFrom([
+      `Here's what I can cover 😊\n\n• All 20 of Arpan's projects (with full detail)\n• His 9 published articles\n• Skills & tech stack (every category)\n• Education & certifications\n• Internship & training history\n• Philosophy & mindset\n• How to contact or collaborate\n• General chit-chat too! 😄\n\nWhere would you like to start?`,
+      `I'm trained on Arpan's full portfolio:\n\n• **Projects** — all 20, with tech stacks and goals\n• **Blogs** — all 9 articles with summaries\n• **Skills** — every category in detail\n• **Background** — education, certs, internships\n• **Contact** — all ways to reach him\n\nWhat sounds most useful?`,
     ], 'capabilities', mem),
   },
-
-  // Opinion / favourites
   {
-    patterns: ['what do you think','your opinion','do you like',"what's your favorite",'favourite project','best project','which project'],
-    topic: 'opinion',
-    respond: (_i, mem) => cycleFrom([
-      `Honestly? The Multimodal RAG System is my favourite. 🔥 Combining text and image understanding is just so elegant. Which kind of AI work interests you?`,
-      `If I had to pick, the AI Trading Bot is the most daring. 🤔 RL in live markets? Bold move. Which one caught your eye?`,
-      `The LangGraph Orchestration work genuinely impresses me. 😊 Multi-agent reasoning is where AI gets really interesting. What about you — what draws your attention?`,
-      `Tough call, but the Neural Network from Scratch stands out — there's something beautiful about building it up from pure NumPy. What kind of projects interest you?`,
-    ], 'opinion', mem),
+    patterns: ['hire','hiring','collaborate','work with arpan','work together','recruit','opportunity','available','open to work','job offer','freelance'],
+    topic: 'hire',
+    respond: (_, mem) => {
+      const name = mem.userName ? `${mem.userName}, that's` : `That's`;
+      return cycleFrom([
+        `${name} exciting! 🔥 Arpan is open to the right AI engineering and business strategy opportunities.\n\n📧 arpanpnayak@gmail.com\n💼 linkedin.com/in/arpanpnayak\n\nFeel free to share what you have in mind!`,
+        `Yes! 🚀 Arpan is actively looking for interesting AI collaborations and roles — especially in agentic AI and LLM systems.\n\n📧 arpanpnayak@gmail.com\n💼 linkedin.com/in/arpanpnayak`,
+      ], 'hire', mem);
+    },
   },
-
-  // Positive reactions
   {
-    patterns: ['that is impressive','thats impressive','so impressive','very impressive','amazing work','incredible','mind blowing','mindblowing','blew my mind'],
-    topic: 'impressed',
-    respond: (_i, mem) => cycleFrom([
-      `Right?! 🔥 Arpan's work consistently hits that level. Want to dig deeper into any part of it?`,
-      `I never get tired of sharing this stuff — it's genuinely impressive. 😊 Anything specific you'd like to explore further?`,
-      `That's the reaction most people have! 🚀 There's even more to discover — what's next on your list?`,
-    ], 'impressed', mem),
-  },
-
-  // I'm good / user feeling
-  {
-    patterns: ['i am good',"i'm good",'i am fine',"i'm fine",'doing well','i am great',"i'm great",'not bad','doing great','doing fine'],
+    patterns: ['i am good',"i'm good",'i am fine',"i'm fine",'doing well','doing great'],
     topic: 'user_feeling',
-    respond: (_i, mem) => cycleFrom([
-      `Glad to hear it! 😊 So what brings you to Arpan's portfolio today?`,
-      `That's great! 😄 What's on your mind? Any questions about Arpan's work?`,
-      `Love that energy! ✨ What would you like to know about Arpan?`,
+    respond: (_, mem) => cycleFrom([
+      `Glad to hear it! 😊 What brings you to Arpan's portfolio today?`,
+      `That's great! 😄 What would you like to know about Arpan?`,
     ], 'user_feeling', mem),
   },
-
-  // Nice to meet you
   {
-    patterns: ['nice to meet you','pleasure to meet','glad to meet','good to meet'],
+    patterns: ['nice to meet you','pleasure to meet','glad to meet'],
     topic: 'meeting',
-    respond: (_i, mem) => cycleFrom([
-      `Likewise! 😊 I love meeting new people. So, what brings you here today?`,
+    respond: (_, mem) => cycleFrom([
+      `Likewise! 😊 What brings you here today?`,
       `Really nice to meet you too! ✨ What would you like to explore first?`,
-      `Same! 😄 Always good to have a new visitor. Where would you like to start?`,
     ], 'meeting', mem),
   },
 ];
 
-// ─── Core response engine ─────────────────────────────────────────────────────
+// ─── Core response engine ──────────────────────────────────────────────────────
 function getNamiResponse(userInput: string, memory: SessionMemory): string {
   const raw = userInput.trim();
   const lower = raw.toLowerCase();
@@ -417,58 +271,39 @@ function getNamiResponse(userInput: string, memory: SessionMemory): string {
     return acks(memory);
   }
 
-  // 2. "I'm [name]" — check before generic intent loop
-  if (/^(my name is|i am|i'm|call me)\s+[a-z]/i.test(raw)) {
-    const nameIntent = intents.find(i => i.topic === 'name')!;
-    pushTopic('name', memory);
-    const res = nameIntent.respond(lower, memory);
-    memory.lastResponseText = res;
-    return res;
-  }
-
-  // 3. Main intent matching
-  for (const intent of intents) {
-    const matched = intent.patterns.some(p => lower.includes(p));
-    if (matched) {
+  // 2. Conversational intent check
+  for (const intent of CONV_INTENTS) {
+    if (intent.patterns.some(p => lower.includes(p))) {
       pushTopic(intent.topic, memory);
-      const res = intent.respond(lower, memory);
-      memory.lastResponseText = res;
-      return res;
+      return intent.respond(lower, memory);
     }
   }
 
-  // 4. Loose topic keywords
+  // 3. RAG retrieval — primary engine for all factual portfolio questions
+  const chunks = retrieveChunks(lower, 3);
+  if (chunks.length > 0) {
+    return buildRagResponse(chunks, memory);
+  }
+
+  // 4. Loose fallback: Arpan-related
   if (lower.includes('arpan')) {
-    pushTopic('about', memory);
-    const res = `${KB.about}\n\nWant more detail on his projects, skills, or how to get in touch? 😊`;
-    memory.lastResponseText = res;
-    return res;
+    const aboutChunks = retrieveChunks('arpan engineer background', 1);
+    if (aboutChunks.length > 0) return buildRagResponse(aboutChunks, memory);
   }
 
-  if (lower.includes('ai') || lower.includes('machine learning') || lower.includes('llm') || lower.includes('generative')) {
-    pushTopic('skills', memory);
-    const res = cycleFrom([
-      `AI is Arpan's core domain! 🔥 He specialises in LLMs, RAG systems, AI agents, and production-grade Generative AI. Want me to share some of his projects in that space?`,
-      `Arpan is deeply embedded in the AI space — LangChain, LangGraph, Multimodal AI, Reinforcement Learning. 🚀 Which area interests you most?`,
-    ], 'ai_loose', memory);
-    memory.lastResponseText = res;
-    return res;
-  }
-
-  // 5. Context-bridged fallback — reference last topic if available
-  if (memory.lastTopic && MORE[memory.lastTopic]) {
+  // 5. Context-bridged fallback
+  if (memory.lastTopic) {
     return cycleFrom([
-      `Hmm, I'm not sure I caught that. 🤔 We were just talking about ${memory.lastTopic === 'certs' ? 'certifications' : memory.lastTopic} — want me to go deeper there, or switch topics?`,
-      `Not quite sure what you mean, but I'm happy to keep going! 😊 We were on ${memory.lastTopic === 'certs' ? 'certifications' : memory.lastTopic} — shall we continue?`,
+      `Hmm, I'm not sure I caught that. 🤔 We were just on his ${topicLabel(memory.lastTopic)} — want to continue there, or switch topics?`,
+      `Not quite sure what you mean, but happy to keep going! 😊 Shall we stay on ${topicLabel(memory.lastTopic)}, or try something else?`,
     ], 'fallback_ctx', memory);
   }
 
-  // 6. Final fallback
+  // 6. Generic fallback
   return cycleFrom([
-    `Hmm, let me think... 🤔 I'm best at answering questions about Arpan's portfolio. Try:\n• "What projects has Arpan built?"\n• "What are his skills?"\n• "How can I contact Arpan?"`,
-    `That's a tricky one! 😅 I'm Arpan's portfolio assistant, so I'm most helpful around his work and background. Want me to give you a quick overview?`,
-    `I might have missed that — could you rephrase? 😊 I'm tuned for Arpan-related questions but happy to chat about anything in his world.`,
-    `Not sure I followed that one! 🤔 But I know Arpan's work really well — ask me about his projects, skills, or how to reach him.`,
+    `Hmm, let me think... 🤔 Try asking about:\n• "Tell me about his projects"\n• "What are his skills?"\n• "His education background"\n• "How can I contact Arpan?"`,
+    `Not sure I caught that! 😅 I'm trained on Arpan's full portfolio — ask me about any project, skill, article, or background detail.`,
+    `I might have missed that — could you rephrase? 😊 I know every project, skill, blog, and detail about Arpan's work.`,
   ], 'fallback', memory);
 }
 
@@ -499,7 +334,7 @@ const AIAgent: React.FC = () => {
       const timer = setTimeout(() => {
         addMessage({
           id: '1',
-          text: `Hi there! I'm Nami — Arpan's portfolio assistant 😊\nI know everything about his work, projects, and skills. What can I help you with today?`,
+          text: `Hi there! I'm Nami — Arpan's portfolio assistant 😊\n\nI'm trained on his full portfolio — all 20 projects, 9 articles, skills, education, certifications, and more. Ask me anything!`,
           sender: 'ai',
         });
       }, 1200);
@@ -507,27 +342,11 @@ const AIAgent: React.FC = () => {
     }
   }, []);
 
-  const handleSend = () => {
-    if (!inputValue.trim() || isTyping) return;
-    const userText = inputValue.trim();
-    setInputValue('');
-    addMessage({ id: Date.now().toString(), text: userText, sender: 'user' });
+  const dispatch = (text: string) => {
+    if (!text.trim() || isTyping) return;
+    addMessage({ id: Date.now().toString(), text: text.trim(), sender: 'user' });
     setIsTyping(true);
     const delay = 500 + Math.random() * 700;
-    setTimeout(() => {
-      setIsTyping(false);
-      addMessage({
-        id: (Date.now() + 1).toString(),
-        text: getNamiResponse(userText, memory.current),
-        sender: 'ai',
-      });
-    }, delay);
-  };
-
-  const sendQuick = (text: string) => {
-    if (isTyping) return;
-    addMessage({ id: Date.now().toString(), text, sender: 'user' });
-    setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
       addMessage({
@@ -535,10 +354,13 @@ const AIAgent: React.FC = () => {
         text: getNamiResponse(text, memory.current),
         sender: 'ai',
       });
-    }, 600);
+    }, delay);
   };
 
-  const quickChips = ['Projects', 'Skills', 'Tell me a joke', 'Hire Arpan'];
+  const handleSend = () => { dispatch(inputValue); setInputValue(''); };
+  const sendQuick = (text: string) => dispatch(text);
+
+  const quickChips = ['20 Projects', 'His Skills', 'Latest Articles', 'Hire Arpan'];
 
   return (
     <>
@@ -574,7 +396,7 @@ const AIAgent: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 80, scale: 0.92 }}
             transition={{ type: 'spring', damping: 22, stiffness: 280 }}
-            className="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[340px] h-[min(520px,calc(100dvh-7.5rem))] z-50 flex flex-col bg-[#0a0f1e]/97 backdrop-blur-2xl border border-cyan-500/25 rounded-3xl shadow-[0_0_60px_rgba(34,211,238,0.15)] overflow-hidden"
+            className="fixed bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[360px] h-[min(560px,calc(100dvh-7.5rem))] z-50 flex flex-col bg-[#0a0f1e]/97 backdrop-blur-2xl border border-cyan-500/25 rounded-3xl shadow-[0_0_60px_rgba(34,211,238,0.15)] overflow-hidden"
           >
             {/* Header */}
             <div className="px-5 py-4 border-b border-cyan-500/15 flex items-center justify-between bg-gradient-to-r from-cyan-500/5 to-blue-500/5 shrink-0">
@@ -587,7 +409,7 @@ const AIAgent: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-black text-white text-sm tracking-wide">Nami</h3>
-                  <p className="text-[10px] text-cyan-400/80 font-bold uppercase tracking-widest">Portfolio Assistant • Online</p>
+                  <p className="text-[10px] text-cyan-400/80 font-bold uppercase tracking-widest">Portfolio Assistant • Trained on Full Portfolio</p>
                 </div>
               </div>
               <button
@@ -604,7 +426,6 @@ const AIAgent: React.FC = () => {
                 className="absolute inset-0 pointer-events-none opacity-[0.02]"
                 style={{ backgroundImage: 'radial-gradient(circle, #22d3ee 1px, transparent 1px)', backgroundSize: '24px 24px' }}
               />
-
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
@@ -618,7 +439,7 @@ const AIAgent: React.FC = () => {
                       <Cpu size={10} className="text-cyan-400" />
                     </div>
                   )}
-                  <div className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
+                  <div className={`max-w-[84%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
                     msg.sender === 'user'
                       ? 'bg-gradient-to-br from-cyan-600 to-blue-700 text-white rounded-tr-sm shadow-lg'
                       : 'bg-slate-800/80 text-slate-100 border border-white/5 rounded-tl-sm'
@@ -627,7 +448,6 @@ const AIAgent: React.FC = () => {
                   </div>
                 </motion.div>
               ))}
-
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center mr-2 mt-1 shrink-0">
@@ -640,7 +460,6 @@ const AIAgent: React.FC = () => {
                   </div>
                 </div>
               )}
-
               <div ref={messagesEndRef} />
             </div>
 
@@ -668,7 +487,7 @@ const AIAgent: React.FC = () => {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder={isTyping ? 'Nami is typing…' : 'Ask me anything…'}
+                  placeholder={isTyping ? 'Nami is thinking…' : 'Ask about any project, skill, or article…'}
                   disabled={isTyping}
                   className="w-full bg-slate-900/70 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50"
                 />
