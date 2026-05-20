@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Cpu } from 'lucide-react';
-import { retrieveChunks, topicLabel, KBChunk } from '../data/namiRag';
+import { retrieveChunks, topicLabel, KBChunk, matchConcept } from '../data/namiRag';
 
 interface Message {
   id: string;
@@ -279,19 +279,28 @@ function getNamiResponse(userInput: string, memory: SessionMemory): string {
     }
   }
 
-  // 3. RAG retrieval — primary engine for all factual portfolio questions
-  const chunks = retrieveChunks(lower, 3);
+  // 3. Concept understanding — handles abstract/conceptual questions with rich synthesis
+  const concept = matchConcept(raw);
+  if (concept) {
+    pushTopic(concept.topic, memory);
+    memory.lastChunkId = concept.topic;
+    const outro = getOutro(concept.topic, memory);
+    return `${concept.response}\n\n${outro}`;
+  }
+
+  // 4. RAG retrieval — keyword-scored factual lookup for specific entities
+  const chunks = retrieveChunks(raw, 3);
   if (chunks.length > 0) {
     return buildRagResponse(chunks, memory);
   }
 
-  // 4. Loose fallback: Arpan-related
+  // 5. Loose fallback: Arpan-related
   if (lower.includes('arpan')) {
     const aboutChunks = retrieveChunks('arpan engineer background', 1);
     if (aboutChunks.length > 0) return buildRagResponse(aboutChunks, memory);
   }
 
-  // 5. Context-bridged fallback
+  // 6. Context-bridged fallback
   if (memory.lastTopic) {
     return cycleFrom([
       `Hmm, I'm not sure I caught that. 🤔 We were just on his ${topicLabel(memory.lastTopic)} — want to continue there, or switch topics?`,
@@ -299,11 +308,11 @@ function getNamiResponse(userInput: string, memory: SessionMemory): string {
     ], 'fallback_ctx', memory);
   }
 
-  // 6. Generic fallback
+  // 7. Generic fallback
   return cycleFrom([
-    `Hmm, let me think... 🤔 Try asking about:\n• "Tell me about his projects"\n• "What are his skills?"\n• "His education background"\n• "How can I contact Arpan?"`,
-    `Not sure I caught that! 😅 I'm trained on Arpan's full portfolio — ask me about any project, skill, article, or background detail.`,
-    `I might have missed that — could you rephrase? 😊 I know every project, skill, blog, and detail about Arpan's work.`,
+    `Hmm, let me think... 🤔 Try asking about:\n• "What makes Arpan unique?"\n• "List all his projects"\n• "What are his skills?"\n• "Should I hire him?"`,
+    `Not sure I caught that! 😅 I can answer conceptual questions too — try "what's his approach?" or "what can he build?"`,
+    `I might have missed that — could you rephrase? 😊 I understand both specific questions (project names, skills) and conceptual ones (unique value, capabilities).`,
   ], 'fallback', memory);
 }
 

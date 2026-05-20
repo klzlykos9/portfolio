@@ -667,7 +667,10 @@ He's actively seeking exciting opportunities — especially in agentic AI, LLM s
 
 // ─── Retrieval Engine ──────────────────────────────────────────────────────────
 export function retrieveChunks(query: string, topN = 3): KBChunk[] {
-  const tokens = query
+  // Expand abstract terms before tokenising
+  const expanded = expandQuery(query);
+
+  const tokens = expanded
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
@@ -681,11 +684,8 @@ export function retrieveChunks(query: string, topN = 3): KBChunk[] {
     const respLower = chunk.response.toLowerCase();
 
     for (const token of tokens) {
-      // Exact keyword match — highest weight
       if (kwLower.some(k => k === token)) { score += 5; continue; }
-      // Partial keyword match
       if (kwLower.some(k => k.includes(token) || token.includes(k))) { score += 3; continue; }
-      // Content match — each occurrence adds 1
       const hits = (respLower.match(new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
       score += hits;
     }
@@ -698,6 +698,305 @@ export function retrieveChunks(query: string, topN = 3): KBChunk[] {
     .sort((a, b) => b.score - a.score)
     .slice(0, topN)
     .map(s => s.chunk);
+}
+
+// ─── Query expansion — maps abstract/vague terms to concrete KB tokens ────────
+const EXPAND_MAP: [RegExp, string][] = [
+  [/\b(unique|special|different|stand.?out|sets.?apart|remarkable|rare|unusual)\b/gi,
+    'unique combination mba ai engineer business cross-domain rare intersection'],
+  [/\b(best|greatest|most impressive|flagship|showcase|top|strongest|highlight)\b/gi,
+    'multimodal rag trading reinforcement impressive advanced'],
+  [/\b(methodology|systematic|dmaic|framework|structured|discipline|rigorous)\b/gi,
+    'six sigma dmaic approach philosophy process optimization'],
+  [/\b(combine|intersection|bridge|blend|fusion|hybrid|both worlds|cross)\b/gi,
+    'mba business strategy ai engineer philosophy intersection'],
+  [/\b(build|create|develop|make|architect|design|engineer)\s+(for me|something|system|app)\b/gi,
+    'skills experience capabilities fastapi langchain react projects'],
+  [/\b(summary|overview|everything|big picture|full picture|all about|profile)\b/gi,
+    'about personal experience skills education certifications contact'],
+  [/\b(recent|latest|newest|current|now|today|2026)\b/gi,
+    'pharmacy marketing 2026 freelance current experience'],
+  [/\b(problem.?solv|think|thinking style|mindset|cognitive|mental model)\b/gi,
+    'philosophy approach six sigma systems thinking mindset'],
+  [/\b(achiev|accomplish|result|outcome|impact|success|deliver)\b/gi,
+    'projects certifications experience education skills production grade'],
+  [/\b(learn|background|journey|story|path|transition|career change)\b/gi,
+    'education mba bsc python business analyst journey transition'],
+  [/\b(language|code|program|dev|software|tech)\b/gi,
+    'python typescript javascript sql programming technical stack'],
+  [/\b(all projects|every project|list projects|how many projects)\b/gi,
+    'projects portfolio 20 attendance research laptop chatbot voting pydantic comic fraud attrition air trading finance medical social smarthome resume cybersecurity multimodal video code'],
+  [/\b(all blogs|all articles|list articles|list blogs|every article)\b/gi,
+    'blog article pharmacy marketing langgraph computer vision pydantic mlops fraud air pollution random forest'],
+  [/\b(hire|hiring|recruit|employ|job offer|work with|collaborate|available|open to work)\b/gi,
+    'hire contact available freelance opportunity collaborate email linkedin'],
+  [/\b(why|reason|rationale|because|motivat|passion|love about)\b/gi,
+    'philosophy vision mission purpose drives motivates goal'],
+  [/\b(strong|strength|primary|main|core|key|principal|chief|dominant)\b/gi,
+    'langchain langgraph rag agents generative ai primary skills'],
+  [/\b(weakness|gap|miss|lack|not|without|haven\'t)\b/gi,
+    'skills experience learning developing'],
+  [/\b(domain|industry|sector|field|area|vertical|niche)\b/gi,
+    'healthcare finance cybersecurity education marketing social media fintech ai domain'],
+];
+
+export function expandQuery(query: string): string {
+  let q = query;
+  for (const [pattern, expansion] of EXPAND_MAP) {
+    if (pattern.test(q)) {
+      pattern.lastIndex = 0;
+      q = q + ' ' + expansion;
+    }
+    pattern.lastIndex = 0;
+  }
+  return q;
+}
+
+// ─── Concept synthesis — pre-written rich answers for conceptual questions ────
+export interface ConceptMatch {
+  patterns: RegExp[];
+  topic: string;
+  response: string;
+}
+
+export const CONCEPT_SYNTHS: ConceptMatch[] = [
+  {
+    patterns: [/what.?(makes|sets).?(him|arpan).?(unique|special|apart|different)/i, /why.?(unique|special|different|rare)/i, /what.?(unique|special|different|rare|stand.?out)/i, /sets.?(him|arpan).?apart/i],
+    topic: 'about',
+    response: `What makes Arpan genuinely rare in the AI field is the intersection of two worlds most people only live in one of. 🧠
+
+**Technical depth + business fluency.** He holds a deep AI/ML engineering background *and* an MBA in International Business — meaning he can design a multi-agent LangGraph system in the morning and present its business ROI to stakeholders in the afternoon. Most engineers can't do that. Most MBAs can't do the first part at all.
+
+**Six Sigma thinking applied to AI.** His DMAIC background means he approaches every AI project with a measurement-first, optimize-second discipline — not just trying things until something works.
+
+**Portfolio breadth + depth.** 20 projects across RAG, computer vision, RL, NLP, healthcare, finance, cybersecurity, and smart home AI — showing he can adapt across domains, not just work in one niche.
+
+**Production mindset.** His philosophy: *"I don't just build models. I engineer intelligent systems with purpose."* Everything he ships is designed for real-world deployment, not demos.
+
+Is there a specific aspect of his work you'd like to dig into?`,
+  },
+  {
+    patterns: [/most impressive|best project|flagship|showcase project|top project|greatest project/i, /which project|what.*best.*project|favourite project|favorite project/i],
+    topic: 'projects',
+    response: `Out of 20 projects, these three show the deepest technical ambition 🔥
+
+**1. Multimodal RAG System** *(most architecturally advanced)*
+Processes text AND images in the same retrieval pipeline — CLIP embeds images into the same vector space as text, so you can retrieve image context using text queries and vice versa. Then GPT-4V synthesises answers from mixed modalities. That's genuinely cutting-edge RAG, not a tutorial project.
+
+**2. Real-time AI Trading Bot** *(most high-stakes deployment)*
+A Reinforcement Learning agent + LSTM time-series model + live sentiment analysis, all executing real trades via the Binance API. RL in production is hard. RL + live market data is harder. This is one of the most complex end-to-end AI deployments in his portfolio.
+
+**3. AI-Powered Code Assistant** *(most complete product)*
+Fine-tuned CodeT5 → FastAPI backend → VS Code extension frontend. Full end-to-end: from model training to the IDE experience. GitHub Copilot-level concept, self-built.
+
+Want me to break down any of these in detail?`,
+  },
+  {
+    patterns: [/should.?(i|we).?hire|worth hiring|is he available|open to work|looking for work/i, /hire.?him|hire.?arpan|recruit/i],
+    topic: 'contact',
+    response: `Yes — Arpan is available and actively looking for the right opportunity! 🚀
+
+He's best suited for roles like:
+• **AI Engineer / LLM Engineer** — building production agentic systems, RAG pipelines, LLM applications
+• **AI + Strategy hybrid roles** — technical lead who can also communicate business value
+• **Technical co-founder** — early-stage AI product companies
+• **AI consulting** — businesses wanting to integrate AI into existing processes
+
+His strongest technical areas: LangChain · LangGraph · RAG Systems · FastAPI · Python · Multi-agent AI
+
+**Reach him directly:**
+📧 arpanpnayak@gmail.com
+💼 linkedin.com/in/arpanpnayak
+📞 +91 9090000930
+
+He's responsive and straightforward — describe what you're building and he'll tell you if he's the right fit.`,
+  },
+  {
+    patterns: [/what can he build|what.*build.*me|capabilities|what.*create|what.*develop|build.*for (me|us|you)/i],
+    topic: 'skills',
+    response: `Arpan can build across the full AI stack — here's what he delivers: 💻
+
+🧠 **Generative AI & LLM Systems**
+RAG pipelines · Multi-agent apps · Chatbots · AI assistants · LangChain/LangGraph workflows
+
+🤖 **Intelligent Automation**
+n8n automation pipelines · Argo Workflows · AI-powered process orchestration
+
+💻 **Full-stack AI Products**
+FastAPI backends · React frontends · Vector databases · REST & streaming APIs
+
+👁️ **Computer Vision**
+Face recognition · Medical image analysis · Object detection · CLIP-based multimodal systems
+
+📊 **Data Science & Predictive Models**
+Fraud detection · Employee attrition · Price prediction · Sentiment analysis · Time series
+
+🔐 **Specialized AI Systems**
+Algorithmic trading (RL) · Cybersecurity threat detection · Smart home AI (Edge AI + IoT)
+
+What kind of project do you have in mind? I can tell you if he's built something similar!`,
+  },
+  {
+    patterns: [/tell me everything|big picture|full overview|all about him|full profile|complete picture|summarize him/i, /overview.*arpan|give me.*summary/i],
+    topic: 'about',
+    response: `Here's the complete picture of Arpan P. Nayak 🎯
+
+**Who:** AI Engineer & Business Strategist — Jalandhar, Punjab, India. Currently available for work.
+
+**What makes him rare:** Deep AI/ML engineering *plus* MBA in International Business. He speaks both languages — technical and strategic.
+
+**Core strength:** Generative AI — LangChain, LangGraph, RAG systems, multi-agent architectures. This is his deepest and most active area.
+
+**Portfolio:** 20 built projects spanning RAG, computer vision, NLP, RL, healthcare AI, fintech, smart home, and more. 9 published technical and research articles.
+
+**Education:** MBA in International Business (LPU, Certified Python Business Analyst) + B.Sc. Mathematics Honours (First Class with Distinction).
+
+**Certifications:** Lean Six Sigma Green Belt + Black Belt (Henry Harvin). PGDCA (2014).
+
+**Philosophy:** *"I don't just build models. I engineer intelligent systems with purpose."*
+
+**Contact:** arpanpnayak@gmail.com · linkedin.com/in/arpanpnayak · +91 9090000930
+
+What would you like to explore in more detail?`,
+  },
+  {
+    patterns: [/approach|methodology|how does he (work|think|solve|tackle)|problem.?solving|how he approaches|systematic/i, /his process|work style|thinking style|how.*tackle/i],
+    topic: 'philosophy',
+    response: `Arpan's problem-solving is shaped by two complementary frameworks 🔬
+
+**Six Sigma (DMAIC):**
+*Define → Measure → Analyze → Improve → Control*
+He applies this to AI development cycles — defining the business problem precisely before writing a line of code, measuring baseline performance before optimising, and controlling for drift after deployment. This is unusual and valuable: most engineers skip straight to building.
+
+**Systems Thinking:**
+*"I think in systems, build with intent, engineer for impact."*
+He starts with the outcome (business value) and works backward to the architecture. No over-engineering. No tech for tech's sake. Every component earns its place.
+
+**In practice this means:**
+• Projects are scoped tightly with clear success metrics
+• AI systems are designed for maintainability, not just accuracy
+• Trade-offs are explicit (speed vs. accuracy, cost vs. capability)
+• Business stakeholders can understand what he's building and why
+
+It's the MBA + AI Engineer combination showing up in how he thinks, not just what he knows.`,
+  },
+  {
+    patterns: [/business.*background|mba.*help|how.*business.*ai|combines.*business|business.*ai|why mba|mba.*useful/i, /business.*(and|with|plus).*ai|ai.*(and|with|plus).*business/i],
+    topic: 'education',
+    response: `Arpan's MBA isn't just a credential — it's a genuinely different mental model that changes how he builds AI. 🎓
+
+**What most AI engineers miss:**
+They optimise for technical metrics (accuracy, F1, AUC). Arpan also asks: *What business problem does this solve? What's the ROI? How does this fit into the existing workflow? Who are the stakeholders and what do they actually need?*
+
+**How the MBA shows up in his AI work:**
+• His AI projects always have clear business goals in addition to technical specs
+• He can communicate with non-technical stakeholders without dumbing it down
+• He applies Six Sigma quality frameworks to AI pipeline design
+• His blog articles bridge technical AI topics with business implications
+• He thinks about deployment context, user adoption, and change management — not just model performance
+
+**The intersection is his primary value:**
+He can walk into a room of engineers and discuss LangGraph state machines. He can walk into a board meeting and explain why that RAG system reduces customer support costs by 40%. That's the rarest combination in the AI field right now.`,
+  },
+  {
+    patterns: [/list.?(all|every)?.?projects|all (his )?projects|how many projects|every project|complete.*project.*list/i],
+    topic: 'projects',
+    response: `All 20 of Arpan's projects 🚀
+
+**Generative AI & LLM**
+1. AI Research Tool — LangChain · OpenAI · Vector DB
+2. AI Conversational Agent — LangChain · NLP
+3. Multimodal RAG System — CLIP · GPT-4V · ChromaDB ⭐
+4. AI-Powered Code Assistant — CodeT5 · FastAPI · VS Code
+
+**Computer Vision & Face Recognition**
+5. Attendance Face Recognition System — OpenCV · SQLite
+
+**Machine Learning & Data Science**
+6. Laptop Price Predictor — Scikit-learn · Random Forest · Flask
+7. Credit Card Fraud Detection — SMOTE · Logistic Regression
+8. Employee Attrition Prediction — Decision Trees · SHAP
+9. Air Quality Prediction — XGBoost · Time Series
+
+**Advanced AI Systems**
+10. Real-time AI Trading Bot — RL · LSTM · Binance API ⭐
+11. AI Video Content Generator — Stable Diffusion · ElevenLabs
+12. AI Medical Diagnosis Assistant — PyTorch · MONAI · DICOM
+13. AI-Driven Social Media Analytics — BERT · Plotly Dash
+14. AI-Powered Smart Home System — Edge AI · IoT · MQTT
+15. AI Resume Optimizer & Job Matcher — spaCy · BERT
+16. AI-Enhanced Cybersecurity System — Anomaly Detection · SIEM
+17. AI-Powered Personal Finance Assistant — Plaid API · FastAPI
+
+**Web & Other**
+18. E-Voting System — Blockchain · Cryptography
+19. Pydantic Data Validation Projects — FastAPI
+20. Comic Reader Application — Recommendation System
+
+⭐ = flagship/most technically impressive. Want full details on any?`,
+  },
+  {
+    patterns: [/list.?(all|every)?.?blogs?|list.?(all|every)?.?articles?|all (his )?(articles?|blogs?)|every article|complete.*article.*list/i],
+    topic: 'blogs',
+    response: `All 9 of Arpan's published articles 📝
+
+**2026**
+1. *Consumer Intention to Adopt Online Pharmacies as an Alternative to Offline Stores* — Jan 20 · 15 min
+2. *The Study and Effect of Online Marketing on Today's Business Environment* — Jan 15 · 18 min *(MBA capstone research)*
+
+**2024**
+3. *Mastering LangGraph: Building Complex AI Workflows* — Nov 10 · 11 min
+4. *Computer Vision in Real-World Applications: Face Recognition Systems* — Oct 22 · 10 min
+5. *Pydantic for Data Scientists: Type-Safe ML Pipelines* — Oct 5 · 8 min
+6. *MLOps Best Practices: From Model Development to Production* — Sep 18 · 13 min
+7. *How I Built a ML Model to Detect Credit Card Fraud (and What I Learned About Class Imbalance)* — Aug 15 · 8 min
+8. *Exploring Indian Air Pollution Data with Python: A Data Scientist's Perspective* — Jul 2 · 10 min
+9. *What's Really Going on Inside a Random Forest? (With Visuals)* — Jun 10 · 6 min
+
+Want a deep-dive on any of these?`,
+  },
+  {
+    patterns: [/what.*recent|latest work|newest.*project|what.*working on|current.*work|recent.*article/i],
+    topic: 'experience',
+    response: `Arpan's most recent work spans two fronts 🔄
+
+**Latest articles (2026):**
+Both published in January 2026 — a research study on consumer adoption of online pharmacies, and his MBA capstone on the effect of online marketing in today's business environment. His most comprehensive written work to date.
+
+**Current professional focus:**
+He's currently freelancing as an AI Engineer & Strategist — building production-grade LLM applications, RAG systems, and multi-agent architectures. His active areas of exploration: agentic AI with LangGraph, MCP integrations, and n8n-based intelligent automation pipelines.
+
+**What he's looking for:**
+An exciting AI engineering role or collaboration — specifically in agentic AI, LLM product development, or a role that bridges technical AI and business strategy.
+
+Interested in working with him? 📧 arpanpnayak@gmail.com`,
+  },
+  {
+    patterns: [/how did he get (into|started|here)|his (story|journey|path|career story)|how he became|started learning|transition|from.*to ai/i],
+    topic: 'education',
+    response: `Arpan's journey is an interesting non-linear path 🛤️
+
+It started with a **B.Sc. in Mathematics** (Honours, with Physics + Chemistry) — building a strong analytical foundation. Then came the **PGDCA in 2014**, his first hands-on computing credential covering C#, Tally ERP, and MS Office.
+
+The real pivot happened during his **MBA in International Business** at Lovely Professional University, where he earned the **Certified Python Business Analyst** credential — and Python opened the door to data science and AI.
+
+From Python → data science → ML → deep learning → Generative AI. The path from business analyst to AI Engineer isn't common, but it gave him something most AI engineers lack: a genuine understanding of business context.
+
+He then reinforced his analytical/process-thinking with **Lean Six Sigma Green Belt and Black Belt** certifications — adding structured problem-solving to his toolkit.
+
+Today: 20 AI/ML projects, 9 published articles, and actively building in the LLM/agentic AI space.`,
+  },
+];
+
+// ─── Check if a query matches a concept synthesis ─────────────────────────────
+export function matchConcept(query: string): ConceptMatch | null {
+  const lower = query.toLowerCase();
+  for (const concept of CONCEPT_SYNTHS) {
+    if (concept.patterns.some(p => p.test(lower))) {
+      return concept;
+    }
+  }
+  return null;
 }
 
 // ─── Topic grouping helper ─────────────────────────────────────────────────────
