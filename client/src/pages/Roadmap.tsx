@@ -356,7 +356,7 @@ const Roadmap: React.FC = () => {
           className="text-center mb-16 sm:mb-20"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-6">
-            <Map size={12} /> AI Career Roadmap 2026
+            <Map size={12} /> KLZ Journey
           </div>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
             AI Engineer <span className="text-cyan-400">Roadmap</span>
@@ -541,25 +541,6 @@ const Roadmap: React.FC = () => {
           ))}
         </motion.div>
 
-        {/* ─── Attribution ─── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-8 text-center"
-        >
-          <p className="text-slate-600 text-xs">
-            Inspired by{' '}
-            <a
-              href="https://roadmap.sh/r/ai-roadmap-for-2026---final-draft"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cyan-600 hover:text-cyan-400 underline underline-offset-2 transition-colors"
-            >
-              roadmap.sh AI Roadmap 2026
-            </a>
-          </p>
-        </motion.div>
       </div>
 
       <Footer />

@@ -667,16 +667,18 @@ He's actively seeking exciting opportunities — especially in agentic AI, LLM s
 
 // ─── Retrieval Engine ──────────────────────────────────────────────────────────
 export function retrieveChunks(query: string, topN = 3): KBChunk[] {
-  // Expand abstract terms before tokenising
   const expanded = expandQuery(query);
+  const normalised = expanded.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
 
-  const tokens = expanded
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
+  const tokens = normalised
     .split(/\s+/)
     .filter(t => t.length > 2 && !STOP.has(t));
 
   if (tokens.length === 0) return [];
+
+  // Build bigrams from tokens for phrase-level matching
+  const bigrams: string[] = [];
+  for (let i = 0; i < tokens.length - 1; i++) bigrams.push(`${tokens[i]} ${tokens[i + 1]}`);
 
   const scored = KB.map(chunk => {
     let score = 0;
@@ -684,20 +686,41 @@ export function retrieveChunks(query: string, topN = 3): KBChunk[] {
     const respLower = chunk.response.toLowerCase();
 
     for (const token of tokens) {
-      if (kwLower.some(k => k === token)) { score += 5; continue; }
+      // Exact keyword match — highest value
+      if (kwLower.some(k => k === token)) { score += 6; continue; }
+      // Partial keyword match
       if (kwLower.some(k => k.includes(token) || token.includes(k))) { score += 3; continue; }
+      // Response body hit
       const hits = (respLower.match(new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-      score += hits;
+      score += Math.min(hits, 4); // cap response hits at 4 per token
     }
+
+    // Bigram bonus — phrase matches are a strong signal
+    for (const bigram of bigrams) {
+      if (kwLower.some(k => k.includes(bigram))) score += 5;
+      else if (respLower.includes(bigram)) score += 2;
+    }
+
+    // Topic label exact match bonus
+    if (tokens.some(t => chunk.topic === t)) score += 4;
 
     return { chunk, score };
   });
 
   return scored
-    .filter(s => s.score > 1)
+    .filter(s => s.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, topN)
     .map(s => s.chunk);
+}
+
+// ─── Check if a short query has any KB-relevant signal ────────────────────────
+export function hasKBSignal(query: string): boolean {
+  const lower = query.toLowerCase();
+  return KB.some(chunk =>
+    chunk.keywords.some(k => lower.includes(k)) ||
+    chunk.topic === lower.trim()
+  );
 }
 
 // ─── Query expansion — maps abstract/vague terms to concrete KB tokens ────────
@@ -738,6 +761,30 @@ const EXPAND_MAP: [RegExp, string][] = [
     'skills experience learning developing'],
   [/\b(domain|industry|sector|field|area|vertical|niche)\b/gi,
     'healthcare finance cybersecurity education marketing social media fintech ai domain'],
+  [/\b(contact|reach|email|linkedin|phone|message|connect|find him)\b/gi,
+    'contact email linkedin github phone jalandhar india'],
+  [/\b(gpt|openai|claude|gemini|llama|mistral|groq|ollama)\b/gi,
+    'llm langchain openai generative ai language model projects'],
+  [/\b(vector|embed|chroma|faiss|pinecone|weaviate)\b/gi,
+    'rag retrieval vector database embedding langchain chromadb'],
+  [/\b(automat|workflow|pipeline|orchestrat|n8n|argo)\b/gi,
+    'n8n argo workflows automation pipeline orchestration tools'],
+  [/\b(internship|training|henry harvin|industrial)\b/gi,
+    'internship training henry harvin six sigma green belt black belt'],
+  [/\b(salary|pay|compensation|rate|package|ctc)\b/gi,
+    'contact hire available freelance experience email linkedin'],
+  [/\b(where|location|city|country|based|live|from|india)\b/gi,
+    'contact location jalandhar punjab india'],
+  [/\b(degree|graduate|college|university|campus|lpu|lovely)\b/gi,
+    'education mba bsc university lpu lovely professional mathematics'],
+  [/\b(agent|agentic|multi.?agent|autonomous|tool.?call)\b/gi,
+    'ai agents langchain langgraph multi-agent tool calling memory planning'],
+  [/\b(production|deploy|ship|scale|real.?world|enterprise)\b/gi,
+    'production fastapi docker mlops deployment monitoring experience'],
+  [/\b(vision|image|photo|picture|detect|object|yolo|opencv|clip)\b/gi,
+    'computer vision opencv yolo clip face recognition attendance multimodal'],
+  [/\b(nlp|text|language|sentiment|classify|bert|spacy)\b/gi,
+    'nlp bert spacy sentiment analysis text classification social media resume'],
 ];
 
 export function expandQuery(query: string): string {
