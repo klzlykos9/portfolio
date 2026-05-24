@@ -359,12 +359,9 @@ const Roadmap: React.FC = () => {
             <Map size={12} /> KLZ Journey
           </div>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4">
-            AI Engineer <span className="text-cyan-400">Roadmap</span>
+            My <span className="text-cyan-400">AI Journey</span>
           </h1>
           <div className="w-16 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto mb-6" />
-          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
-            A structured path from prerequisites to specialization — choose your track and progress through each phase.
-          </p>
         </motion.div>
 
         {/* ═══════════════════════════════════════════════ */}
@@ -388,7 +385,7 @@ const Roadmap: React.FC = () => {
                   </div>
                   <div>
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-[10px] font-black uppercase tracking-widest mb-1">
-                      Section 1 · Start Here
+                      Journey Starts Here
                     </div>
                     <h2 className="text-xl sm:text-2xl font-black text-white">Foundations Before Specialization</h2>
                   </div>
