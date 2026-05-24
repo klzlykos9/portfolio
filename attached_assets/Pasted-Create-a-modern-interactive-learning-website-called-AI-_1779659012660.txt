@@ -1,0 +1,297 @@
+Create a modern interactive learning website called "AI Career Roadmap 2026".
+
+Website structure:
+
+=========================
+SECTION 1: PREREQUISITES
+=========================
+
+Title:
+"Foundations Before Specialization"
+
+Description:
+"This section contains the mandatory concepts and tools required before choosing ML Engineer, LLM Engineer, or AI Engineer tracks."
+
+Learning modules:
+
+1. Programming Fundamentals
+   - Python basics
+   - Variables
+   - Data types
+   - Loops
+   - Functions
+   - OOP
+   - Error handling
+   - File handling
+   - APIs
+   - JSON
+
+2. Mathematics
+   - Linear Algebra
+   - Matrices
+   - Vectors
+   - Probability
+   - Statistics
+   - Mean
+   - Variance
+   - Standard deviation
+   - Calculus basics
+   - Gradient concepts
+
+3. Data Handling
+   - NumPy
+   - Pandas
+   - Data cleaning
+   - Data preprocessing
+   - Data visualization
+   - EDA
+
+4. Databases
+   - SQL basics
+   - Joins
+   - Aggregation
+   - Database concepts
+
+5. Development Tools
+   - Git
+   - GitHub
+   - VS Code
+   - Jupyter Notebook
+
+6. Deployment Basics
+   - REST APIs
+   - FastAPI
+   - Docker basics
+   - Cloud fundamentals
+   - AWS basics
+
+=========================
+SECTION 2: ML ENGINEER
+=========================
+
+Title:
+"Machine Learning Engineer Path"
+
+Description:
+"Focus on predictive systems, model building, training, deployment, and MLOps."
+
+Modules:
+
+Phase 1:
+Machine Learning Fundamentals
+
+Topics:
+- Supervised learning
+- Unsupervised learning
+- Classification
+- Regression
+- Clustering
+- Feature engineering
+- Data preprocessing
+- Evaluation metrics
+
+Phase 2:
+Machine Learning Algorithms
+
+Topics:
+- Linear Regression
+- Logistic Regression
+- Decision Trees
+- Random Forest
+- KNN
+- SVM
+- Ensemble learning
+
+Phase 3:
+Deep Learning
+
+Topics:
+- Neural Networks
+- Backpropagation
+- Activation functions
+- CNN
+- RNN
+- Transfer learning
+
+Phase 4:
+MLOps
+
+Topics:
+- Model deployment
+- Model monitoring
+- Pipelines
+- CI/CD
+- ML lifecycle
+
+Phase 5:
+Projects
+
+Projects:
+- House price prediction
+- Recommendation system
+- Fraud detection
+- Customer churn prediction
+- Image classifier
+
+Skills outcome:
+- ML pipelines
+- Model deployment
+- Production systems
+
+=========================
+SECTION 3: LLM ENGINEER
+=========================
+
+Title:
+"LLM Engineer Path"
+
+Description:
+"Focus on building language AI systems and generative AI applications."
+
+Modules:
+
+Phase 1:
+NLP Fundamentals
+
+Topics:
+- Text preprocessing
+- Tokenization
+- Embeddings
+- Word vectors
+- Attention concepts
+
+Phase 2:
+Transformers
+
+Topics:
+- Encoder
+- Decoder
+- Self attention
+- Positional encoding
+- Token generation
+
+Phase 3:
+LLM Development
+
+Topics:
+- Prompt engineering
+- Context windows
+- Hallucination concepts
+- Fine tuning
+- LoRA
+- QLoRA
+
+Phase 4:
+RAG Systems
+
+Topics:
+- Embeddings
+- Vector databases
+- Retrieval systems
+- Chunking
+- Semantic search
+
+Phase 5:
+AI Agents
+
+Topics:
+- Tool calling
+- Multi-agent workflows
+- Agent memory
+- Planning systems
+
+Phase 6:
+Projects
+
+Projects:
+- Chat with PDF
+- AI assistant
+- Knowledge chatbot
+- Document search system
+- AI agent workflow
+
+Skills outcome:
+- Production LLM systems
+- RAG pipelines
+- AI assistants
+
+=========================
+SECTION 4: AI ENGINEER
+=========================
+
+Title:
+"AI Engineer Path"
+
+Description:
+"Build complete AI products combining ML, LLMs, APIs, cloud, and deployment."
+
+Modules:
+
+Phase 1:
+AI Foundations
+
+Topics:
+- ML basics
+- Deep learning basics
+- NLP basics
+- Computer vision basics
+
+Phase 2:
+System Building
+
+Topics:
+- API integration
+- Backend services
+- Databases
+- Event-driven systems
+
+Phase 3:
+AI Infrastructure
+
+Topics:
+- Docker
+- Kubernetes
+- AWS
+- Cloud deployment
+- Monitoring
+
+Phase 4:
+Advanced AI
+
+Topics:
+- Agents
+- Multimodal AI
+- Computer vision
+- Voice AI
+- Automation systems
+
+Phase 5:
+Projects
+
+Projects:
+- AI customer support system
+- AI voice assistant
+- AI workflow automation
+- Recommendation engine
+- End-to-end AI SaaS application
+
+Skills outcome:
+- Production AI applications
+- Full AI systems
+- Scalable deployment
+
+=========================
+EXTRA WEBSITE FEATURES
+=========================
+
+- Progress tracking
+- Skill completion bars
+- Difficulty labels
+- Learning time estimates
+- Resource cards
+- Project milestones
+- Certification section
+- Career dashboard
+- Job role mapping
+- Salary information
+- Dark mode
