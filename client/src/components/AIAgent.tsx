@@ -545,7 +545,6 @@ const AIAgent: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-black text-white text-sm tracking-wide">Nami</h3>
-                  <p className="text-[10px] text-cyan-400/80 font-bold uppercase tracking-widest">Portfolio Assistant • Trained on Full Portfolio</p>
                 </div>
               </div>
               <button
