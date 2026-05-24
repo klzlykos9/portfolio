@@ -7,6 +7,7 @@ import Skills from './pages/Skills';
 import Projects from './pages/Projects';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import Roadmap from './pages/Roadmap';
 import ScrollToTop from './components/ScrollToTop';
 import AIAgent from './components/AIAgent';
 import Certifications from './components/Certifications';
@@ -27,6 +28,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/certifications" element={<Certifications />} />
             <Route path="/internships" element={<InternshipTraining />} />
+            <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
