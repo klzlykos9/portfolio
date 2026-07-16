@@ -14,6 +14,7 @@ import Certifications from './components/Certifications';
 import InternshipTraining from './components/InternshipTraining';
 import Experience from './components/Experience';
 import IntroScreen from './components/IntroScreen';
+import CursorEffect from './components/CursorEffect';
 
 function App() {
   // Show intro once per browser session
@@ -28,6 +29,7 @@ function App() {
 
   return (
     <Router>
+      <CursorEffect />
       {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 text-white">
         <AIAgent />
