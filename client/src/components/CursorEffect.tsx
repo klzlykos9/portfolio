@@ -1,102 +1,106 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Smoke-aurora cursor trail.
+ * Smoke-aurora disruption trail — clean, fast, subtle.
  *
- * Technique — canvas particle system:
- *   • Each mouse-move emits a cluster of soft smoke puffs.
- *   • Every puff is a blurred radial gradient that expands, drifts slightly,
- *     fades in, then fades out — exactly like real smoke rising.
- *   • Drawing is: clear → blur pass (all puffs) → sharp pass (bright cores).
- *   • When the cursor stops, no new puffs are created and existing ones
- *     finish their lifecycle (~1.8 s) then vanish completely.
- *   • mix-blend-mode: screen so colours add on the dark background.
+ * Two-canvas architecture for performance:
+ *   smokeCanvas — draws puffs → CSS blur(12px) softens them into organic smoke.
+ *                 GPU handles the blur during compositing. Zero ctx.filter calls.
+ *   coreCanvas  — draws a thin bright streak only at the fresh cursor head.
+ *                 No blur, sharp, adds the aurora "leading edge" feel.
+ *
+ * Disruption: puffs emit with a lateral kick perpendicular to cursor direction,
+ * as if the cursor is a hand sweeping through fog. They then drift upward and
+ * outward — the classic "parted smoke" look.
+ *
+ * Fade: lifespan 50–75 frames (~0.8–1.25 s). Canvas clears each frame.
+ * Cursor stops → no new puffs → everything gone within ~1 s. Zero residue.
+ *
+ * Kept subtle so it NEVER fights with text. mix-blend-mode:screen means
+ * light/white elements are mathematically unaffected; only dark areas glow.
  */
 
-// ── Particle definition ───────────────────────────────────────────────────────
 interface Puff {
   x: number; y: number;
-  vx: number; vy: number;    // drift velocity
-  r: number;                 // current radius
-  maxR: number;              // final radius (grows toward this)
-  alpha: number;             // current opacity (0‥1)
-  peakAlpha: number;         // maximum opacity it reaches
-  hue: number;               // HSL hue
-  saturation: number;
-  age: number;
-  lifespan: number;          // total frames this puff lives
+  vx: number; vy: number;
+  r: number; maxR: number;
+  alpha: number; peakAlpha: number;
+  hue: number;
+  age: number; lifespan: number;
+  side: -1 | 1; // which side of cursor this puff sits on
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const rand  = (a: number, b: number) => a + Math.random() * (b - a);
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+const MAX_PUFFS = 45;
+const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-// ── Component ─────────────────────────────────────────────────────────────────
 const CursorEffect: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const smokeRef = useRef<HTMLCanvasElement>(null);
+  const coreRef  = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current!;
-    const ctx    = canvas.getContext('2d', { alpha: true })!;
+    const smoke = smokeRef.current!;
+    const core  = coreRef.current!;
+    const sctx  = smoke.getContext('2d', { alpha: true })!;
+    const cctx  = core.getContext('2d',  { alpha: true })!;
 
-    // Off-screen canvas: draw blurred smoke here, then composite to main
-    const off    = document.createElement('canvas');
-    const octx   = off.getContext('2d', { alpha: true })!;
-
-    const resize = () => {
-      canvas.width = off.width  = window.innerWidth;
-      canvas.height = off.height = window.innerHeight;
+    const setSize = () => {
+      smoke.width  = core.width  = window.innerWidth;
+      smoke.height = core.height = window.innerHeight;
     };
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
+    setSize();
+    window.addEventListener('resize', setSize, { passive: true });
 
     const puffs: Puff[] = [];
-    let hue   = 178;   // start: teal-cyan
-    let lastX = -1;
-    let lastY = -1;
-    let raf   : number;
+    let hue    = 180;
+    let lastX  = -1;
+    let lastY  = -1;
+    let lastVX = 0;
+    let lastVY = -1; // default: upward
+    let raf    : number;
 
-    // ── Emit a cluster of smoke puffs at (x, y) ──────────────────────
-    const emit = (x: number, y: number, speed: number) => {
-      // How many puffs per event — proportional to speed but capped
-      const count = Math.floor(clamp(speed * 0.55 + 3, 3, 9));
+    // ── Emit ─────────────────────────────────────────────────────────
+    const emit = (x: number, y: number, dx: number, dy: number, speed: number) => {
+      if (puffs.length >= MAX_PUFFS) return;
+
+      // Perpendicular to cursor direction (for disruption spread)
+      const len  = speed || 1;
+      const px   =  dy / len; // perpendicular unit vector
+      const py   = -dx / len;
+
+      const count = Math.min(Math.floor(speed * 0.28 + 2.5), 5);
 
       for (let k = 0; k < count; k++) {
-        // Scatter position slightly around cursor
-        const px = x + rand(-10, 10);
-        const py = y + rand(-8,  8);
+        if (puffs.length >= MAX_PUFFS) break;
 
-        // Drift: mostly upward with gentle horizontal wander
-        const vx = rand(-0.25, 0.25);
-        const vy = rand(-0.55, -0.15);    // negative = upward
+        const side = (k % 2 === 0 ? 1 : -1) as -1 | 1;
+        const spread = rand(6, 18) * side;
 
-        // Size — faster cursor = bigger puffs
-        const maxR = clamp(speed * 2.8 + rand(22, 38), 18, 110);
+        // Spawn slightly to the side of the cursor (disruption offset)
+        const ox = px * spread + rand(-4, 4);
+        const oy = py * spread + rand(-4, 4);
 
-        // Lifespan in frames (~90–130 = 1.5–2.2 s at 60 fps)
-        const lifespan = Math.floor(rand(90, 130));
+        // Velocity: lateral kick (disruption) + gentle upward drift
+        const lateralStr = rand(0.15, 0.40) * side;
+        const vx = px * lateralStr + rand(-0.10, 0.10);
+        const vy = rand(-0.45, -0.15); // upward drift
 
-        // Peak opacity — keep it gentle so multiple puffs stack without blowing out
-        const peakAlpha = rand(0.18, 0.30);
-
-        // Hue wanders slightly per puff around the current hue
-        const puffHue = (hue + rand(-18, 18) + 360) % 360;
+        const maxR     = rand(18, 36) + speed * 1.2;
+        const lifespan = Math.floor(rand(50, 75));
+        const peakAlpha = rand(0.11, 0.19);
 
         puffs.push({
-          x: px, y: py, vx, vy,
-          r: rand(6, 12),
-          maxR,
-          alpha: 0,
-          peakAlpha,
-          hue: puffHue,
-          saturation: rand(70, 90),
-          age: 0,
-          lifespan,
+          x: x + ox, y: y + oy,
+          vx, vy,
+          r: rand(4, 8), maxR,
+          alpha: 0, peakAlpha,
+          hue: (hue + rand(-20, 20) + 360) % 360,
+          age: 0, lifespan,
+          side,
         });
       }
     };
 
-    // ── Mouse handler ─────────────────────────────────────────────────
+    // ── Mouse ────────────────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
       const { clientX: x, clientY: y } = e;
       if (lastX < 0) { lastX = x; lastY = y; return; }
@@ -107,113 +111,107 @@ const CursorEffect: React.FC = () => {
 
       if (speed < 1.5) { lastX = x; lastY = y; return; }
 
-      // Advance hue — full palette cycles over ~600 px of travel
-      hue = (hue + speed * 0.35 + 0.4) % 360;
+      lastVX = dx; lastVY = dy;
 
-      emit(x, y, speed);
+      // Hue shift — full palette sweep over ~700 px of travel
+      hue = (hue + speed * 0.28 + 0.3) % 360;
+
+      emit(x, y, dx, dy, speed);
       lastX = x; lastY = y;
     };
     window.addEventListener('mousemove', onMove, { passive: true });
 
-    // ── Per-frame update and render ───────────────────────────────────
+    // ── Render loop ───────────────────────────────────────────────────
     const tick = () => {
       raf = requestAnimationFrame(tick);
 
-      // 1. Update all puffs
+      // Update
       for (let i = puffs.length - 1; i >= 0; i--) {
         const p = puffs[i];
         p.age++;
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x  += p.vx;
+        p.y  += p.vy;
+        // Lateral velocity decays — puffs curve back toward vertical
+        p.vx *= 0.96;
 
-        // Grow toward maxR with easing (fast at first, slows down)
-        p.r += (p.maxR - p.r) * 0.045;
+        // Grow toward maxR (fast initially, slows)
+        p.r += (p.maxR - p.r) * 0.055;
 
-        // Alpha envelope: fade in (first 15%), sustain, fade out (last 50%)
+        // Alpha envelope
         const t = p.age / p.lifespan;
-        if (t < 0.15) {
-          p.alpha = p.peakAlpha * (t / 0.15);
-        } else if (t < 0.50) {
-          p.alpha = p.peakAlpha;
-        } else {
-          p.alpha = p.peakAlpha * (1 - (t - 0.50) / 0.50);
-        }
+        p.alpha =
+          t < 0.18 ? p.peakAlpha * (t / 0.18) :
+          t < 0.48 ? p.peakAlpha :
+          p.peakAlpha * (1 - (t - 0.48) / 0.52);
 
         if (p.age >= p.lifespan) puffs.splice(i, 1);
       }
 
-      // 2. Clear both canvases
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      octx.clearRect(0, 0, off.width, off.height);
-
-      // 3. Draw all puffs to the off-screen canvas
-      //    Use screen compositing so puffs of different colours mix beautifully
-      octx.globalCompositeOperation = 'screen';
+      // ── Smoke canvas (will be blurred by CSS) ─────────────────────
+      sctx.clearRect(0, 0, smoke.width, smoke.height);
+      sctx.globalCompositeOperation = 'screen';
 
       for (const p of puffs) {
-        const grd = octx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        // Centre: more opaque and slightly lighter
-        grd.addColorStop(0,    `hsla(${p.hue}, ${p.saturation}%, 72%, ${p.alpha})`);
-        // Mid: the main colour body
-        grd.addColorStop(0.35, `hsla(${p.hue}, ${p.saturation}%, 62%, ${p.alpha * 0.75})`);
-        // Outer: fully transparent edge — no hard edge → pure smoke feel
-        grd.addColorStop(1,    `hsla(${p.hue}, ${p.saturation}%, 55%, 0)`);
-
-        octx.beginPath();
-        octx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        octx.fillStyle = grd;
-        octx.fill();
+        const g = sctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        g.addColorStop(0,   `hsla(${p.hue}, 85%, 68%, ${p.alpha})`);
+        g.addColorStop(0.5, `hsla(${p.hue}, 80%, 58%, ${p.alpha * 0.55})`);
+        g.addColorStop(1,   `hsla(${p.hue}, 75%, 50%, 0)`);
+        sctx.beginPath();
+        sctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        sctx.fillStyle = g;
+        sctx.fill();
       }
 
-      // 4. Composite the off-screen canvas onto the main canvas with a blur.
-      //    The blur is what turns the individual gradient circles into
-      //    truly organic smoke — edges dissolve into each other.
-      ctx.save();
-      ctx.filter = 'blur(14px)';
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(off, 0, 0);
-      ctx.filter = 'none';
-      ctx.restore();
+      // ── Core canvas (sharp, bright, only fresh puffs) ─────────────
+      cctx.clearRect(0, 0, core.width, core.height);
+      cctx.globalCompositeOperation = 'screen';
 
-      // 5. Second pass: draw a crisp, bright core on top WITHOUT blur
-      //    Only for the youngest, freshest puffs (first 40% of life).
-      //    This gives the aurora "bright leading edge" feel.
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
       for (const p of puffs) {
         const t = p.age / p.lifespan;
-        if (t > 0.40) continue;    // only fresh puffs get a core
+        if (t > 0.35) continue; // only very fresh puffs
 
-        const coreR = p.r * 0.28;
-        const coreA = p.alpha * 0.55 * (1 - t / 0.40);
-
-        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, coreR);
-        grd.addColorStop(0, `hsla(${p.hue}, 95%, 88%, ${coreA})`);
-        grd.addColorStop(1, `hsla(${p.hue}, 90%, 75%, 0)`);
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, coreR, 0, Math.PI * 2);
-        ctx.fillStyle = grd;
-        ctx.fill();
+        const cr    = p.r * 0.22;
+        const alpha = p.alpha * 0.45 * (1 - t / 0.35);
+        const g     = cctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, cr);
+        g.addColorStop(0, `hsla(${p.hue}, 95%, 90%, ${alpha})`);
+        g.addColorStop(1, `hsla(${p.hue}, 90%, 75%, 0)`);
+        cctx.beginPath();
+        cctx.arc(p.x, p.y, cr, 0, Math.PI * 2);
+        cctx.fillStyle = g;
+        cctx.fill();
       }
-      ctx.restore();
     };
 
     raf = requestAnimationFrame(tick);
-
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize',    resize);
+      window.removeEventListener('resize',    setSize);
       window.removeEventListener('mousemove', onMove);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 9998, mixBlendMode: 'screen' }}
-    />
+    <>
+      {/* Smoke — CSS blur turns tight puffs into organic clouds. GPU-only, zero cost. */}
+      <canvas
+        ref={smokeRef}
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          zIndex: 10,
+          mixBlendMode: 'screen',
+          filter: 'blur(12px)',
+        }}
+      />
+      {/* Core — sharp bright edge at fresh puff positions */}
+      <canvas
+        ref={coreRef}
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          zIndex: 11,
+          mixBlendMode: 'screen',
+        }}
+      />
+    </>
   );
 };
 
