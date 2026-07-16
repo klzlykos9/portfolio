@@ -1,219 +1,171 @@
 import { useEffect, useRef } from 'react';
 
-interface InkDrop {
-  x: number;
-  y: number;
-  hue: number;
-  born: number;      // ms timestamp
-  maxR: number;      // max radius it will expand to
-  life: number;      // 0→1→0 arc over duration
-  duration: number;  // ms
-  alpha: number;     // peak opacity
-}
+/**
+ * CursorEffect — flowing aurora trail that follows cursor movement.
+ *
+ * Technique:
+ *  • Transparent canvas, mix-blend-mode:screen → colors add to the dark page
+ *  • Each frame: destination-out fade (removes ~3.5% alpha) → trails decay naturally
+ *  • On mouse move: draw a 3-layer stroke from prev→current position
+ *      Layer 1  wide soft fog     (large lineWidth, very low opacity)
+ *      Layer 2  mid colour glow   (medium width, shadowBlur for diffusion)
+ *      Layer 3  bright core line  (thin, high opacity, tight glow)
+ *  • Hue advances along the path so colour flows continuously
+ *  • Width scales with cursor speed → fast = wide energetic sweep, slow = delicate thread
+ *  • NO circles, NO blobs — only the literal path of cursor movement
+ */
 
-interface Ripple {
-  x: number; y: number;
-  hue: number;
-  born: number;
-  duration: number;
-  maxR: number;
-}
+// Aurora colour palette order (hue degrees)
+// Cycles: teal → cyan → blue → violet → indigo → back
+const BASE_HUE = 175; // starting hue
 
 const CursorEffect: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
-    const ctx    = canvas.getContext('2d')!;
+    const ctx    = canvas.getContext('2d', { alpha: true })!;
 
-    let mouse     = { x: -999, y: -999, active: false };
-    let lastPos   = { x: -999, y: -999 };
-    let vel       = { x: 0, y: 0 };
-    let hue       = 185;
+    let lastX  = -999;
+    let lastY  = -999;
+    let hue    = BASE_HUE;
+    let raf    : number;
 
-    // Energy: accumulates from movement, slowly decays
-    // Controls global CSS hue-rotate + saturate on the page
-    let energy    = 0;   // 0 – 100
-    let totalDist = 0;   // running total to gate ripple spawning
-
-    const drops:   InkDrop[]  = [];
-    const ripples: Ripple[]   = [];
-    let raf: number;
-    const root = document.documentElement;
-
-    /* ── resize ── */
+    // ── Resize ────────────────────────────────────────────────────────────
     const resize = () => {
+      // Preserve what's already drawn by saving to an image first
+      const img = canvas.toDataURL();
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
+      // Restore previous content (best-effort — size change will still clear)
+      const tmp = new Image();
+      tmp.src = img;
+      tmp.onload = () => ctx.drawImage(tmp, 0, 0);
     };
-    resize();
-    window.addEventListener('resize', resize);
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', resize, { passive: true });
 
-    /* ── spawn ink drop at cursor ── */
-    const spawnDrop = (x: number, y: number, speed: number) => {
-      const now = performance.now();
-      drops.push({
-        x, y,
-        hue: hue,
-        born: now,
-        maxR: 60 + speed * 4 + Math.random() * 60,
-        life: 0,
-        duration: 1200 + Math.random() * 800,
-        alpha: Math.min(0.28 + speed * 0.012, 0.55),
-      });
+    // ── Draw a single aurora segment from (x1,y1) → (x2,y2) ─────────────
+    const drawSegment = (x1: number, y1: number, x2: number, y2: number, speed: number) => {
+      // Speed-based sizing — clamped so it never goes crazy
+      const fast  = Math.min(speed, 28);
+      const fogW  = Math.max(fast * 2.8 + 18, 18);
+      const midW  = Math.max(fast * 1.1 + 6,   6);
+      const coreW = Math.max(fast * 0.4 + 1.5,  1.5);
+
+      const h1 = hue;
+      const h2 = (hue + 22) % 360;
+
+      // ── Layer 1: wide fog ────────────────────────────────────────────
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.lineCap  = 'round';
+      ctx.lineJoin = 'round';
+
+      const fogGrad = ctx.createLinearGradient(x1, y1, x2, y2);
+      fogGrad.addColorStop(0, `hsla(${h1}, 78%, 58%, 0.10)`);
+      fogGrad.addColorStop(1, `hsla(${h2}, 80%, 60%, 0.10)`);
+      ctx.strokeStyle = fogGrad;
+      ctx.lineWidth   = fogW;
+      ctx.shadowBlur  = 0;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.restore();
+
+      // ── Layer 2: mid colour glow ─────────────────────────────────────
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.lineWidth   = midW;
+      ctx.shadowBlur  = 28;
+      ctx.shadowColor = `hsla(${h1}, 88%, 62%, 0.80)`;
+
+      const midGrad = ctx.createLinearGradient(x1, y1, x2, y2);
+      midGrad.addColorStop(0, `hsla(${h1}, 86%, 62%, 0.42)`);
+      midGrad.addColorStop(1, `hsla(${h2}, 88%, 64%, 0.42)`);
+      ctx.strokeStyle = midGrad;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.restore();
+
+      // ── Layer 3: bright core ─────────────────────────────────────────
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.lineWidth   = coreW;
+      ctx.shadowBlur  = 10;
+      ctx.shadowColor = `hsla(${h1}, 95%, 80%, 1.0)`;
+
+      const coreGrad = ctx.createLinearGradient(x1, y1, x2, y2);
+      coreGrad.addColorStop(0, `hsla(${h1}, 92%, 72%, 0.70)`);
+      coreGrad.addColorStop(1, `hsla(${h2}, 94%, 74%, 0.70)`);
+      ctx.strokeStyle = coreGrad;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.restore();
     };
 
-    /* ── spawn outward ripple ring ── */
-    const spawnRipple = (x: number, y: number) => {
-      ripples.push({
-        x, y,
-        hue: (hue + Math.random() * 60 - 30 + 360) % 360,
-        born: performance.now(),
-        duration: 1600 + Math.random() * 800,
-        maxR: 100 + Math.random() * 120,
-      });
-    };
-
+    // ── Mouse handler ─────────────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
-      const dx = e.clientX - lastPos.x;
-      const dy = e.clientY - lastPos.y;
-      vel.x = dx; vel.y = dy;
+      const x = e.clientX;
+      const y = e.clientY;
+
+      if (lastX === -999) { lastX = x; lastY = y; return; }
+
+      const dx    = x - lastX;
+      const dy    = y - lastY;
       const speed = Math.sqrt(dx * dx + dy * dy);
 
-      lastPos = { x: e.clientX, y: e.clientY };
-      mouse   = { x: e.clientX, y: e.clientY, active: true };
+      if (speed < 0.5) { lastX = x; lastY = y; return; } // ignore tiny jitter
 
-      // cycle hue with movement
-      hue = (hue + speed * 0.35) % 360;
+      // Advance hue — faster movement = quicker colour shift
+      hue = (hue + speed * 0.55 + 0.6) % 360;
 
-      // build up energy (capped at 100)
-      energy = Math.min(energy + speed * 0.9, 100);
+      drawSegment(lastX, lastY, x, y, speed);
 
-      // spawn ink drops along the path
-      if (speed > 2) {
-        spawnDrop(e.clientX, e.clientY, speed);
-      }
-
-      // spawn ripple every ~80px of travel
-      totalDist += speed;
-      if (totalDist > 80) {
-        totalDist = 0;
-        spawnRipple(e.clientX, e.clientY);
-      }
+      lastX = x;
+      lastY = y;
     };
+    window.addEventListener('mousemove', onMove, { passive: true });
 
-    const onClick = (e: MouseEvent) => {
-      for (let i = 0; i < 4; i++) spawnRipple(e.clientX, e.clientY);
-      for (let i = 0; i < 3; i++) spawnDrop(e.clientX, e.clientY, 18);
-      energy = Math.min(energy + 25, 100);
+    // ── Animation loop — only job is fading old trails ────────────────────
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+
+      // destination-out removes alpha from drawn pixels.
+      // At 3.5%/frame @ 60 fps: after 1s alpha ≈ (0.965)^60 ≈ 0.115 → nice 1-2s lifespan
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.035)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
     };
-
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('click', onClick);
-    document.addEventListener('mouseleave', () => { mouse.active = false; });
-    document.addEventListener('mouseenter', () => { mouse.active = true; });
-
-    /* ── animation loop ── */
-    const animate = () => {
-      raf = requestAnimationFrame(animate);
-      const now = performance.now();
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Decay energy
-      energy = Math.max(energy - 0.55, 0);
-
-      // Apply global page disruption via CSS filter
-      // At energy=0: no filter. At energy=100: heavy hue-rotate + saturation boost
-      const rotate = (energy / 100) * 62;                   // 0→62 deg hue-rotate
-      const sat    = 1 + (energy / 100) * 1.4;              // 1→2.4× saturation
-      const bright = 1 + (energy / 100) * 0.18;             // slight brightness
-      root.style.filter = energy > 1
-        ? `hue-rotate(${rotate.toFixed(1)}deg) saturate(${sat.toFixed(2)}) brightness(${bright.toFixed(2)})`
-        : '';
-
-      /* ── 1. Ink drops (paint blobs expanding like dye in water) ── */
-      for (let i = drops.length - 1; i >= 0; i--) {
-        const d   = drops[i];
-        const age = (now - d.born) / d.duration;
-        if (age >= 1) { drops.splice(i, 1); continue; }
-
-        // radius: fast expand then slow
-        const r   = d.maxR * (1 - Math.pow(1 - age, 2.2));
-        // alpha: peak at ~30% of life, fade out after
-        const a   = d.alpha * Math.sin(Math.PI * Math.min(age * 3, 1)) * (1 - age * 0.7);
-
-        const h1  = d.hue;
-        const h2  = (d.hue + 40) % 360;
-        const h3  = (d.hue + 80) % 360;
-
-        const grd = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, r);
-        grd.addColorStop(0,    `hsla(${h1}, 100%, 70%, ${(a * 0.9).toFixed(3)})`);
-        grd.addColorStop(0.35, `hsla(${h2}, 95%,  65%, ${(a * 0.65).toFixed(3)})`);
-        grd.addColorStop(0.7,  `hsla(${h3}, 90%,  60%, ${(a * 0.3).toFixed(3)})`);
-        grd.addColorStop(1,    `hsla(${h3}, 85%,  55%, 0)`);
-
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      /* ── 2. Ripple rings (water disturbance rings expanding outward) ── */
-      for (let i = ripples.length - 1; i >= 0; i--) {
-        const rp  = ripples[i];
-        const age = (now - rp.born) / rp.duration;
-        if (age >= 1) { ripples.splice(i, 1); continue; }
-
-        const r = rp.maxR * Math.pow(age, 0.6);
-        const a = (1 - age) * 0.55;
-
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        ctx.beginPath();
-        ctx.arc(rp.x, rp.y, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `hsla(${rp.hue}, 95%, 68%, ${a.toFixed(3)})`;
-        ctx.lineWidth   = (1 - age) * 3 + 0.5;
-        ctx.shadowBlur  = 18;
-        ctx.shadowColor = `hsla(${rp.hue}, 90%, 65%, ${(a * 0.6).toFixed(3)})`;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      /* ── 3. Small bright cursor dot (always at exact mouse position) ── */
-      if (mouse.active && mouse.x > 0) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        ctx.shadowBlur  = 24;
-        ctx.shadowColor = `hsla(${hue}, 100%, 75%, 0.9)`;
-        ctx.fillStyle   = `hsla(${hue}, 100%, 85%, 0.9)`;
-        ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-    };
-
-    animate();
+    raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
-      root.style.filter = '';
       window.removeEventListener('resize',    resize);
       window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('click',     onClick);
-      document.removeEventListener('mouseleave', () => { mouse.active = false; });
-      document.removeEventListener('mouseenter', () => { mouse.active = true; });
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-[9999] pointer-events-none"
+      className="fixed inset-0 pointer-events-none"
+      style={{
+        zIndex: 9998,
+        mixBlendMode: 'screen',  // adds colour to the dark background
+      }}
     />
   );
 };
