@@ -246,12 +246,10 @@ const Home: React.FC = () => {
           className="mb-6"
         >
           <h1
-            className="font-black tracking-tighter leading-[0.88] text-white"
-            style={{ fontSize: 'clamp(3.8rem, 11vw, 9rem)' }}
+            className="font-black tracking-tighter leading-none text-white whitespace-nowrap"
+            style={{ fontSize: 'clamp(2.2rem, 6.2vw, 5.4rem)' }}
           >
-            ARPAN P.
-            <br />
-            <span className="hero-shimmer-text">NAYAK</span>
+            ARPAN P.&nbsp;<span className="hero-shimmer-text">NAYAK</span>
           </h1>
         </motion.div>
 
@@ -360,12 +358,12 @@ const Home: React.FC = () => {
 
       {/* ══════════════════ MARQUEE ══════════════════ */}
       <div className="relative z-10 border-y border-white/6 bg-slate-950/70 backdrop-blur-sm overflow-hidden">
-        <div className="py-4 flex">
+        <div className="py-3.5 flex">
           <div className="marquee-track flex items-center gap-0 shrink-0">
             {[...TECH, ...TECH].map((t, i) => (
               <div key={i} className="flex items-center gap-3 px-6 shrink-0">
                 <span className="w-1 h-1 rounded-full bg-cyan-500/50 shrink-0" />
-                <span className="text-slate-500 text-[11px] font-black uppercase tracking-[0.18em] whitespace-nowrap hover:text-cyan-400 transition-colors cursor-default">
+                <span className="text-slate-500 text-[11px] font-black uppercase tracking-[0.18em] whitespace-nowrap hover:text-cyan-400 transition-colors">
                   {t}
                 </span>
               </div>
@@ -374,64 +372,172 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* ══════════════════ BENTO GRID ══════════════════ */}
-      <section className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-16">
+      {/* ══════════════════ ABOUT / INFO ══════════════════ */}
+      <section className="relative z-10 py-20 sm:py-28 px-4 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto">
 
+          {/* Section label */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-14"
+            className="flex items-center gap-3 mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/4 border border-white/8 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">
-              <Sparkles size={10} /> Core Capabilities
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-2">
-              What I <span className="text-cyan-400">Build</span>
-            </h2>
-            <p className="text-slate-500 text-sm">Production-grade systems. No demos, no fluff.</p>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-600">Profile</span>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+          {/* ── Two-column profile ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 lg:gap-16 mb-20">
+
+            {/* Left: identity */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-500 mb-4">Who I Am</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-[1.05] mb-6">
+                AI Engineer &amp;<br />
+                <span style={{
+                  background: 'linear-gradient(90deg,#22d3ee,#818cf8)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}>
+                  Business Strategist
+                </span>
+              </h2>
+              <p className="text-slate-400 text-base leading-relaxed mb-6 max-w-lg">
+                I'm <span className="text-white font-semibold">Arpan P. Nayak</span> — an AI engineer who bridges
+                deep technical capability with business-level thinking. I build systems
+                that don't just work in notebooks; they ship to production, scale under load,
+                and drive measurable outcomes.
+              </p>
+              <p className="text-slate-500 text-sm leading-relaxed max-w-lg">
+                Six Sigma Black Belt · MBA Strategy · LangGraph · RAG · FastAPI.
+                Based in India, open to remote work and international collaborations.
+              </p>
+
+              {/* Horizontal fact pills */}
+              <div className="flex flex-wrap gap-2 mt-8">
+                {[
+                  { label: '📍 India',              dim: false },
+                  { label: '🌐 Open to Remote',     dim: false },
+                  { label: '⚡ Available Now',       dim: false },
+                  { label: '🎓 Six Sigma Black Belt', dim: true },
+                  { label: '🤖 LLM Specialist',      dim: true },
+                ].map(({ label, dim }) => (
+                  <span key={label}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                      dim
+                        ? 'bg-white/3 border-white/8 text-slate-500 hover:text-slate-300 hover:border-white/15'
+                        : 'bg-cyan-500/8 border-cyan-500/20 text-cyan-400'
+                    }`}>
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right: stats card */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="relative"
+            >
+              <div className="absolute -inset-px rounded-2xl pointer-events-none"
+                style={{ background: 'linear-gradient(135deg,rgba(6,182,212,0.18),rgba(139,92,246,0.12),transparent)', borderRadius: '1rem' }} />
+              <div className="relative rounded-2xl border border-white/8 bg-slate-950/80 backdrop-blur-xl p-7 space-y-0">
+                {[
+                  { num: '20+', label: 'AI projects shipped',          color: 'text-cyan-400',   bar: 'bg-cyan-500' },
+                  { num: '10+', label: 'Production AI systems built',  color: 'text-violet-400', bar: 'bg-violet-500' },
+                  { num: '5+',  label: 'Certifications earned',        color: 'text-amber-400',  bar: 'bg-amber-500' },
+                  { num: '2yrs',label: 'AI engineering experience',    color: 'text-emerald-400',bar: 'bg-emerald-500' },
+                ].map(({ num, label, color, bar }, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 12 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.18 + i * 0.09 }}
+                    className="flex items-center gap-4 py-4 border-b border-white/5 last:border-0"
+                  >
+                    <div className={`w-1 h-8 rounded-full ${bar} opacity-70 shrink-0`} />
+                    <div>
+                      <div className={`text-2xl font-black ${color} leading-none`}>{num}</div>
+                      <div className="text-slate-500 text-xs mt-0.5 font-medium">{label}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ── Capabilities grid ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-10"
+          >
+            <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-600 mb-3">What I Build</p>
+            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tighter">
+              Core <span className="text-cyan-400">Capabilities</span>
+            </h3>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {capabilities.map((cap, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -7, scale: 1.01 }}
-                className={`relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${cap.bg} border ${cap.border} backdrop-blur-sm group cursor-default transition-all duration-300 ${cap.glow} overflow-hidden ${cap.span}`}
+                transition={{ delay: i * 0.07 }}
+                whileHover={{ y: -5 }}
+                className={`group relative rounded-2xl border border-white/6 bg-gradient-to-br ${cap.bg} backdrop-blur-sm overflow-hidden transition-all duration-300 ${cap.glow} ${cap.span}`}
               >
-                {/* Dot grid texture */}
-                <div className="absolute inset-0 dot-grid-pattern opacity-[0.025] pointer-events-none" />
+                {/* Animated left accent bar */}
+                <div className={`absolute left-0 top-0 bottom-0 w-[3px] transition-all duration-300 group-hover:opacity-100 opacity-40 ${
+                  cap.color.includes('cyan')    ? 'bg-cyan-500'    :
+                  cap.color.includes('amber')   ? 'bg-amber-500'   :
+                  cap.color.includes('violet')  ? 'bg-violet-500'  :
+                  cap.color.includes('emerald') ? 'bg-emerald-500' : 'bg-blue-500'
+                }`} />
 
-                {/* Icon */}
-                <div className="inline-flex p-3 rounded-xl bg-white/5 border border-white/8 mb-5 group-hover:scale-110 transition-transform duration-300">
-                  <cap.icon className={cap.color} size={cap.featured ? 26 : 20} />
-                </div>
-
-                <h3 className={`font-black text-white mb-2.5 ${cap.featured ? 'text-xl sm:text-2xl' : 'text-base sm:text-lg'}`}>
-                  {cap.title}
-                </h3>
-                <p className={`text-slate-400 leading-relaxed mb-5 group-hover:text-slate-300 transition-colors ${cap.featured ? 'text-sm sm:text-base' : 'text-xs sm:text-sm'}`}>
-                  {cap.desc}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5">
-                  {cap.tags.map(tag => (
-                    <span key={tag} className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${cap.border} ${cap.color} bg-white/3`}>
-                      {tag}
+                <div className="p-6 sm:p-7 pl-8">
+                  {/* Icon row */}
+                  <div className="flex items-start justify-between mb-5">
+                    <div className={`inline-flex p-2.5 rounded-xl border ${cap.border} bg-white/4 group-hover:scale-110 transition-transform duration-300`}>
+                      <cap.icon className={cap.color} size={cap.featured ? 22 : 18} />
+                    </div>
+                    <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest mt-1">
+                      0{i + 1}
                     </span>
-                  ))}
-                </div>
+                  </div>
 
-                {/* Bottom glow bar */}
-                <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-600 rounded-b-3xl"
-                     style={{ background: `linear-gradient(90deg, var(--tw-gradient-from, transparent), transparent)` }} />
-                <div className={`absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 rounded-b-3xl bg-gradient-to-r ${cap.color.includes('cyan') ? 'from-cyan-500' : cap.color.includes('amber') ? 'from-amber-500' : cap.color.includes('violet') ? 'from-violet-500' : cap.color.includes('emerald') ? 'from-emerald-500' : 'from-blue-500'} to-transparent`} />
+                  <h3 className={`font-black text-white tracking-tight mb-2 ${cap.featured ? 'text-lg sm:text-xl' : 'text-base sm:text-[17px]'}`}>
+                    {cap.title}
+                  </h3>
+                  <p className={`text-slate-500 leading-relaxed mb-5 group-hover:text-slate-400 transition-colors ${cap.featured ? 'text-sm' : 'text-xs sm:text-[13px]'}`}>
+                    {cap.desc}
+                  </p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {cap.tags.map(tag => (
+                      <span key={tag}
+                        className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md border ${cap.border} ${cap.color} bg-white/3`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -443,20 +549,27 @@ const Home: React.FC = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="relative z-10 py-20 sm:py-24 px-4 sm:px-8 lg:px-16 border-y border-white/6 bg-slate-950/50 backdrop-blur-sm"
+        className="relative z-10 py-20 sm:py-24 px-4 sm:px-8 lg:px-16 overflow-hidden"
       >
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-600 text-[10px] uppercase tracking-[0.35em] font-black mb-8">Philosophy</p>
-          <blockquote className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-[1.25]">
+        {/* Background decoration */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full"
+            style={{ background: 'radial-gradient(ellipse, rgba(6,182,212,0.04) 0%, transparent 70%)' }} />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative">
+          <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-700 mb-10">Philosophy</p>
+          <blockquote className="text-2xl sm:text-3xl lg:text-[2.6rem] font-black text-white tracking-tight leading-[1.2]">
             "I don't just build models —{' '}
             <span className="text-cyan-400">I engineer intelligent systems.</span>
-            {' '}My focus: AI that is robust, scalable, and aligned with{' '}
+            {' '}AI that is robust, scalable, and aligned with{' '}
             <span className="text-amber-400">real business goals.</span>"
           </blockquote>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <div className="h-px w-12 bg-white/10" />
-            <span className="text-slate-500 text-xs font-bold tracking-widest uppercase">Arpan P. Nayak · AI Engineer & Business Strategist</span>
-            <div className="h-px w-12 bg-white/10" />
+          <div className="mt-10 flex items-center justify-center gap-4">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-white/15" />
+            <span className="text-slate-600 text-[10px] font-bold tracking-[0.2em] uppercase">Arpan P. Nayak</span>
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-white/15" />
           </div>
         </div>
       </motion.section>
