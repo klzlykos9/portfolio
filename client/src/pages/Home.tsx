@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Github, Linkedin, Mail, ChevronDown, Cpu, Zap, Brain, Code2, Sparkles } from 'lucide-react';
+import {
+  ArrowRight, Github, Linkedin, Mail, ChevronDown,
+  Brain, Zap, Code2, Cpu, BarChart3, Database,
+  ArrowUpRight, Sparkles, Terminal, Activity,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ParticleBackground from '../components/ParticleBackground';
-import AIHudEffect from '../components/AIHudEffect';
-import CircuitDecor from '../components/CircuitDecor';
-import { SectionPreview } from '../components/SectionPreview';
 
-// ─── Typewriter hook ─────────────────────────────────────────────────────────
-function useTypewriter(words: string[], speed = 80, pause = 2000) {
+// ── Typewriter ───────────────────────────────────────────────────────────────
+function useTypewriter(words: string[], speed = 72, pause = 2300) {
   const [displayed, setDisplayed] = useState('');
   const [wordIdx, setWordIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
@@ -23,7 +23,7 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
       timer = setTimeout(() => setDeleting(true), pause);
     } else if (deleting && charIdx > 0) {
       timer = setTimeout(() => setCharIdx(c => c - 1), speed / 2);
-    } else if (deleting && charIdx === 0) {
+    } else {
       setDeleting(false);
       setWordIdx(i => (i + 1) % words.length);
     }
@@ -34,20 +34,20 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
   return displayed;
 }
 
-// ─── Counter hook ────────────────────────────────────────────────────────────
-function useCounter(target: number, duration = 1500) {
+// ── Counter ──────────────────────────────────────────────────────────────────
+function useCounter(target: number, duration = 1600) {
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
   useEffect(() => {
     if (!started) return;
-    let start = 0;
+    let n = 0;
     const step = Math.ceil(target / (duration / 16));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(start);
+    const t = setInterval(() => {
+      n += step;
+      if (n >= target) { setCount(target); clearInterval(t); }
+      else setCount(n);
     }, 16);
-    return () => clearInterval(timer);
+    return () => clearInterval(t);
   }, [started, target, duration]);
   return { count, setStarted };
 }
@@ -62,287 +62,478 @@ const StatItem = ({ value, label, suffix = '+', color = 'text-cyan-400' }: {
       viewport={{ once: true }}
       className="text-center"
     >
-      <div className={`text-xl sm:text-3xl font-black ${color}`}>{count}{suffix}</div>
-      <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5 font-medium">{label}</div>
+      <div className={`text-2xl sm:text-3xl font-black ${color}`}>{count}{suffix}</div>
+      <div className="text-[10px] text-slate-500 mt-0.5 font-medium uppercase tracking-wider">{label}</div>
     </motion.div>
   );
 };
 
-const whatIBuild = [
+// ── Data ─────────────────────────────────────────────────────────────────────
+const TECH = [
+  'Python', 'LangChain', 'LangGraph', 'RAG', 'FastAPI', 'React', 'TypeScript',
+  'LangSmith', 'FAISS', 'OpenAI API', 'n8n', 'Docker', 'PostgreSQL', 'TensorFlow',
+  'PyTorch', 'ChromaDB', 'MCP', 'LLM Agents', 'Streamlit', 'Scikit-learn',
+];
+
+const TERMINAL_LINES = [
+  { text: '> system.init()', c: 'text-cyan-400' },
+  { text: '  → AI Engineer: ONLINE ✓', c: 'text-emerald-400' },
+  { text: '  → Business Strategist: ONLINE ✓', c: 'text-emerald-400' },
+  { text: '> portfolio.stats()', c: 'text-cyan-400' },
+  { text: '  → Projects: 20+ deployed', c: 'text-slate-300' },
+  { text: '  → AI Systems: 10+ built', c: 'text-slate-300' },
+  { text: '> status.check()', c: 'text-cyan-400' },
+  { text: '  → Available for opportunities', c: 'text-amber-400' },
+  { text: '> stack.top()', c: 'text-cyan-400' },
+  { text: '  → GenAI · RAG · LangGraph', c: 'text-slate-300' },
+  { text: '  → Six Sigma · MBA · Strategy', c: 'text-slate-300' },
+  { text: '_', c: 'text-cyan-400 animate-pulse' },
+];
+
+const capabilities = [
   {
     icon: Brain,
-    title: 'LLM Applications',
-    desc: 'LangChain · LangGraph · RAG · Agents',
-    color: 'from-cyan-500/15 to-blue-600/15',
+    title: 'Generative AI & LLMs',
+    desc: 'Production RAG pipelines, LangChain / LangGraph agent systems, multi-step reasoning, retrieval-augmented generation, and LLM orchestration at scale.',
+    tags: ['LangChain', 'LangGraph', 'RAG', 'Agents', 'LangSmith', 'MCP'],
+    color: 'text-cyan-400',
     border: 'border-cyan-500/20',
-    glow: 'hover:shadow-[0_0_30px_rgba(6,182,212,0.18)]',
-    iconColor: 'text-cyan-400',
-    dot: 'bg-cyan-400',
-    tags: ['LangChain', 'LangGraph'],
-    tagColor: 'text-cyan-300 bg-cyan-500/10 border-cyan-500/20',
+    glow: 'hover:shadow-[0_0_60px_rgba(6,182,212,0.18)]',
+    bg: 'from-cyan-500/10 via-blue-600/5 to-transparent',
+    featured: true,
+    span: 'lg:col-span-2 lg:row-span-2',
   },
   {
     icon: Zap,
     title: 'AI Automation',
-    desc: 'n8n workflows · intelligent pipelines',
-    color: 'from-amber-500/15 to-orange-500/15',
+    desc: 'Intelligent n8n pipelines, zero-touch operations, and automated business workflows.',
+    tags: ['n8n', 'Automation', 'Pipelines'],
+    color: 'text-amber-400',
     border: 'border-amber-500/20',
-    glow: 'hover:shadow-[0_0_30px_rgba(251,191,36,0.15)]',
-    iconColor: 'text-amber-400',
-    dot: 'bg-amber-400',
-    tags: ['n8n', 'RAG'],
-    tagColor: 'text-amber-300 bg-amber-500/10 border-amber-500/20',
+    glow: 'hover:shadow-[0_0_40px_rgba(245,158,11,0.14)]',
+    bg: 'from-amber-500/8 to-transparent',
+    featured: false,
+    span: '',
   },
   {
-    icon: Code2,
-    title: 'AI Backends',
-    desc: 'FastAPI · vector DBs · REST APIs',
-    color: 'from-emerald-500/15 to-teal-500/15',
-    border: 'border-emerald-500/20',
-    glow: 'hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]',
-    iconColor: 'text-emerald-400',
-    dot: 'bg-emerald-400',
-    tags: ['FastAPI', 'FAISS'],
-    tagColor: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
+    icon: BarChart3,
+    title: 'Business Strategy',
+    desc: 'Six Sigma Black Belt · process optimization · decision intelligence, MBA-level strategic thinking applied to AI.',
+    tags: ['Six Sigma', 'DMAIC', 'MBA'],
+    color: 'text-violet-400',
+    border: 'border-violet-500/20',
+    glow: 'hover:shadow-[0_0_40px_rgba(139,92,246,0.14)]',
+    bg: 'from-violet-500/8 to-transparent',
+    featured: false,
+    span: '',
   },
   {
     icon: Cpu,
-    title: 'Vision & Multimodal',
-    desc: 'Computer vision · CLIP · image+text AI',
-    color: 'from-purple-500/15 to-pink-500/15',
-    border: 'border-purple-500/20',
-    glow: 'hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]',
-    iconColor: 'text-purple-400',
-    dot: 'bg-purple-400',
-    tags: ['CLIP', 'PyTorch'],
-    tagColor: 'text-purple-300 bg-purple-500/10 border-purple-500/20',
+    title: 'Computer Vision',
+    desc: 'OpenCV · CLIP · YOLO · multimodal AI and medical imaging systems.',
+    tags: ['PyTorch', 'CLIP', 'OpenCV'],
+    color: 'text-emerald-400',
+    border: 'border-emerald-500/20',
+    glow: 'hover:shadow-[0_0_40px_rgba(16,185,129,0.14)]',
+    bg: 'from-emerald-500/8 to-transparent',
+    featured: false,
+    span: '',
+  },
+  {
+    icon: Database,
+    title: 'AI Backends',
+    desc: 'FastAPI · vector databases · scalable REST APIs built for production AI workloads.',
+    tags: ['FastAPI', 'FAISS', 'PostgreSQL'],
+    color: 'text-blue-400',
+    border: 'border-blue-500/20',
+    glow: 'hover:shadow-[0_0_40px_rgba(59,130,246,0.14)]',
+    bg: 'from-blue-500/8 to-transparent',
+    featured: false,
+    span: '',
   },
 ];
 
+// ── Component ─────────────────────────────────────────────────────────────────
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [terminalStep, setTerminalStep] = useState(0);
   const typed = useTypewriter(
-    ['AI Engineer', 'Business Strategist', 'LLM Architect', 'Systems Thinker', 'Problem Solver'],
-    75, 2200
+    ['AI Engineer', 'LLM Architect', 'Business Strategist', 'Systems Thinker', 'RAG Specialist'],
+    70, 2300
   );
 
-  const scrollDown = () => {
-    document.getElementById('section-preview')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Reveal terminal lines one by one
+  useEffect(() => {
+    if (terminalStep >= TERMINAL_LINES.length) return;
+    const t = setTimeout(() => setTerminalStep(s => s + 1), 280);
+    return () => clearTimeout(t);
+  }, [terminalStep]);
 
   return (
-    <div className="relative bg-[#080e1a] overflow-x-hidden">
+    <div className="relative bg-[#060a14] overflow-x-hidden">
 
-      {/* ── Backgrounds ── */}
-      <ParticleBackground />
-      <CircuitDecor />
-
-      {/* ── Hero ── */}
-      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center pt-16 pb-20">
-
-        <AIHudEffect />
-
-        {/* Glow orbs */}
-        <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-cyan-500/6 rounded-full blur-[80px] pointer-events-none" />
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-600/6 rounded-full blur-[80px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/4 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="max-w-3xl mx-auto w-full relative z-20 flex flex-col items-center text-center gap-5 px-2">
-
-            {/* Availability badge */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-primary/30 text-primary font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] glow-pulse"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-              </span>
-              Available for AI Projects
-            </motion.div>
-
-            {/* Name */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.6 }}
-            >
-              <h1 className="text-[1.9rem] leading-none xs:text-[2.4rem] sm:text-6xl lg:text-7xl font-black tracking-tighter">
-                <span className="text-white">ARPAN P. </span>
-                <span style={{
-                  WebkitTextFillColor: 'transparent',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  backgroundImage: 'linear-gradient(90deg,#facc15,#fbbf24,#f59e0b,#facc15)',
-                  backgroundSize: '200% auto',
-                  animation: 'shimmer 2.5s linear infinite',
-                  filter: 'drop-shadow(0 0 24px rgba(251,191,36,0.6))',
-                }}>NAYAK</span>
-              </h1>
-              <div className="mt-3 h-9 sm:h-11 flex items-center justify-center">
-                <span className="text-lg sm:text-2xl font-bold text-primary">
-                  {typed}
-                  <span className="inline-block w-0.5 h-5 sm:h-7 bg-primary ml-0.5 animate-pulse align-middle" />
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.5 }}
-              className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-md"
-            >
-              Architecting <span className="text-white font-semibold">intelligent systems</span> that bridge cutting-edge AI and strategic business transformation.
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.45 }}
-              className="flex flex-col sm:flex-row gap-3 justify-center items-center w-full sm:w-auto"
-            >
-              <button
-                onClick={scrollDown}
-                className="group w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-primary to-blue-600 text-white rounded-2xl font-black text-sm transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.45)] flex items-center justify-center gap-2 active:scale-95"
-              >
-                Explore Portfolio
-                <ArrowRight size={17} className="group-hover:translate-x-1.5 transition-transform" />
-              </button>
-              <button
-                onClick={() => navigate('/projects')}
-                className="group w-full sm:w-auto px-7 py-3.5 border-2 border-white/15 text-white rounded-2xl font-black text-sm transition-all hover:bg-white/5 hover:border-primary/50 flex items-center justify-center gap-2"
-              >
-                View Projects
-              </button>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.52, duration: 0.45 }}
-              className="grid grid-cols-3 gap-8 sm:gap-10 pt-4 border-t border-white/8 w-full max-w-xs sm:max-w-sm mx-auto"
-            >
-              <StatItem value={20} label="Projects Built" color="text-cyan-400" />
-              <StatItem value={10} label="AI Systems" color="text-purple-400" />
-              <StatItem value={5} label="Certifications" suffix="+" color="text-amber-400" />
-            </motion.div>
-
-            {/* Social */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.62, duration: 0.4 }}
-              className="flex justify-center gap-4"
-            >
-              {[
-                { icon: Github,   href: 'https://github.com/arpanpnayak',          label: 'GitHub',   hover: 'hover:text-white hover:border-white/40' },
-                { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak', label: 'LinkedIn', hover: 'hover:text-blue-400 hover:border-blue-400/40' },
-                { icon: Mail,     href: 'mailto:arpanpnayak@gmail.com',            label: 'Email',    hover: 'hover:text-primary hover:border-primary/40' },
-              ].map(({ icon: Icon, href, label, hover }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  className={`p-3.5 bg-slate-900/60 rounded-xl border border-white/8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)] text-slate-400 ${hover}`}
-                >
-                  <Icon size={19} />
-                </a>
-              ))}
-            </motion.div>
-        </div>
-
-        {/* Scroll indicator */}
-        <motion.button
-          onClick={scrollDown}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-500 hover:text-cyan-400 transition-colors cursor-pointer group z-20"
-          animate={{ y: [0, 7, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          aria-label="Scroll down"
-        >
-          <span className="text-[9px] uppercase tracking-widest font-bold">Scroll</span>
-          <ChevronDown size={16} className="group-hover:scale-125 transition-transform" />
-        </motion.button>
-      </section>
-
-      {/* ── Section Shortcuts ── */}
-      <div id="section-preview">
-        <SectionPreview />
+      {/* ── Aurora ── */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="aurora-blob aurora-blob-1" />
+        <div className="aurora-blob aurora-blob-2" />
+        <div className="aurora-blob aurora-blob-3" />
+        <div className="noise-layer" />
       </div>
 
-      {/* ── What I Build ── */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        className="relative z-10 py-16 sm:py-20 px-4 sm:px-8"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/10 via-slate-900/30 to-slate-900/10 pointer-events-none" />
-        <div className="max-w-6xl mx-auto relative">
+      {/* ══════════════════ HERO ══════════════════ */}
+      <section className="relative z-10 min-h-screen flex items-center px-4 sm:px-8 lg:px-16 pt-20 pb-16">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-12 lg:gap-16 items-center">
 
-          {/* Heading */}
+            {/* ── Left ── */}
+            <div className="flex flex-col gap-7">
+
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-300 font-black text-[10px] uppercase tracking-[0.22em] w-fit glow-pulse"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-80" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+                </span>
+                Available for AI Projects
+              </motion.div>
+
+              {/* Name */}
+              <motion.div
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.18, duration: 0.75 }}
+              >
+                <h1
+                  className="font-black tracking-tighter leading-[0.92] text-white"
+                  style={{ fontSize: 'clamp(3rem, 8.5vw, 6.5rem)' }}
+                >
+                  ARPAN P.
+                  <br />
+                  <span className="hero-shimmer-text">NAYAK</span>
+                </h1>
+                <div className="mt-4 h-9 sm:h-11 flex items-center">
+                  <span className="text-lg sm:text-2xl font-bold text-cyan-400">
+                    {typed}
+                    <span className="inline-block w-0.5 h-5 sm:h-7 bg-cyan-400 ml-0.5 animate-pulse align-middle" />
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.32 }}
+                className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-lg"
+              >
+                I build <span className="text-white font-semibold">production-grade AI systems</span> — not demos, not prototypes.
+                Real, scalable, deployed systems. From LangGraph multi-agent architectures to RAG pipelines —
+                bridging <span className="text-white font-semibold">cutting-edge AI</span> with business outcomes.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.42 }}
+                className="flex flex-wrap gap-3"
+              >
+                <button
+                  onClick={() => navigate('/projects')}
+                  className="group px-7 py-3.5 bg-cyan-500 text-white rounded-xl font-black text-sm transition-all hover:bg-cyan-400 hover:shadow-[0_0_40px_rgba(6,182,212,0.55)] flex items-center gap-2 active:scale-95"
+                >
+                  View Projects
+                  <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                </button>
+                <button
+                  onClick={() => navigate('/about')}
+                  className="group px-7 py-3.5 border border-white/12 text-white rounded-xl font-black text-sm transition-all hover:bg-white/5 hover:border-white/25 flex items-center gap-2"
+                >
+                  About Me
+                  <ArrowUpRight size={15} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                </button>
+              </motion.div>
+
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.52 }}
+                className="flex items-center gap-8 pt-5 border-t border-white/6"
+              >
+                <StatItem value={20} label="Projects" color="text-cyan-400" />
+                <div className="w-px h-10 bg-white/8" />
+                <StatItem value={10} label="AI Systems" color="text-violet-400" />
+                <div className="w-px h-10 bg-white/8" />
+                <StatItem value={5} label="Certs" suffix="+" color="text-amber-400" />
+              </motion.div>
+
+              {/* Socials */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.62 }}
+                className="flex gap-3"
+              >
+                {[
+                  { icon: Github,   href: 'https://github.com/arpanpnayak',          label: 'GitHub' },
+                  { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak', label: 'LinkedIn' },
+                  { icon: Mail,     href: 'mailto:arpanpnayak@gmail.com',            label: 'Email' },
+                ].map(({ icon: Icon, href, label }) => (
+                  <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+                    className="p-3.5 bg-slate-900/60 rounded-xl border border-white/8 text-slate-400 hover:text-white hover:border-white/20 hover:-translate-y-1.5 hover:shadow-lg transition-all duration-200">
+                    <Icon size={18} />
+                  </a>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* ── Right: Terminal ── */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.45, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="hidden lg:block"
+            >
+              <div className="relative">
+                {/* Glow halo */}
+                <div className="absolute -inset-6 bg-cyan-500/6 rounded-3xl blur-3xl pointer-events-none" />
+                <div className="absolute -inset-2 bg-blue-600/4 rounded-3xl blur-2xl pointer-events-none" />
+
+                {/* Window */}
+                <div className="relative bg-slate-950/85 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                  {/* Title bar */}
+                  <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/8 bg-black/30">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/70" />
+                      <div className="w-3 h-3 rounded-full bg-amber-500/70" />
+                      <div className="w-3 h-3 rounded-full bg-emerald-500/70" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-center gap-2">
+                      <Terminal size={11} className="text-slate-600" />
+                      <span className="text-slate-600 text-[11px] font-mono">arpan@ai-engineer ~ portfolio</span>
+                    </div>
+                  </div>
+
+                  {/* Body */}
+                  <div className="p-6 font-mono text-sm space-y-1.5 min-h-[300px] bg-black/10">
+                    {TERMINAL_LINES.slice(0, terminalStep).map((line, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.18 }}
+                        className={line.c}
+                      >
+                        {line.text}
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Status bar */}
+                  <div className="px-5 py-2.5 border-t border-white/6 bg-black/30 flex items-center gap-2.5">
+                    <Activity size={11} className="text-emerald-400 animate-pulse" />
+                    <span className="text-emerald-400 text-[10px] font-mono font-black tracking-widest">SYSTEM ONLINE</span>
+                    <span className="ml-auto text-slate-700 text-[10px] font-mono">v2.0.26</span>
+                  </div>
+                </div>
+
+                {/* Floating chips */}
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-5 -right-5 px-3.5 py-2.5 bg-violet-900/60 border border-violet-500/40 rounded-xl backdrop-blur-md shadow-lg"
+                >
+                  <p className="text-violet-200 text-xs font-black">LangGraph</p>
+                  <p className="text-violet-400/60 text-[10px] font-mono">Multi-Agent</p>
+                </motion.div>
+
+                <motion.div
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+                  className="absolute -bottom-5 -left-5 px-3.5 py-2.5 bg-cyan-900/60 border border-cyan-500/40 rounded-xl backdrop-blur-md shadow-lg"
+                >
+                  <p className="text-cyan-200 text-xs font-black">RAG Pipeline</p>
+                  <p className="text-cyan-400/60 text-[10px] font-mono">Production</p>
+                </motion.div>
+
+                <motion.div
+                  animate={{ y: [0, -7, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+                  className="absolute top-1/2 -right-8 px-3 py-2 bg-amber-900/50 border border-amber-500/30 rounded-xl backdrop-blur-md shadow-lg"
+                >
+                  <p className="text-amber-200 text-xs font-black">Six Sigma</p>
+                  <p className="text-amber-400/60 text-[10px] font-mono">Black Belt</p>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Scroll indicator */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-700 hover:text-slate-500 transition-colors cursor-default"
+            animate={{ y: [0, 7, 0] }}
+            transition={{ duration: 2.2, repeat: Infinity }}
+          >
+            <span className="text-[9px] uppercase tracking-[0.2em] font-bold">Scroll</span>
+            <ChevronDown size={13} />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════ MARQUEE ══════════════════ */}
+      <div className="relative z-10 border-y border-white/6 bg-slate-950/70 backdrop-blur-sm overflow-hidden">
+        <div className="py-4 flex">
+          <div className="marquee-track flex items-center gap-0 shrink-0">
+            {[...TECH, ...TECH].map((t, i) => (
+              <div key={i} className="flex items-center gap-3 px-6 shrink-0">
+                <span className="w-1 h-1 rounded-full bg-cyan-500/50 shrink-0" />
+                <span className="text-slate-500 text-[11px] font-black uppercase tracking-[0.18em] whitespace-nowrap hover:text-cyan-400 transition-colors cursor-default">
+                  {t}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════ BENTO GRID ══════════════════ */}
+      <section className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-16">
+        <div className="max-w-7xl mx-auto">
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-10"
+            className="mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest mb-4">
-              <Sparkles size={11} /> Core Capabilities
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/4 border border-white/8 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">
+              <Sparkles size={10} /> Core Capabilities
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-white mb-2">
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-2">
               What I <span className="text-cyan-400">Build</span>
             </h2>
-            <p className="text-slate-400 text-sm max-w-md mx-auto">
-              Production-grade AI systems, not just prototypes
-            </p>
+            <p className="text-slate-500 text-sm">Production-grade systems. No demos, no fluff.</p>
           </motion.div>
 
-          {/* Cards grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {whatIBuild.map((item, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+            {capabilities.map((cap, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className={`relative p-5 rounded-2xl bg-gradient-to-br ${item.color} border ${item.border} backdrop-blur-sm group cursor-default transition-all duration-300 ${item.glow} overflow-hidden`}
+                transition={{ delay: i * 0.08 }}
+                whileHover={{ y: -7, scale: 1.01 }}
+                className={`relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-br ${cap.bg} border ${cap.border} backdrop-blur-sm group cursor-default transition-all duration-300 ${cap.glow} overflow-hidden ${cap.span}`}
               >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: 'radial-gradient(circle at 50% 0%,rgba(255,255,255,0.03),transparent 70%)' }} />
+                {/* Dot grid texture */}
+                <div className="absolute inset-0 dot-grid-pattern opacity-[0.025] pointer-events-none" />
 
-                <div className={`absolute top-3.5 right-3.5 w-1.5 h-1.5 rounded-full ${item.dot} opacity-60 group-hover:opacity-100 transition-opacity`} />
-
-                <div className="p-2.5 rounded-xl bg-white/5 w-fit mb-3 group-hover:scale-110 transition-transform duration-300 border border-white/5">
-                  <item.icon className={item.iconColor} size={20} />
+                {/* Icon */}
+                <div className="inline-flex p-3 rounded-xl bg-white/5 border border-white/8 mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <cap.icon className={cap.color} size={cap.featured ? 26 : 20} />
                 </div>
-                <h3 className="text-white font-black text-sm mb-1">{item.title}</h3>
-                <p className="text-slate-400 text-xs leading-relaxed mb-3 group-hover:text-slate-300 transition-colors">{item.desc}</p>
 
-                {/* Tech tags */}
+                <h3 className={`font-black text-white mb-2.5 ${cap.featured ? 'text-xl sm:text-2xl' : 'text-base sm:text-lg'}`}>
+                  {cap.title}
+                </h3>
+                <p className={`text-slate-400 leading-relaxed mb-5 group-hover:text-slate-300 transition-colors ${cap.featured ? 'text-sm sm:text-base' : 'text-xs sm:text-sm'}`}>
+                  {cap.desc}
+                </p>
+
+                {/* Tags */}
                 <div className="flex flex-wrap gap-1.5">
-                  {item.tags.map(tag => (
-                    <span key={tag} className={`text-[9px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full border ${item.tagColor}`}>
+                  {cap.tags.map(tag => (
+                    <span key={tag} className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${cap.border} ${cap.color} bg-white/3`}>
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                <div className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500 bg-gradient-to-r ${item.color.replace('/15', '')}`} />
+                {/* Bottom glow bar */}
+                <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-600 rounded-b-3xl"
+                     style={{ background: `linear-gradient(90deg, var(--tw-gradient-from, transparent), transparent)` }} />
+                <div className={`absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 rounded-b-3xl bg-gradient-to-r ${cap.color.includes('cyan') ? 'from-cyan-500' : cap.color.includes('amber') ? 'from-amber-500' : cap.color.includes('violet') ? 'from-violet-500' : cap.color.includes('emerald') ? 'from-emerald-500' : 'from-blue-500'} to-transparent`} />
               </motion.div>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ══════════════════ PHILOSOPHY ══════════════════ */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        className="relative z-10 py-20 sm:py-24 px-4 sm:px-8 lg:px-16 border-y border-white/6 bg-slate-950/50 backdrop-blur-sm"
+      >
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-slate-600 text-[10px] uppercase tracking-[0.35em] font-black mb-8">Philosophy</p>
+          <blockquote className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-[1.25]">
+            "I don't just build models —{' '}
+            <span className="text-cyan-400">I engineer intelligent systems.</span>
+            {' '}My focus: AI that is robust, scalable, and aligned with{' '}
+            <span className="text-amber-400">real business goals.</span>"
+          </blockquote>
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <div className="h-px w-12 bg-white/10" />
+            <span className="text-slate-500 text-xs font-bold tracking-widest uppercase">Arpan P. Nayak · AI Engineer & Business Strategist</span>
+            <div className="h-px w-12 bg-white/10" />
+          </div>
+        </div>
       </motion.section>
+
+      {/* ══════════════════ CTA ══════════════════ */}
+      <section className="relative z-10 py-28 sm:py-36 px-4 sm:px-8 lg:px-16">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative p-10 sm:p-16 rounded-3xl overflow-hidden text-center"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/8 to-violet-600/10 border border-white/10 rounded-3xl" />
+            <div className="absolute -top-16 -right-16 w-72 h-72 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-16 -left-16 w-72 h-72 bg-violet-500/8 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black uppercase tracking-widest mb-7">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Open to Opportunities
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-4 leading-tight">
+                Ready to build something{' '}
+                <span className="text-cyan-400">that actually works?</span>
+              </h2>
+              <p className="text-slate-400 text-sm sm:text-base mb-10 max-w-xl mx-auto leading-relaxed">
+                Whether you need a production RAG system, an AI automation pipeline, or a strategic AI roadmap — I'm the engineer who sees the full picture.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => navigate('/contact')}
+                  className="group px-8 py-4 bg-cyan-500 text-white rounded-xl font-black text-sm hover:bg-cyan-400 hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+                  Let's Connect
+                  <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+                </button>
+                <button
+                  onClick={() => navigate('/projects')}
+                  className="px-8 py-4 border border-white/12 text-white rounded-xl font-black text-sm hover:bg-white/5 hover:border-white/22 transition-all"
+                >
+                  Browse Projects
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   );
 };

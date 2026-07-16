@@ -7,7 +7,7 @@ const fadeUp = {
   visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.55 } }),
 };
 
-type Tag = 'AI & Process' | 'Sales & Ops' | 'Finance';
+type Tag = 'Sales & Ops' | 'Finance';
 
 const jobs: {
   role: string;
@@ -23,46 +23,6 @@ const jobs: {
   bgColor: string;
   dotColor: string;
 }[] = [
-  {
-    role: 'Process Improvement Manager',
-    company: 'Henry Harvin India Education LLP',
-    tag: 'AI & Process',
-    period: 'Sep 2022 – Oct 2022',
-    duration: '2 months',
-    location: 'India',
-    description:
-      'Applied Lean Six Sigma Black Belt methodology to lead process improvement and operational excellence initiatives.',
-    points: [
-      'Led end-to-end process optimization projects using DMAIC framework and Black Belt tools',
-      'Analyzed organizational workflows to identify inefficiencies and design measurable improvements',
-      'Collaborated with cross-functional teams on quality transformation and change management',
-      'Developed data-driven reports and action plans to track and sustain process gains',
-    ],
-    accentColor: 'text-cyan-400',
-    borderColor: 'border-cyan-500/30',
-    bgColor: 'from-cyan-500/8 to-blue-600/8',
-    dotColor: 'bg-cyan-500 shadow-[0_0_12px_rgba(6,182,212,0.6)]',
-  },
-  {
-    role: 'Quality Management Specialist',
-    company: 'Henry Harvin India',
-    tag: 'AI & Process',
-    period: 'Jul 2022 – Aug 2022',
-    duration: '2 months',
-    location: 'India',
-    description:
-      'Implemented Green Belt quality management frameworks to drive measurable process and quality improvements.',
-    points: [
-      'Applied DMAIC methodology to real-world business quality challenges across departments',
-      'Conducted statistical analysis to identify root causes and eliminate process defects',
-      'Created standard operating procedures and process documentation for quality assurance',
-      'Delivered measurable improvements in process efficiency and output quality metrics',
-    ],
-    accentColor: 'text-emerald-400',
-    borderColor: 'border-emerald-500/30',
-    bgColor: 'from-emerald-500/8 to-teal-600/8',
-    dotColor: 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.6)]',
-  },
   {
     role: 'Sales Team Lead',
     company: 'THE INSPiREEZ IT SOLUTION',
@@ -126,7 +86,6 @@ const jobs: {
 ];
 
 const TAG_COLORS: Record<Tag, string> = {
-  'AI & Process': 'bg-cyan-500/10 text-cyan-300 border-cyan-500/25',
   'Sales & Ops':  'bg-amber-500/10 text-amber-300 border-amber-500/25',
   'Finance':      'bg-purple-500/10 text-purple-300 border-purple-500/25',
 };
@@ -134,7 +93,7 @@ const TAG_COLORS: Record<Tag, string> = {
 const Experience: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<'All' | Tag>('All');
 
-  const filters: Array<'All' | Tag> = ['All', 'AI & Process', 'Sales & Ops', 'Finance'];
+  const filters: Array<'All' | Tag> = ['All', 'Sales & Ops', 'Finance'];
   const filtered = activeFilter === 'All' ? jobs : jobs.filter(j => j.tag === activeFilter);
 
   return (
@@ -166,9 +125,9 @@ const Experience: React.FC = () => {
             className="grid grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16"
           >
             {[
-              { icon: Briefcase, label: 'Roles', value: '5', color: 'text-cyan-400' },
-              { icon: TrendingUp, label: 'Years Active', value: '5+', color: 'text-amber-400' },
-              { icon: Building2, label: 'Industries', value: '3', color: 'text-emerald-400' },
+              { icon: Briefcase, label: 'Roles', value: '3', color: 'text-cyan-400' },
+              { icon: TrendingUp, label: 'Years Active', value: '4+', color: 'text-amber-400' },
+              { icon: Building2, label: 'Industries', value: '2', color: 'text-emerald-400' },
             ].map(({ icon: Icon, label, value, color }, i) => (
               <div key={i} className="p-4 sm:p-6 rounded-2xl bg-slate-800/40 border border-white/8 text-center backdrop-blur-sm">
                 <Icon className={`${color} mx-auto mb-2`} size={20} />
