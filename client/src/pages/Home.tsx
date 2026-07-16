@@ -158,196 +158,208 @@ const Home: React.FC = () => {
       </div>
 
       {/* ══════════════════ HERO ══════════════════ */}
-      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 text-center pt-24 pb-20 overflow-hidden">
+      <section className="relative z-10 min-h-screen flex flex-col justify-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-28 pb-20 overflow-hidden">
 
-        {/* Subtle hero grid lines */}
-        <div className="pointer-events-none absolute inset-0 hero-grid-lines opacity-100" aria-hidden />
+        {/* Grid lines */}
+        <div className="pointer-events-none absolute inset-0 hero-grid-lines opacity-60" aria-hidden />
 
-        {/* Central radial glow orb behind name */}
+        {/* Glow behind name — left-anchored */}
         <div
           className="pointer-events-none absolute"
           aria-hidden
           style={{
-            top: '50%', left: '50%',
-            transform: 'translate(-50%, -55%)',
-            width: '700px', height: '500px',
-            background: 'radial-gradient(ellipse, rgba(6,182,212,0.13) 0%, rgba(99,102,241,0.08) 45%, transparent 72%)',
-            filter: 'blur(40px)',
+            top: '42%', left: '18%',
+            transform: 'translate(-50%, -50%)',
+            width: '740px', height: '460px',
+            background: 'radial-gradient(ellipse, rgba(6,182,212,0.11) 0%, rgba(99,102,241,0.07) 50%, transparent 75%)',
+            filter: 'blur(50px)',
           }}
         />
 
-        {/* ── Floating decorative chips (desktop only) ── */}
-        <motion.div
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="hidden lg:block absolute top-32 left-12 xl:left-28 px-3.5 py-2.5 rounded-2xl backdrop-blur-md border select-none"
-          style={{ background: 'rgba(6,182,212,0.10)', borderColor: 'rgba(6,182,212,0.22)' }}
-        >
-          <p className="text-cyan-300 text-xs font-black tracking-wide">LangGraph</p>
-          <p className="text-cyan-500/60 text-[10px]">Multi-Agent</p>
-        </motion.div>
+        {/* Two-column: left content / right decorative */}
+        <div className="relative max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_400px] gap-16 lg:gap-10 items-center">
 
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-          className="hidden lg:block absolute top-36 right-12 xl:right-28 px-3.5 py-2.5 rounded-2xl backdrop-blur-md border select-none"
-          style={{ background: 'rgba(139,92,246,0.10)', borderColor: 'rgba(139,92,246,0.22)' }}
-        >
-          <p className="text-violet-300 text-xs font-black tracking-wide">RAG Pipeline</p>
-          <p className="text-violet-500/60 text-[10px]">Production</p>
-        </motion.div>
+          {/* ── LEFT COLUMN ── */}
+          <div className="flex flex-col items-start text-left">
 
-        <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-          className="hidden lg:block absolute bottom-40 left-16 xl:left-32 px-3.5 py-2.5 rounded-2xl backdrop-blur-md border select-none"
-          style={{ background: 'rgba(245,158,11,0.10)', borderColor: 'rgba(245,158,11,0.22)' }}
-        >
-          <p className="text-amber-300 text-xs font-black tracking-wide">Six Sigma</p>
-          <p className="text-amber-500/60 text-[10px]">Black Belt</p>
-        </motion.div>
+            {/* Status badges */}
+            <motion.div
+              initial={{ opacity: 0, y: -14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.55 }}
+              className="flex flex-wrap gap-2.5 mb-9"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-300 font-black text-[10px] uppercase tracking-[0.2em] glow-pulse">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-80" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+                </span>
+                Available for AI Projects
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900/60 border border-white/10 text-slate-400 font-bold text-[10px] uppercase tracking-[0.15em]">
+                <MapPin size={9} className="text-slate-500" />
+                India · Open to Remote
+                <Globe size={9} className="text-slate-500 ml-0.5" />
+              </div>
+            </motion.div>
 
-        <motion.div
-          animate={{ y: [0, 9, 0] }}
-          transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          className="hidden lg:block absolute bottom-44 right-16 xl:right-32 px-3.5 py-2.5 rounded-2xl backdrop-blur-md border select-none"
-          style={{ background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.22)' }}
-        >
-          <p className="text-emerald-300 text-xs font-black tracking-wide">FastAPI</p>
-          <p className="text-emerald-500/60 text-[10px]">Python · FAISS</p>
-        </motion.div>
+            {/* Name */}
+            <motion.div
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-5"
+            >
+              <h1
+                className="font-black tracking-tighter leading-none text-white whitespace-nowrap"
+                style={{ fontSize: 'clamp(2.6rem, 6.8vw, 6rem)' }}
+              >
+                ARPAN P.&nbsp;<span className="hero-shimmer-text">NAYAK</span>
+              </h1>
+            </motion.div>
 
-        {/* ── Status badges ── */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-2.5 mb-10"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-300 font-black text-[10px] uppercase tracking-[0.2em] glow-pulse">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-80" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
-            </span>
-            Available for AI Projects
+            {/* Typewriter */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="h-9 sm:h-11 flex items-center mb-7"
+            >
+              <span className="text-lg sm:text-xl font-bold tracking-wide"
+                style={{ color: 'hsl(185,90%,62%)' }}>
+                {typed}
+                <span className="inline-block w-[2px] h-5 sm:h-6 ml-1 animate-pulse align-middle"
+                  style={{ background: 'hsl(185,90%,62%)' }} />
+              </span>
+            </motion.div>
+
+            {/* Thin accent line */}
+            <motion.div
+              initial={{ scaleX: 0, originX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.38, duration: 0.55 }}
+              className="w-20 h-px mb-7"
+              style={{ background: 'linear-gradient(90deg, rgba(6,182,212,0.6), transparent)' }}
+            />
+
+            {/* Bio */}
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.44 }}
+              className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-[520px] mb-9"
+            >
+              I build <span className="text-white font-semibold">production-grade AI systems</span> — not demos.
+              LangGraph multi-agent architectures, RAG pipelines, and Six Sigma–driven process intelligence,
+              bridging <span className="text-white font-semibold">cutting-edge AI</span> with real business outcomes.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.52 }}
+              className="flex flex-wrap gap-3 mb-12"
+            >
+              <button
+                onClick={() => navigate('/projects')}
+                className="group px-7 py-3.5 bg-cyan-500 text-white rounded-xl font-black text-sm transition-all hover:bg-cyan-400 hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] flex items-center gap-2 active:scale-95"
+              >
+                View Projects
+                <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform" />
+              </button>
+              <button
+                onClick={() => navigate('/about')}
+                className="group px-7 py-3.5 border border-white/12 text-white rounded-xl font-black text-sm transition-all hover:bg-white/5 hover:border-white/25 flex items-center gap-2"
+              >
+                About Me
+                <ArrowUpRight size={14} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              </button>
+            </motion.div>
+
+            {/* Stats row */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex items-center gap-8 sm:gap-12 mb-10"
+            >
+              <StatItem value={20} label="Projects"   color="text-cyan-400" />
+              <div className="w-px h-9 bg-white/8" />
+              <StatItem value={10} label="AI Systems" color="text-violet-400" />
+              <div className="w-px h-9 bg-white/8" />
+              <StatItem value={5}  label="Certs" suffix="+" color="text-amber-400" />
+            </motion.div>
+
+            {/* Socials */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.68 }}
+              className="flex gap-3"
+            >
+              {[
+                { icon: Github,   href: 'https://github.com/arpanpnayak',          label: 'GitHub' },
+                { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak', label: 'LinkedIn' },
+                { icon: Mail,     href: 'mailto:arpanpnayak@gmail.com',            label: 'Email' },
+              ].map(({ icon: Icon, href, label }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+                  className="p-3.5 bg-slate-900/60 rounded-xl border border-white/8 text-slate-400 hover:text-white hover:border-cyan-500/40 hover:-translate-y-1.5 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-200">
+                  <Icon size={18} />
+                </a>
+              ))}
+            </motion.div>
           </div>
-          <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900/60 border border-white/10 text-slate-400 font-bold text-[10px] uppercase tracking-[0.15em]">
-            <MapPin size={9} className="text-slate-500" />
-            India · Open to Remote
-            <Globe size={9} className="text-slate-500 ml-0.5" />
-          </div>
-        </motion.div>
 
-        {/* ── Name ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.18, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-6"
-        >
-          <h1
-            className="font-black tracking-tighter leading-none text-white whitespace-nowrap"
-            style={{ fontSize: 'clamp(2.2rem, 6.2vw, 5.4rem)' }}
+          {/* ── RIGHT COLUMN — decorative card panel ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:flex flex-col gap-4"
           >
-            ARPAN P.&nbsp;<span className="hero-shimmer-text">NAYAK</span>
-          </h1>
-        </motion.div>
+            {/* Glowing identity card */}
+            <div className="relative rounded-2xl border border-white/8 bg-slate-950/70 backdrop-blur-xl p-6 overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)' }} />
+              <p className="text-[9px] font-black uppercase tracking-[0.32em] text-slate-600 mb-4">Identity</p>
+              <div className="space-y-3">
+                {[
+                  { label: 'Role',       value: 'AI Engineer & Strategist', color: 'text-cyan-400' },
+                  { label: 'Stack',      value: 'LangChain · FastAPI · React', color: 'text-violet-400' },
+                  { label: 'Cert',       value: 'Six Sigma Black Belt', color: 'text-amber-400' },
+                  { label: 'Degree',     value: 'MBA — Strategy', color: 'text-emerald-400' },
+                  { label: 'Location',   value: 'India · Remote-first', color: 'text-slate-400' },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="flex items-start gap-3">
+                    <span className="text-[10px] text-slate-600 uppercase tracking-widest font-bold w-16 shrink-0 pt-0.5">{label}</span>
+                    <span className={`text-sm font-semibold ${color} leading-snug`}>{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-        {/* ── Typewriter role ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.35 }}
-          className="h-10 sm:h-12 flex items-center justify-center mb-8"
-        >
-          <span className="text-xl sm:text-2xl font-bold tracking-wide"
-            style={{ color: 'hsl(185,90%,62%)' }}>
-            {typed}
-            <span className="inline-block w-[2px] h-6 sm:h-7 ml-1 animate-pulse align-middle"
-              style={{ background: 'hsl(185,90%,62%)' }} />
-          </span>
-        </motion.div>
-
-        {/* ── Thin divider ── */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.42, duration: 0.6 }}
-          className="w-24 h-px mb-8 origin-center"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.5), transparent)' }}
-        />
-
-        {/* ── Bio ── */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.48 }}
-          className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl mb-10"
-        >
-          I build <span className="text-white font-semibold">production-grade AI systems</span> — not demos.
-          From LangGraph multi-agent architectures to RAG pipelines, bridging{' '}
-          <span className="text-white font-semibold">cutting-edge AI</span> with real business outcomes.
-        </motion.p>
-
-        {/* ── CTAs ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.56 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
-        >
-          <button
-            onClick={() => navigate('/projects')}
-            className="group px-8 py-3.5 bg-cyan-500 text-white rounded-xl font-black text-sm transition-all hover:bg-cyan-400 hover:shadow-[0_0_50px_rgba(6,182,212,0.5)] flex items-center gap-2 active:scale-95"
-          >
-            View Projects
-            <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
-          </button>
-          <button
-            onClick={() => navigate('/about')}
-            className="group px-8 py-3.5 border border-white/12 text-white rounded-xl font-black text-sm transition-all hover:bg-white/5 hover:border-white/25 flex items-center gap-2"
-          >
-            About Me
-            <ArrowUpRight size={15} className="opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-          </button>
-        </motion.div>
-
-        {/* ── Stats ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.64 }}
-          className="flex items-center gap-10 sm:gap-14 pb-10 border-b border-white/6 mb-9"
-        >
-          <StatItem value={20} label="Projects"   color="text-cyan-400" />
-          <div className="w-px h-10 bg-white/8" />
-          <StatItem value={10} label="AI Systems" color="text-violet-400" />
-          <div className="w-px h-10 bg-white/8" />
-          <StatItem value={5}  label="Certs" suffix="+" color="text-amber-400" />
-        </motion.div>
-
-        {/* ── Socials ── */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.72 }}
-          className="flex gap-3"
-        >
-          {[
-            { icon: Github,   href: 'https://github.com/arpanpnayak',          label: 'GitHub' },
-            { icon: Linkedin, href: 'https://www.linkedin.com/in/arpanpnayak', label: 'LinkedIn' },
-            { icon: Mail,     href: 'mailto:arpanpnayak@gmail.com',            label: 'Email' },
-          ].map(({ icon: Icon, href, label }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
-              className="p-3.5 bg-slate-900/60 rounded-xl border border-white/8 text-slate-400 hover:text-white hover:border-cyan-500/40 hover:-translate-y-1.5 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-200">
-              <Icon size={18} />
-            </a>
-          ))}
-        </motion.div>
+            {/* Quick metrics */}
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { num: '20+', label: 'AI Projects',   bar: 'from-cyan-500 to-blue-600' },
+                { num: '10+', label: 'Prod Systems',  bar: 'from-violet-500 to-purple-600' },
+                { num: '5+',  label: 'Certificates',  bar: 'from-amber-500 to-orange-500' },
+                { num: '2yr', label: 'AI Experience', bar: 'from-emerald-500 to-teal-500' },
+              ].map(({ num, label, bar }) => (
+                <div key={label} className="rounded-xl border border-white/6 bg-slate-950/60 p-4 flex flex-col gap-1.5">
+                  <div className={`h-0.5 w-8 rounded-full bg-gradient-to-r ${bar} mb-1`} />
+                  <div className="text-xl font-black text-white">{num}</div>
+                  <div className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
 
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-slate-600 hover:text-slate-400 transition-colors"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-slate-700 hover:text-slate-500 transition-colors"
           animate={{ y: [0, 7, 0] }}
           transition={{ duration: 2.2, repeat: Infinity }}
         >
