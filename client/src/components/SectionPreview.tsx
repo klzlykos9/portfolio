@@ -9,6 +9,7 @@ import {
   Layers, 
   PenTool, 
   Mail,
+  Briefcase,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -21,10 +22,12 @@ import trainingImg from '@assets/generated_images/ai_training_and_learning_visua
 import workImg from '@assets/generated_images/ai_projects_and_development_visual.png';
 import insightsImg from '@assets/generated_images/ai_blog_and_research_insights_visual.png';
 import connectImg from '@assets/generated_images/ai_contact_and_connection_visual.png';
+import experienceImg from '@assets/generated_images/ai_career_and_professional_experience_visual.png';
 
 const sections = [
   { id: 'about', title: 'About', icon: User, color: 'from-blue-500 to-cyan-500', desc: 'My Story & Vision', image: aboutImg },
   { id: 'skills', title: 'Skills', icon: Code2, color: 'from-amber-400 to-orange-600', desc: 'Tech & Expertise', image: skillsImg },
+  { id: 'experience', title: 'Experience', icon: Briefcase, color: 'from-cyan-500 to-teal-600', desc: 'Professional Timeline', image: experienceImg },
   { id: 'certifications', title: 'Certifications', icon: Award, color: 'from-purple-500 to-fuchsia-600', desc: 'Degrees & Honors', image: certsImg },
   { id: 'internships', title: 'Training', icon: BookOpen, color: 'from-emerald-500 to-teal-600', desc: 'Growth & Learning', image: trainingImg },
   { id: 'projects', title: 'Work', icon: Layers, color: 'from-blue-600 to-indigo-700', desc: 'AI & Code Projects', image: workImg },
@@ -56,6 +59,7 @@ export const SectionPreview: React.FC = () => {
     const routes: Record<string, string> = {
       'about': '/about',
       'skills': '/skills',
+      'experience': '/experience',
       'certifications': '/certifications',
       'internships': '/internships',
       'blogs': '/blog',

@@ -12,6 +12,7 @@ import ScrollToTop from './components/ScrollToTop';
 import AIAgent from './components/AIAgent';
 import Certifications from './components/Certifications';
 import InternshipTraining from './components/InternshipTraining';
+import Experience from './components/Experience';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/certifications" element={<Certifications />} />
             <Route path="/internships" element={<InternshipTraining />} />
+            <Route path="/experience" element={<Experience />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />

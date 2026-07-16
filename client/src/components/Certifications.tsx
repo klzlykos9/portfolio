@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, ExternalLink, X, ShieldCheck, GraduationCap, BookOpen, Briefcase, Sparkles } from 'lucide-react';
+import { Award, ExternalLink, X, ShieldCheck, GraduationCap, BookOpen, Briefcase, Sparkles, MonitorPlay, CheckCircle2, Building2 } from 'lucide-react';
 import lssgbImg from '@assets/Lean_six_sigma_green_belt_1768872542109.jpg';
 import lssbbImg from '@assets/Lean_six_sigma_black_belt_1768872548115.jpg';
 import cpbaImg from '@assets/certified_python_business_analyst_1768872554502.jpg';
@@ -170,7 +170,7 @@ const Certifications: React.FC = () => {
         </div>
 
         {/* Extra Qualifications */}
-        <div>
+        <div className="mb-16 sm:mb-20">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             className="text-xl sm:text-2xl font-black text-white mb-8 flex items-center gap-3"
@@ -189,6 +189,151 @@ const Certifications: React.FC = () => {
                 <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">{cert.details}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+
+        {/* ── Job Simulations ── */}
+        <div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-[10px] font-black uppercase tracking-widest mb-4">
+              <MonitorPlay size={11} /> Industry Job Simulations
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-3">
+              <MonitorPlay className="text-violet-400 shrink-0" size={24} /> Job Simulations
+              <span className="text-[10px] font-black uppercase tracking-widest text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2.5 py-1 rounded-full">
+                Powered by Forage
+              </span>
+            </h2>
+            <p className="text-slate-400 text-sm mt-2 max-w-xl">
+              Real-world virtual work experiences designed by leading firms — practical tasks, not theory.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {/* Deloitte */}
+            <motion.div
+              custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              whileHover={{ y: -6 }}
+              className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-emerald-500/8 to-teal-600/8 border border-emerald-500/25 backdrop-blur-sm overflow-hidden group transition-all duration-300 hover:shadow-[0_0_40px_rgba(16,185,129,0.12)]"
+            >
+              {/* Corner accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-full pointer-events-none" />
+
+              <div className="relative z-10">
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-4 mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                      <Building2 className="text-emerald-400" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-emerald-400 font-black text-xs uppercase tracking-widest">Deloitte</p>
+                      <p className="text-slate-400 text-[10px]">via Forage · Issued July 14, 2026</p>
+                    </div>
+                  </div>
+                  <span className="shrink-0 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider">
+                    Verified
+                  </span>
+                </div>
+
+                <h3 className="text-lg sm:text-xl font-black text-white mb-1 group-hover:text-emerald-300 transition-colors leading-snug">
+                  Data Analytics Job Simulation
+                </h3>
+                <p className="text-slate-400 text-sm mb-5 italic">
+                  Practical tasks in real Deloitte data analytics and forensic technology workflows.
+                </p>
+
+                <div className="mb-5">
+                  <p className="text-[10px] font-black text-emerald-300/70 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                    <Award size={11} /> Skills Demonstrated
+                  </p>
+                  <div className="space-y-2">
+                    {['Data Analysis', 'Forensic Technology'].map((skill, i) => (
+                      <div key={i} className="flex items-center gap-2.5 text-slate-200 text-sm">
+                        <CheckCircle2 className="text-emerald-400 shrink-0" size={14} />
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/6 flex items-center justify-between">
+                  <div>
+                    <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold">Verification</p>
+                    <p className="text-slate-400 font-mono text-[10px] mt-0.5">Mie7isQYFuZjSJRm3</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-black">
+                    <ShieldCheck size={13} /> Forage Certified
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Tata */}
+            <motion.div
+              custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              whileHover={{ y: -6 }}
+              className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-blue-500/8 to-violet-600/8 border border-blue-500/25 backdrop-blur-sm overflow-hidden group transition-all duration-300 hover:shadow-[0_0_40px_rgba(59,130,246,0.12)]"
+            >
+              {/* Corner accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full pointer-events-none" />
+
+              <div className="relative z-10">
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-4 mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0">
+                      <Building2 className="text-blue-400" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-blue-400 font-black text-xs uppercase tracking-widest">Tata Group</p>
+                      <p className="text-slate-400 text-[10px]">via Forage · Issued July 15, 2026</p>
+                    </div>
+                  </div>
+                  <span className="shrink-0 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] font-black uppercase tracking-wider">
+                    Verified
+                  </span>
+                </div>
+
+                <h3 className="text-lg sm:text-xl font-black text-white mb-1 group-hover:text-blue-300 transition-colors leading-snug">
+                  GenAI Powered Data Analytics Job Simulation
+                </h3>
+                <p className="text-slate-400 text-sm mb-5 italic">
+                  End-to-end GenAI-driven analytics pipeline — from EDA to AI-powered collections strategy.
+                </p>
+
+                <div className="mb-5">
+                  <p className="text-[10px] font-black text-blue-300/70 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                    <Award size={11} /> Skills Demonstrated
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      'Exploratory Data Analysis & Risk Profiling',
+                      'Predicting Delinquency with AI',
+                      'Business Report & Data Storytelling',
+                      'AI-Driven Collections Strategy',
+                    ].map((skill, i) => (
+                      <div key={i} className="flex items-center gap-2.5 text-slate-200 text-sm">
+                        <CheckCircle2 className="text-blue-400 shrink-0" size={14} />
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/6 flex items-center justify-between">
+                  <div>
+                    <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold">Verification</p>
+                    <p className="text-slate-400 font-mono text-[10px] mt-0.5">6a55e4833f85cffba2d3ef9e</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-blue-400 text-xs font-black">
+                    <ShieldCheck size={13} /> Forage Certified
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
           </div>
         </div>
       </div>
