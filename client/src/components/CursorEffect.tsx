@@ -1,28 +1,28 @@
 import { useEffect, useRef } from 'react';
 
 interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;       // 0→1 (starts at 1, decays to 0)
-  decay: number;      // how fast it fades
-  size: number;
-  hue: number;        // 185=cyan  200=sky  260=violet  45=amber
+  x: number; y: number;
+  vx: number; vy: number;
+  life: number; decay: number;
+  size: number; hue: number;
 }
 
 const CursorEffect: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouse   = useRef({ x: -999, y: -999, active: false });
-  const trailer = useRef({ x: -999, y: -999 });
-  const pool    = useRef<Particle[]>([]);
-  const raf     = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx    = canvas.getContext('2d')!;
 
-    /* ── resize ─────────────────────────── */
+    let mouse    = { x: -999, y: -999, active: false };
+    let trailer  = { x: -999, y: -999 };
+    let vel      = { x: 0, y: 0 };
+    let lastPos  = { x: -999, y: -999 };
+    let hue      = 185; // starts cyan, cycles
+    let particles: Particle[] = [];
+    let raf: number;
+
+    /* ── resize ───────────────────────────────────── */
     const resize = () => {
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -30,69 +30,75 @@ const CursorEffect: React.FC = () => {
     resize();
     window.addEventListener('resize', resize);
 
-    /* ── hide native cursor ─────────────── */
+    /* ── hide native cursor ───────────────────────── */
     document.body.style.cursor = 'none';
 
-    /* ── helpers ────────────────────────── */
-    const HUES = [185, 200, 200, 260, 185, 45]; // mostly cyan/sky, sprinkle violet + amber
+    /* ── particle colours ─────────────────────────── */
+    // mostly cyan/sky, sprinkle indigo + violet + amber
+    const HUES = [185, 190, 200, 215, 260, 275, 185, 200, 185, 45];
 
     const spawn = (x: number, y: number, n: number, burst = false) => {
       for (let i = 0; i < n; i++) {
         const angle = burst
-          ? (Math.PI * 2 * i) / n + Math.random() * 0.4
+          ? (Math.PI * 2 * i) / n + Math.random() * 0.5
           : Math.random() * Math.PI * 2;
-        const speed = burst
-          ? Math.random() * 5 + 2
-          : Math.random() * 1.8 + 0.4;
-        pool.current.push({
+        const spd = burst
+          ? Math.random() * 7 + 3
+          : Math.random() * 2.2 + 0.5;
+        particles.push({
           x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - (burst ? 0 : 0.6),
-          life: 1,
+          vx: Math.cos(angle) * spd + (burst ? 0 : vel.x * 0.25),
+          vy: Math.sin(angle) * spd + (burst ? 0 : vel.y * 0.25) - (burst ? 0 : 0.5),
+          life:  1,
           decay: burst
-            ? 0.016 + Math.random() * 0.012
-            : 0.022 + Math.random() * 0.018,
+            ? 0.011 + Math.random() * 0.009
+            : 0.018 + Math.random() * 0.018,
           size: burst
-            ? Math.random() * 3.5 + 1.5
-            : Math.random() * 2 + 0.8,
+            ? Math.random() * 5 + 2
+            : Math.random() * 2.5 + 0.7,
           hue: HUES[Math.floor(Math.random() * HUES.length)],
         });
       }
     };
 
-    /* ── event handlers ─────────────────── */
+    /* ── events ───────────────────────────────────── */
     const onMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY, active: true };
-      spawn(e.clientX, e.clientY, 4);
-    };
-    const onClick = (e: MouseEvent) => {
-      spawn(e.clientX, e.clientY, 28, true);
-    };
-    const onLeave = () => { mouse.current.active = false; };
-    const onEnter = () => { mouse.current.active = true; };
+      vel.x = e.clientX - lastPos.x;
+      vel.y = e.clientY - lastPos.y;
+      lastPos = { x: e.clientX, y: e.clientY };
+      mouse   = { x: e.clientX, y: e.clientY, active: true };
 
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('click',     onClick);
-    document.addEventListener('mouseleave', onLeave);
-    document.addEventListener('mouseenter', onEnter);
+      const speed = Math.sqrt(vel.x ** 2 + vel.y ** 2);
+      const n     = Math.min(Math.ceil(speed / 3) + 2, 9);
+      spawn(e.clientX, e.clientY, n);
+    };
 
-    /* ── animation loop ─────────────────── */
+    const onClick = (e: MouseEvent) => spawn(e.clientX, e.clientY, 44, true);
+
+    window.addEventListener('mousemove',      onMove);
+    window.addEventListener('click',          onClick);
+    document.addEventListener('mouseleave',   () => { mouse.active = false; });
+    document.addEventListener('mouseenter',   () => { mouse.active = true; });
+
+    /* ── animation loop ───────────────────────────── */
     const animate = () => {
-      raf.current = requestAnimationFrame(animate);
-
+      raf = requestAnimationFrame(animate);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      /* spring-lag trailer */
-      trailer.current.x += (mouse.current.x - trailer.current.x) * 0.1;
-      trailer.current.y += (mouse.current.y - trailer.current.y) * 0.1;
+      /* spring trailer */
+      trailer.x += (mouse.x - trailer.x) * 0.13;
+      trailer.y += (mouse.y - trailer.y) * 0.13;
 
-      /* particles */
-      pool.current = pool.current.filter(p => {
+      /* cycle hue slowly (cyan → indigo → violet → back) */
+      hue = (hue + 0.25) % 360;
+
+      /* ── particles ──────────────────────────────── */
+      particles = particles.filter(p => {
         p.x  += p.vx;
         p.y  += p.vy;
-        p.vx *= 0.97;
-        p.vy *= 0.97;
-        p.vy += 0.03;      // soft gravity
+        p.vx *= 0.96;
+        p.vy *= 0.96;
+        p.vy += 0.04;   // soft gravity
         p.life -= p.decay;
         if (p.life <= 0) return false;
 
@@ -100,10 +106,10 @@ const CursorEffect: React.FC = () => {
         const r     = p.size * p.life;
 
         ctx.save();
-        ctx.globalAlpha    = alpha * 0.85;
-        ctx.shadowBlur     = 10;
-        ctx.shadowColor    = `hsl(${p.hue}, 90%, 65%)`;
-        ctx.fillStyle      = `hsl(${p.hue}, 90%, 68%)`;
+        ctx.globalAlpha = alpha * 0.92;
+        ctx.shadowBlur  = 14;
+        ctx.shadowColor = `hsl(${p.hue}, 95%, 65%)`;
+        ctx.fillStyle   = `hsl(${p.hue}, 95%, 70%)`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, Math.max(r, 0.3), 0, Math.PI * 2);
         ctx.fill();
@@ -111,46 +117,63 @@ const CursorEffect: React.FC = () => {
         return true;
       });
 
-      /* custom cursor — only when inside viewport */
-      if (mouse.current.active && mouse.current.x > 0) {
-        const mx = mouse.current.x;
-        const my = mouse.current.y;
-        const tx = trailer.current.x;
-        const ty = trailer.current.y;
+      /* ── custom cursor ──────────────────────────── */
+      if (mouse.active && mouse.x > 0) {
+        const mx = mouse.x, my = mouse.y;
+        const tx = trailer.x, ty = trailer.y;
 
-        /* --- outer lagging ring --- */
-        ctx.save();
-        ctx.globalAlpha = 0.55;
-        ctx.beginPath();
-        ctx.arc(tx, ty, 18, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(34, 211, 238, 0.7)';
-        ctx.lineWidth   = 1.2;
-        ctx.stroke();
-        ctx.restore();
+        /* velocity-based deformation */
+        const speed   = Math.sqrt(vel.x ** 2 + vel.y ** 2);
+        const stretch = Math.min(speed * 0.45, 14);
+        const angle   = Math.atan2(vel.y, vel.x);
 
-        /* --- inner dot --- */
+        /* soft glow halo around ring */
+        const grad = ctx.createRadialGradient(tx, ty, 0, tx, ty, 36);
+        grad.addColorStop(0, `hsla(${hue}, 90%, 62%, 0.14)`);
+        grad.addColorStop(1, `hsla(${hue}, 90%, 62%, 0)`);
         ctx.save();
-        ctx.globalAlpha = 1;
-        ctx.shadowBlur  = 14;
-        ctx.shadowColor = '#22d3ee';
-        ctx.fillStyle   = '#22d3ee';
+        ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(mx, my, 3, 0, Math.PI * 2);
+        ctx.arc(tx, ty, 36, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
 
-        /* --- connecting thread (trailer → dot) --- */
-        const dx   = mx - tx;
-        const dy   = my - ty;
+        /* outer ring — ellipse that stretches toward motion */
+        ctx.save();
+        ctx.translate(tx, ty);
+        ctx.rotate(angle);
+        ctx.globalAlpha = 0.75;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 20 + stretch, Math.max(20 - stretch * 0.35, 8), 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `hsl(${hue}, 92%, 65%)`;
+        ctx.lineWidth   = 1.6;
+        ctx.shadowBlur  = 10;
+        ctx.shadowColor = `hsl(${hue}, 92%, 65%)`;
+        ctx.stroke();
+        ctx.restore();
+
+        /* inner precision dot */
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur  = 22;
+        ctx.shadowColor = `hsl(${hue}, 100%, 72%)`;
+        ctx.fillStyle   = `hsl(${hue}, 100%, 78%)`;
+        ctx.beginPath();
+        ctx.arc(mx, my, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        /* connecting thread (ring → dot) */
+        const dx   = mx - tx, dy = my - ty;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist > 2) {
           ctx.save();
-          ctx.globalAlpha = Math.min(dist / 60, 0.25);
+          ctx.globalAlpha = Math.min(dist / 55, 0.32);
           ctx.beginPath();
           ctx.moveTo(tx, ty);
           ctx.lineTo(mx, my);
-          ctx.strokeStyle = '#22d3ee';
-          ctx.lineWidth   = 0.7;
+          ctx.strokeStyle = `hsl(${hue}, 90%, 65%)`;
+          ctx.lineWidth   = 0.9;
           ctx.stroke();
           ctx.restore();
         }
@@ -160,12 +183,10 @@ const CursorEffect: React.FC = () => {
     animate();
 
     return () => {
-      cancelAnimationFrame(raf.current);
-      window.removeEventListener('resize',      resize);
-      window.removeEventListener('mousemove',   onMove);
-      window.removeEventListener('click',       onClick);
-      document.removeEventListener('mouseleave', onLeave);
-      document.removeEventListener('mouseenter', onEnter);
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize',    resize);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('click',     onClick);
       document.body.style.cursor = '';
     };
   }, []);

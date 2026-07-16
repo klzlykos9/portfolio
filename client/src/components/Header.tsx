@@ -76,7 +76,7 @@ const Header: React.FC = () => {
               <Cpu className="text-cyan-400" size={16} />
             </div>
             <span className="text-sm sm:text-base font-black tracking-tighter text-white group-hover:text-cyan-100 transition-colors">
-              ARPAN <span className="text-cyan-400">.</span>
+              ARPAN'S <span className="text-cyan-400">PORTFOLIO</span>
             </span>
           </button>
 
