@@ -255,6 +255,31 @@
   70%       { transform: translate(-40px, 50px) scale(0.97); }
 }
 
+/* ── Intro screen styles ─────────────────────────────────── */
+.intro-grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.intro-name-glow {
+  background: linear-gradient(90deg, #22d3ee 0%, #38bdf8 40%, #818cf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 40px rgba(34,211,238,0.4));
+}
+
+@keyframes intro-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+.intro-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  animation: intro-shimmer 2s ease-in-out infinite;
+}
+
 /* ── Noise texture overlay ────────────────────────────────── */
 .noise-layer {
   position: absolute;

@@ -182,6 +182,25 @@ const Home: React.FC = () => {
 
       {/* ══════════════════ HERO ══════════════════ */}
       <section className="relative z-10 min-h-screen flex items-center px-4 sm:px-8 lg:px-16 pt-20 pb-16">
+
+        {/* Giant watermark name — sits behind content */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center overflow-hidden select-none z-0" aria-hidden>
+          <div
+            className="font-black leading-none tracking-tighter"
+            style={{
+              fontSize: 'clamp(7rem, 22vw, 24rem)',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.055) 0%, transparent 100%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+              marginBottom: '-3rem',
+              userSelect: 'none',
+            }}
+          >
+            NAYAK
+          </div>
+        </div>
         <div className="max-w-7xl mx-auto w-full">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-12 lg:gap-16 items-center">
 
