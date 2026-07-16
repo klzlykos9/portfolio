@@ -6,6 +6,7 @@ import {
   ArrowUpRight, Sparkles, MapPin, Globe,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import AuroraBackground from '../components/AuroraBackground';
 
 // ── Typewriter ───────────────────────────────────────────────────────────────
 function useTypewriter(words: string[], speed = 72, pause = 2300) {
@@ -150,12 +151,7 @@ const Home: React.FC = () => {
     <div className="relative bg-[#060a14] overflow-x-hidden">
 
       {/* ── Aurora ── */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="aurora-blob aurora-blob-1" />
-        <div className="aurora-blob aurora-blob-2" />
-        <div className="aurora-blob aurora-blob-3" />
-        <div className="noise-layer" />
-      </div>
+      <AuroraBackground />
 
       {/* ══════════════════ HERO ══════════════════ */}
       <section className="relative z-10 min-h-screen flex flex-col justify-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-28 pb-20 overflow-hidden">
@@ -176,10 +172,9 @@ const Home: React.FC = () => {
           }}
         />
 
-        {/* Two-column: left content / right decorative */}
-        <div className="relative max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_400px] gap-16 lg:gap-10 items-center">
+        {/* Hero content — left-aligned */}
+        <div className="relative max-w-3xl w-full">
 
-          {/* ── LEFT COLUMN ── */}
           <div className="flex flex-col items-start text-left">
 
             {/* Status badges */}
@@ -310,51 +305,6 @@ const Home: React.FC = () => {
               ))}
             </motion.div>
           </div>
-
-          {/* ── RIGHT COLUMN — decorative card panel ── */}
-          <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:flex flex-col gap-4"
-          >
-            {/* Glowing identity card */}
-            <div className="relative rounded-2xl border border-white/8 bg-slate-950/70 backdrop-blur-xl p-6 overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
-                style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)' }} />
-              <p className="text-[9px] font-black uppercase tracking-[0.32em] text-slate-600 mb-4">Identity</p>
-              <div className="space-y-3">
-                {[
-                  { label: 'Role',       value: 'AI Engineer & Strategist', color: 'text-cyan-400' },
-                  { label: 'Stack',      value: 'LangChain · FastAPI · React', color: 'text-violet-400' },
-                  { label: 'Cert',       value: 'Six Sigma Black Belt', color: 'text-amber-400' },
-                  { label: 'Degree',     value: 'MBA — Strategy', color: 'text-emerald-400' },
-                  { label: 'Location',   value: 'India · Remote-first', color: 'text-slate-400' },
-                ].map(({ label, value, color }) => (
-                  <div key={label} className="flex items-start gap-3">
-                    <span className="text-[10px] text-slate-600 uppercase tracking-widest font-bold w-16 shrink-0 pt-0.5">{label}</span>
-                    <span className={`text-sm font-semibold ${color} leading-snug`}>{value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick metrics */}
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { num: '20+', label: 'AI Projects',   bar: 'from-cyan-500 to-blue-600' },
-                { num: '10+', label: 'Prod Systems',  bar: 'from-violet-500 to-purple-600' },
-                { num: '5+',  label: 'Certificates',  bar: 'from-amber-500 to-orange-500' },
-                { num: '2yr', label: 'AI Experience', bar: 'from-emerald-500 to-teal-500' },
-              ].map(({ num, label, bar }) => (
-                <div key={label} className="rounded-xl border border-white/6 bg-slate-950/60 p-4 flex flex-col gap-1.5">
-                  <div className={`h-0.5 w-8 rounded-full bg-gradient-to-r ${bar} mb-1`} />
-                  <div className="text-xl font-black text-white">{num}</div>
-                  <div className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">{label}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
 
         {/* Scroll indicator */}
