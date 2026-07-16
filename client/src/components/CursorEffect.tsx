@@ -174,7 +174,6 @@ const CursorEffect: React.FC = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 z-[9999] pointer-events-none"
-      style={{ mixBlendMode: 'screen' }}
     />
   );
 };
